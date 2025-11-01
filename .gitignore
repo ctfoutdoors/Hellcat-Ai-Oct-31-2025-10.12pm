@@ -1,0 +1,9 @@
+.manus/db/*.json
+.env
+.env.local
+*.key
+*.pem
+secrets/
+node_modules/
+dist/
+.DS_Store

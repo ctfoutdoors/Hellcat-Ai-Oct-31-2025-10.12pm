@@ -1,0 +1,23 @@
+CREATE TABLE `customers` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`email` varchar(320),
+	`phone` varchar(20),
+	`firstName` varchar(100),
+	`lastName` varchar(100),
+	`companyName` varchar(255),
+	`addressLine1` varchar(255),
+	`addressLine2` varchar(255),
+	`city` varchar(100),
+	`state` varchar(50),
+	`postalCode` varchar(20),
+	`country` varchar(50) DEFAULT 'US',
+	`normalizedAddress` text,
+	`totalOrders` int DEFAULT 0,
+	`totalDisputes` int DEFAULT 0,
+	`source` varchar(50),
+	`externalId` varchar(100),
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
+	CONSTRAINT `customers_id` PRIMARY KEY(`id`),
+	CONSTRAINT `customers_email_unique` UNIQUE(`email`)
+);

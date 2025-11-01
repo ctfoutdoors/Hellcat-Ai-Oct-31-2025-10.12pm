@@ -1,0 +1,1 @@
+ALTER TABLE `cases` ADD `recipientStatus` enum('ACTIVE','INACTIVE','ON_HOLD') DEFAULT 'ACTIVE' NOT NULL;

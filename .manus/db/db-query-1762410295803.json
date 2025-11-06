@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS lead_activities (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  leadId INT NOT NULL,\n  activityType VARCHAR(100),\n  activityDate TIMESTAMP,\n  title VARCHAR(500),\n  description TEXT,\n  userId INT,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX lead_idx (leadId),\n  FOREIGN KEY (leadId) REFERENCES leads(id) ON DELETE CASCADE,\n  FOREIGN KEY (userId) REFERENCES users(id)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS lead_activities (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  leadId INT NOT NULL,\n  activityType VARCHAR(100),\n  activityDate TIMESTAMP,\n  title VARCHAR(500),\n  description TEXT,\n  userId INT,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX lead_idx (leadId),\n  FOREIGN KEY (leadId) REFERENCES leads(id) ON DELETE CASCADE,\n  FOREIGN KEY (userId) REFERENCES users(id)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 564
+}

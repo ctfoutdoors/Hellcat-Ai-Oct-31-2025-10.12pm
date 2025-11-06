@@ -1,4 +1,4 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, decimal, index, json } from "drizzle-orm/mysql-core";
+import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, boolean, decimal, index, json, date } from "drizzle-orm/mysql-core";
 
 /**
  * HELLCAT AI V4 - CARRIER DISPUTE CLAIMS MANAGEMENT SYSTEM
@@ -1278,3 +1278,163 @@ export const companies = mysqlTable("companies", {
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   deletedAt: timestamp("deletedAt"),
 });
+
+// ============================================================================
+// CRM OVERHAUL - NEW UNIFIED STRUCTURE
+// ============================================================================
+
+// Customers table - Unified contact and company management
+export const customers = mysqlTable("customers", {
+  id: int("id").autoincrement().primaryKey(),
+  customerNumber: varchar("customerNumber", { length: 255 }).notNull().unique(),
+  customerType: mysqlEnum("customerType", ["individual", "company"]).notNull(),
+  businessType: mysqlEnum("businessType", ["retail", "wholesale", "distributor", "direct"]).notNull(),
+  
+  // Individual fields
+  firstName: varchar("firstName", { length: 255 }),
+  lastName: varchar("lastName", { length: 255 }),
+  email: varchar("email", { length: 320 }),
+  phone: varchar("phone", { length: 50 }),
+  
+  // Company fields
+  companyName: varchar("companyName", { length: 500 }),
+  taxId: varchar("taxId", { length: 100 }),
+  website: varchar("website", { length: 500 }),
+  
+  // Address
+  billingAddress: json("billingAddress"),
+  shippingAddress: json("shippingAddress"),
+  
+  // Enrichment data
+  googlePlaceId: varchar("googlePlaceId", { length: 255 }),
+  latitude: decimal("latitude", { precision: 10, scale: 8 }),
+  longitude: decimal("longitude", { precision: 11, scale: 8 }),
+  
+  // Metadata
+  source: varchar("source", { length: 100 }), // 'woocommerce', 'shipstation', 'manual', etc.
+  externalIds: json("externalIds"), // {woocommerce: 123, shipstation: 456}
+  tags: json("tags"),
+  notes: text("notes"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  emailIdx: index("email_idx").on(table.email),
+  companyIdx: index("company_idx").on(table.companyName),
+}));
+
+// Customer contacts - Related contacts for company customers
+export const customerContacts = mysqlTable("customer_contacts", {
+  id: int("id").autoincrement().primaryKey(),
+  customerId: int("customerId").notNull(),
+  firstName: varchar("firstName", { length: 255 }),
+  lastName: varchar("lastName", { length: 255 }),
+  email: varchar("email", { length: 320 }),
+  phone: varchar("phone", { length: 50 }),
+  title: varchar("title", { length: 255 }),
+  isPrimary: boolean("isPrimary").default(false),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  customerIdx: index("customer_idx").on(table.customerId),
+}));
+
+// Customer activities - Timeline of all interactions
+export const customerActivities = mysqlTable("customer_activities", {
+  id: int("id").autoincrement().primaryKey(),
+  customerId: int("customerId").notNull(),
+  activityType: varchar("activityType", { length: 100 }), // 'order', 'support_ticket', 'email', 'note'
+  activityDate: timestamp("activityDate"),
+  title: varchar("title", { length: 500 }),
+  description: text("description"),
+  relatedId: varchar("relatedId", { length: 255 }), // order number, ticket ID, etc.
+  source: varchar("source", { length: 100 }), // 'woocommerce', 'reamaze', 'klaviyo', 'manual'
+  metadata: json("metadata"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  customerDateIdx: index("customer_date_idx").on(table.customerId, table.activityDate),
+}));
+
+// Customer shipments - For route visualization
+export const customerShipments = mysqlTable("customer_shipments", {
+  id: int("id").autoincrement().primaryKey(),
+  customerId: int("customerId").notNull(),
+  orderNumber: varchar("orderNumber", { length: 255 }),
+  trackingNumber: varchar("trackingNumber", { length: 255 }),
+  carrierCode: varchar("carrierCode", { length: 50 }),
+  serviceCode: varchar("serviceCode", { length: 50 }),
+  originAddress: json("originAddress"),
+  destinationAddress: json("destinationAddress"),
+  shipDate: timestamp("shipDate"),
+  deliveryDate: timestamp("deliveryDate"),
+  status: varchar("status", { length: 50 }),
+  trackingEvents: json("trackingEvents"), // Array of tracking waypoints
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  customerIdx: index("customer_idx").on(table.customerId),
+  trackingIdx: index("tracking_idx").on(table.trackingNumber),
+}));
+
+// Vendor contacts - Contacts for vendors
+export const vendorContacts = mysqlTable("vendor_contacts", {
+  id: int("id").autoincrement().primaryKey(),
+  vendorId: int("vendorId").notNull(),
+  firstName: varchar("firstName", { length: 255 }),
+  lastName: varchar("lastName", { length: 255 }),
+  email: varchar("email", { length: 320 }),
+  phone: varchar("phone", { length: 50 }),
+  title: varchar("title", { length: 255 }),
+  department: varchar("department", { length: 255 }),
+  isPrimary: boolean("isPrimary").default(false),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  vendorIdx: index("vendor_idx").on(table.vendorId),
+}));
+
+// Leads table - Track potential customers and partners
+export const leads = mysqlTable("leads", {
+  id: int("id").autoincrement().primaryKey(),
+  leadNumber: varchar("leadNumber", { length: 255 }).notNull().unique(),
+  leadType: mysqlEnum("leadType", ["affiliate", "partnership", "distributor", "wholesale", "retail"]).notNull(),
+  leadStatus: mysqlEnum("leadStatus", ["new", "contacted", "qualified", "negotiating", "won", "lost"]).default("new"),
+  
+  // Contact info
+  firstName: varchar("firstName", { length: 255 }),
+  lastName: varchar("lastName", { length: 255 }),
+  companyName: varchar("companyName", { length: 500 }),
+  email: varchar("email", { length: 320 }),
+  phone: varchar("phone", { length: 50 }),
+  website: varchar("website", { length: 500 }),
+  
+  // Lead details
+  source: varchar("source", { length: 255 }), // 'website', 'referral', 'trade_show', etc.
+  estimatedValue: decimal("estimatedValue", { precision: 10, scale: 2 }),
+  expectedCloseDate: timestamp("expectedCloseDate"),
+  notes: text("notes"),
+  
+  // Assignment
+  assignedTo: int("assignedTo"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  convertedAt: timestamp("convertedAt"),
+  convertedToCustomerId: int("convertedToCustomerId"),
+}, (table) => ({
+  statusIdx: index("status_idx").on(table.leadStatus),
+  typeIdx: index("type_idx").on(table.leadType),
+}));
+
+// Lead activities - Track lead interactions
+export const leadActivities = mysqlTable("lead_activities", {
+  id: int("id").autoincrement().primaryKey(),
+  leadId: int("leadId").notNull(),
+  activityType: varchar("activityType", { length: 100 }), // 'call', 'email', 'meeting', 'note'
+  activityDate: timestamp("activityDate"),
+  title: varchar("title", { length: 500 }),
+  description: text("description"),
+  userId: int("userId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  leadIdx: index("lead_idx").on(table.leadId),
+}));
+
+// Note: skuMappings table already exists earlier in the schema (line 667)

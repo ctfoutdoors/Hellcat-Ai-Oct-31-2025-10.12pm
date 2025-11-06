@@ -37,6 +37,12 @@ import CRMAnalytics from "./pages/CRMAnalytics";
 import CustomersList from "./pages/crm/CustomersList";
 import LeadsList from "./pages/crm/LeadsList";
 import VendorsList from "./pages/crm/VendorsList";
+import Customers from "./pages/crm/Customers";
+import CustomerProfile from "./pages/crm/CustomerProfile";
+import Vendors from "./pages/crm/Vendors";
+import VendorProfile from "./pages/crm/VendorProfile";
+import Leads from "./pages/crm/Leads";
+import ProductCard from "./pages/inventory/ProductCard";
 import Settings from "./pages/Settings";
 import EmailAccountsSettings from "./pages/EmailAccountsSettings";
 import SettingsIntegrations from "./pages/SettingsIntegrations";
@@ -72,7 +78,8 @@ function Router() {
         <Route path="/order/:id" component={OrderDetail} />
         
         {/* Inventory Module */}
-        <Route path="/inventory/live" component={InventoryLive} />
+        <Route path="/inventory" component={Inventory} />
+        <Route path="/inventory/products/:id" component={ProductCard} />
         <Route path="/inventory" component={InventoryDashboard} />
         <Route path="/inventory/stock-levels" component={StockLevels} />
         <Route path="/inventory/products" component={ProductsManagement} />
@@ -96,9 +103,14 @@ function Router() {
         <Route path="/crm/companies" component={CRMCompanies} />
         <Route path="/crm/deals" component={CRMDeals} />
         <Route path="/crm/analytics" component={CRMAnalytics} />
-        <Route path="/crm/customers" component={CustomersList} />
-        <Route path="/crm/leads" component={LeadsList} />
-        <Route path="/crm/vendors" component={VendorsList} />
+      <Route path="/crm/customers-old" component={CustomersList} />
+      <Route path="/crm/customers" component={Customers} />
+      <Route path="/crm/customers/:id" component={CustomerProfile} />
+      <Route path="/crm/leads-old" component={LeadsList} />
+      <Route path="/crm/leads" component={Leads} />
+      <Route path="/crm/vendors-old" component={VendorsList} />
+      <Route path="/crm/vendors" component={Vendors} />
+      <Route path="/crm/vendors/:id" component={VendorProfile} />
         
         {/* Intelligence Module */}
         <Route path="/intelligence/brand" component={BrandIntelligence} />

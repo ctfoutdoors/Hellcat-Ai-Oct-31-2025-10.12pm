@@ -1,0 +1,515 @@
+/**
+ * Animation & Hover Effects
+ * Subtle, performant animations for enhanced UX
+ */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Base transition utilities */
+@layer utilities {
+  .transition-smooth {
+    transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-colors-smooth {
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-transform-smooth {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .transition-shadow-smooth {
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Button Hover Effects */
+@layer components {
+  /* Primary button hover */
+  .btn-hover-lift {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-hover-lift:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .btn-hover-lift:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  /* Button scale effect */
+  .btn-hover-scale {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-hover-scale:hover:not(:disabled) {
+    transform: scale(1.02);
+  }
+
+  .btn-hover-scale:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  /* Button glow effect */
+  .btn-hover-glow {
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-hover-glow:hover:not(:disabled) {
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  }
+
+  /* Button with icon animation */
+  .btn-with-icon {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-with-icon svg {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-with-icon:hover:not(:disabled) svg {
+    transform: translateX(2px);
+  }
+}
+
+/* Link Hover Effects */
+@layer components {
+  /* Underline from left */
+  .link-underline {
+    position: relative;
+    text-decoration: none;
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: currentColor;
+    transition: width 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-underline:hover::after {
+    width: 100%;
+  }
+
+  /* Underline from center */
+  .link-underline-center {
+    position: relative;
+    text-decoration: none;
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-underline-center::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: currentColor;
+    transition: width 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-underline-center:hover::after {
+    width: 100%;
+  }
+
+  /* Link with arrow */
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-arrow::after {
+    content: '→';
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .link-arrow:hover::after {
+    transform: translateX(4px);
+  }
+}
+
+/* Card Hover Effects */
+@layer components {
+  /* Card lift effect */
+  .card-hover-lift {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  }
+
+  /* Card border glow */
+  .card-hover-border {
+    transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover-border:hover {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.1);
+  }
+
+  /* Card scale effect */
+  .card-hover-scale {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  /* Card with image zoom */
+  .card-image-zoom {
+    overflow: hidden;
+  }
+
+  .card-image-zoom img {
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .card-image-zoom:hover img {
+    transform: scale(1.05);
+  }
+}
+
+/* Form Control Hover & Focus Effects */
+@layer components {
+  /* Input focus glow */
+  .input-focus-glow {
+    transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .input-focus-glow:focus {
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  }
+
+  /* Select hover */
+  .select-hover {
+    transition: border-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .select-hover:hover:not(:disabled) {
+    border-color: hsl(var(--primary) / 0.5);
+    background-color: hsl(var(--accent));
+  }
+
+  /* Checkbox/Radio scale */
+  .checkbox-hover {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .checkbox-hover:hover {
+    transform: scale(1.1);
+  }
+
+  .checkbox-hover:focus {
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.1);
+  }
+}
+
+/* Navigation & Menu Hover Effects */
+@layer components {
+  /* Menu item hover */
+  .menu-item-hover {
+    position: relative;
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .menu-item-hover::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: hsl(var(--primary));
+    transform: scaleY(0);
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .menu-item-hover:hover::before,
+  .menu-item-hover[data-active="true"]::before {
+    transform: scaleY(1);
+  }
+
+  .menu-item-hover:hover {
+    background-color: hsl(var(--accent));
+    color: hsl(var(--accent-foreground));
+  }
+
+  /* Sidebar menu item */
+  .sidebar-item-hover {
+    transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                padding-left 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar-item-hover:hover {
+    background-color: hsl(var(--sidebar-accent));
+    padding-left: 1rem;
+  }
+
+  /* Dropdown menu item */
+  .dropdown-item-hover {
+    transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                padding-left 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dropdown-item-hover:hover {
+    background-color: hsl(var(--accent));
+    padding-left: 0.75rem;
+  }
+}
+
+/* Icon Hover Effects */
+@layer components {
+  /* Icon rotate */
+  .icon-hover-rotate {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .icon-hover-rotate:hover {
+    transform: rotate(90deg);
+  }
+
+  /* Icon bounce */
+  .icon-hover-bounce {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .icon-hover-bounce:hover {
+    animation: icon-bounce 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes icon-bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+
+  /* Icon pulse */
+  .icon-hover-pulse {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .icon-hover-pulse:hover {
+    animation: icon-pulse 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes icon-pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
+  /* Icon color transition */
+  .icon-hover-color {
+    transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .icon-hover-color:hover {
+    color: hsl(var(--primary));
+  }
+}
+
+/* Badge & Tag Hover Effects */
+@layer components {
+  .badge-hover {
+    transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                transform 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .badge-hover:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Table Row Hover */
+@layer components {
+  .table-row-hover {
+    transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .table-row-hover:hover {
+    background-color: hsl(var(--muted) / 0.5);
+  }
+}
+
+/* Avatar Hover */
+@layer components {
+  .avatar-hover {
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .avatar-hover:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px hsl(var(--primary) / 0.2);
+  }
+}
+
+/* Tooltip Fade In */
+@layer components {
+  .tooltip-fade {
+    animation: tooltip-fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes tooltip-fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Modal/Dialog Animations */
+@layer components {
+  .dialog-fade-in {
+    animation: dialog-fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes dialog-fade-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .dialog-slide-up {
+    animation: dialog-slide-up 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes dialog-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Loading Spinner */
+@layer components {
+  .spinner-rotate {
+    animation: spinner-rotate 1s linear infinite;
+  }
+
+  @keyframes spinner-rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+}
+
+/* Skeleton Loading Animation */
+@layer components {
+  .skeleton-pulse {
+    animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes skeleton-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
+
+/* Slide In Animations */
+@layer components {
+  .slide-in-left {
+    animation: slide-in-left 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slide-in-left {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  .slide-in-right {
+    animation: slide-in-right 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+}
+
+/* Focus Ring (Accessibility) */
+@layer utilities {
+  .focus-ring {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transition: outline-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .focus-ring:focus-visible {
+    outline-color: hsl(var(--ring));
+  }
+}

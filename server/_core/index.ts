@@ -6,7 +6,14 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
+import uploadRouter from "../routes/upload";
+import analyzeLabelRouter from "../routes/analyze-label";
+import shipstationLookupRouter from "../routes/shipstation-lookup";
+import testShipStationRouter from "../routes/test-shipstation";
+import captureTrackingRouter from "../routes/capture-tracking";
+import formsRouter from "../routes/forms";
 import { serveStatic, setupVite } from "./vite";
+import { initializeDailySyncScheduler } from "../services/syncScheduler";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -35,6 +42,18 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  // File upload routes
+  app.use("/api", uploadRouter);
+  // AI label analysis
+  app.use("/api/ai", analyzeLabelRouter);
+  // ShipStation lookup
+  app.use("/api/shipstation", shipstationLookupRouter);
+  // Test ShipStation credentials
+  app.use(testShipStationRouter);
+  // Capture tracking page screenshots
+  app.use("/api/capture-tracking", captureTrackingRouter);
+  // Form generation
+  app.use("/api/forms", formsRouter);
   // tRPC API
   app.use(
     "/api/trpc",
@@ -59,6 +78,10 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    
+    // Initialize daily sync scheduler
+    // Disabled for initial deployment to reduce memory usage
+    // initializeDailySyncScheduler();
   });
 }
 

@@ -34,6 +34,9 @@ import CRMContacts from "./pages/CRMContacts";
 import CRMCompanies from "./pages/CRMCompanies";
 import CRMDeals from "./pages/CRMDeals";
 import CRMAnalytics from "./pages/CRMAnalytics";
+import CustomersList from "./pages/crm/CustomersList";
+import LeadsList from "./pages/crm/LeadsList";
+import VendorsList from "./pages/crm/VendorsList";
 import Settings from "./pages/Settings";
 import EmailAccountsSettings from "./pages/EmailAccountsSettings";
 import SettingsIntegrations from "./pages/SettingsIntegrations";
@@ -93,6 +96,9 @@ function Router() {
         <Route path="/crm/companies" component={CRMCompanies} />
         <Route path="/crm/deals" component={CRMDeals} />
         <Route path="/crm/analytics" component={CRMAnalytics} />
+        <Route path="/crm/customers" component={CustomersList} />
+        <Route path="/crm/leads" component={LeadsList} />
+        <Route path="/crm/vendors" component={VendorsList} />
         
         {/* Intelligence Module */}
         <Route path="/intelligence/brand" component={BrandIntelligence} />

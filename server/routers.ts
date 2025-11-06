@@ -28,10 +28,12 @@ import { getStampsCredentials, getBalanceReportURL, authenticateStamps, getStamp
 import type { URLType } from './stampscom';
 import { integrationsRouter } from './routers/integrations';
 import { storesRouter } from './routers/stores';
+import { crmRouter } from './routers/crm';
 
 export const appRouter = router({
   integrations: integrationsRouter,
   stores: storesRouter,
+  crm: crmRouter,
   orders: router({
     list: publicProcedure
       .input(z.object({

@@ -1165,3 +1165,116 @@ export const dashboards = mysqlTable("dashboards", {
 
 
 
+
+// Vendors table - Supplier and vendor management
+export const vendors = mysqlTable("vendors", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Basic info
+  name: varchar("name", { length: 255 }).notNull(),
+  contactName: varchar("contactName", { length: 255 }),
+  email: varchar("email", { length: 320 }),
+  phone: varchar("phone", { length: 50 }),
+  website: varchar("website", { length: 500 }),
+  
+  // Classification
+  vendorType: mysqlEnum("vendorType", [
+    "manufacturer",      // Product manufacturer
+    "supplier",          // Raw materials
+    "service",           // Service provider
+    "logistics",         // Shipping/fulfillment
+    "technology"         // Software/tools
+  ]).notNull(),
+  
+  status: mysqlEnum("status", [
+    "active",
+    "inactive",
+    "pending",
+    "suspended"
+  ]).default("active").notNull(),
+  
+  // Performance ratings (0-100 scale)
+  qualityRating: int("qualityRating").default(0),
+  deliveryRating: int("deliveryRating").default(0),
+  priceRating: int("priceRating").default(0),
+  overallRating: int("overallRating").default(0),
+  
+  // Financial
+  totalSpend: int("totalSpend").default(0),      // Total paid (cents)
+  totalOrders: int("totalOrders").default(0),
+  averageLeadTime: int("averageLeadTime"),       // Days
+  paymentTerms: varchar("paymentTerms", { length: 100 }),
+  
+  // Location
+  address: varchar("address", { length: 500 }),
+  city: varchar("city", { length: 100 }),
+  state: varchar("state", { length: 50 }),
+  zipCode: varchar("zipCode", { length: 20 }),
+  country: varchar("country", { length: 100 }).default("USA"),
+  
+  // Contract
+  contractStartDate: timestamp("contractStartDate"),
+  contractEndDate: timestamp("contractEndDate"),
+  contractUrl: varchar("contractUrl", { length: 500 }),
+  
+  // Compliance
+  certifications: text("certifications"),  // JSON array
+  insuranceExpiry: timestamp("insuranceExpiry"),
+  
+  // Metadata
+  tags: text("tags"),
+  customFields: text("customFields"),
+  notes: text("notes"),
+  
+  // Audit
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});
+
+// Companies table - Organization/account management
+export const companies = mysqlTable("companies", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Basic info
+  name: varchar("name", { length: 255 }).notNull(),
+  website: varchar("website", { length: 500 }),
+  industry: varchar("industry", { length: 100 }),
+  
+  // Classification
+  accountType: mysqlEnum("accountType", [
+    "prospect",          // Potential customer
+    "customer",          // Active customer
+    "partner",           // Strategic partner
+    "competitor"         // Competitive intelligence
+  ]).default("prospect").notNull(),
+  
+  tier: mysqlEnum("tier", [
+    "enterprise",        // >$1M annual revenue
+    "mid-market",        // $100K-$1M
+    "smb"                // <$100K
+  ]),
+  
+  // Financial
+  annualRevenue: int("annualRevenue"),   // Company's revenue (not ours)
+  lifetimeValue: int("lifetimeValue").default(0), // Our revenue from them (cents)
+  
+  // Hierarchy
+  parentCompanyId: int("parentCompanyId"), // For subsidiaries
+  
+  // Location
+  address: varchar("address", { length: 500 }),
+  city: varchar("city", { length: 100 }),
+  state: varchar("state", { length: 50 }),
+  zipCode: varchar("zipCode", { length: 20 }),
+  country: varchar("country", { length: 100 }).default("USA"),
+  
+  // Metadata
+  tags: text("tags"),                    // JSON array
+  customFields: text("customFields"),    // JSON object
+  
+  // Audit
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  deletedAt: timestamp("deletedAt"),
+});

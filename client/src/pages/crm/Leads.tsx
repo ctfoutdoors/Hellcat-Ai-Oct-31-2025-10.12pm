@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, DollarSign, Calendar, User } from "lucide-react";
+import { Search, Plus, DollarSign, Calendar, User, CheckSquare } from "lucide-react";
 import { useLocation } from "wouter";
+import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
+import { CreateTaskDialog } from "@/components/CreateTaskDialog";
 
 const LEAD_STATUSES = [
   { value: "new", label: "New", color: "bg-blue-500" },
@@ -28,6 +30,9 @@ export default function Leads() {
   const [search, setSearch] = useState("");
   const [leadType, setLeadType] = useState<string>("all");
   const [view, setView] = useState<"kanban" | "list">("kanban");
+  const [showMeetingDialog, setShowMeetingDialog] = useState(false);
+  const [showTaskDialog, setShowTaskDialog] = useState(false);
+  const [selectedLead, setSelectedLead] = useState<any>(null);
 
   const { data: allLeads, isLoading } = trpc.crm.leads.list.useQuery({
     search: search || undefined,
@@ -185,6 +190,34 @@ export default function Leads() {
                           <span>Assigned</span>
                         </div>
                       )}
+                      <div className="flex gap-1 pt-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 text-xs flex-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedLead(lead);
+                            setShowMeetingDialog(true);
+                          }}
+                        >
+                          <Calendar className="w-3 h-3 mr-1" />
+                          Meet
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 text-xs flex-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedLead(lead);
+                            setShowTaskDialog(true);
+                          }}
+                        >
+                          <CheckSquare className="w-3 h-3 mr-1" />
+                          Task
+                        </Button>
+                      </div>
                       <Select
                         value={lead.leadStatus}
                         onValueChange={(value) =>
@@ -253,6 +286,32 @@ export default function Leads() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Dialogs */}
+      {selectedLead && (
+        <>
+          <ScheduleMeetingDialog
+            open={showMeetingDialog}
+            onOpenChange={setShowMeetingDialog}
+            entityType="lead"
+            entityId={selectedLead.id}
+            entityName={
+              selectedLead.companyName ||
+              `${selectedLead.firstName} ${selectedLead.lastName}`
+            }
+          />
+          <CreateTaskDialog
+            open={showTaskDialog}
+            onOpenChange={setShowTaskDialog}
+            entityType="lead"
+            entityId={selectedLead.id}
+            entityName={
+              selectedLead.companyName ||
+              `${selectedLead.firstName} ${selectedLead.lastName}`
+            }
+          />
+        </>
       )}
     </div>
   );

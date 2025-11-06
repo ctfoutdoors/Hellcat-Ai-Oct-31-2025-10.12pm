@@ -1438,3 +1438,24 @@ export const leadActivities = mysqlTable("lead_activities", {
 }));
 
 // Note: skuMappings table already exists earlier in the schema (line 667)
+
+
+// Tasks table for CRM follow-ups and reminders
+export const tasks = mysqlTable("tasks", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  entityType: mysqlEnum("entityType", ["customer", "lead", "vendor"]).notNull(),
+  entityId: int("entityId").notNull(),
+  assignedTo: int("assignedTo"),
+  dueDate: timestamp("dueDate"),
+  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  status: mysqlEnum("status", ["pending", "in_progress", "completed", "cancelled"]).default("pending"),
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  metadata: text("metadata"), // JSON string
+});
+
+export type Task = typeof tasks.$inferSelect;
+export type InsertTask = typeof tasks.$inferInsert;

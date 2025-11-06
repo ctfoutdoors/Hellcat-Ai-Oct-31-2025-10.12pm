@@ -144,3 +144,58 @@ All major phases of the CRM overhaul have been successfully implemented.
 - [ ] Create automated follow-up reminders
 - [ ] Add Klaviyo integration for customer enrichment
 - [ ] Add Re:amaze ticket integration for support history
+
+
+---
+
+## Google Calendar & Tasks Integration ✅ COMPLETE
+
+### Phase 1: MCP Integration Setup ✅
+- [x] Test Google Calendar MCP connection
+- [x] Confirmed Google Tasks not available (using custom tasks system instead)
+- [x] OAuth authentication handled by MCP
+
+### Phase 2: Calendar Events Service ✅
+- [x] Create server/services/googleCalendar.ts
+- [x] Implement createMeeting function
+- [x] Implement listUpcomingMeetings function
+- [x] Implement deleteMeeting function
+- [x] Add calendar endpoints to CRM router
+
+### Phase 3: Tasks Service ✅
+- [x] Create tasks database table (custom implementation)
+- [x] Add tasks schema to drizzle/schema.ts
+- [x] Implement createTask function for follow-ups
+- [x] Implement listTasks function
+- [x] Implement updateTaskStatus function
+- [x] Implement deleteTask function
+- [x] Add tasks endpoints to CRM router
+
+### Phase 4: Customer Profile Calendar UI ✅
+- [x] Create ScheduleMeetingDialog component
+- [x] Create CreateTaskDialog component
+- [x] Add "Schedule Meeting" button to customer profile
+- [x] Add "Create Task" button to customer profile
+- [x] Integrate dialogs with customer data
+
+### Phase 5: Lead Profile Calendar UI ✅
+- [x] Add "Meet" button to lead kanban cards
+- [x] Add "Task" button to lead kanban cards
+- [x] Integrate meeting dialog for leads
+- [x] Integrate task dialog for leads
+- [x] Handle lead selection state
+
+### Phase 6: Testing & Checkpoint ✅
+- [x] Server restarted successfully
+- [x] All endpoints functional
+- [x] UI components rendering correctly
+- [x] Ready for checkpoint
+
+**Features Delivered:**
+✅ Schedule Google Calendar meetings from customer/lead profiles
+✅ Create follow-up tasks with priorities and due dates
+✅ Task management system integrated with CRM
+✅ Quick actions on lead kanban cards
+✅ Full CRUD operations for meetings and tasks
+✅ Dialog-based UI for meeting/task creation
+✅ Entity-specific context (customer/lead/vendor)

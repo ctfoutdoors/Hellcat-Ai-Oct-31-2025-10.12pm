@@ -18,13 +18,19 @@ import {
   Users,
   ArrowLeft,
   Edit,
+  Calendar,
+  CheckSquare,
 } from "lucide-react";
 import { useLocation } from "wouter";
+import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
+import { CreateTaskDialog } from "@/components/CreateTaskDialog";
 
 export default function CustomerProfile() {
   const [, params] = useRoute("/crm/customers/:id");
   const [, setLocation] = useLocation();
   const customerId = parseInt(params?.id || "0");
+  const [showMeetingDialog, setShowMeetingDialog] = useState(false);
+  const [showTaskDialog, setShowTaskDialog] = useState(false);
 
   const { data, isLoading } = trpc.crm.customers.get.useQuery(
     { id: customerId },
@@ -77,10 +83,20 @@ export default function CustomerProfile() {
             <p className="text-muted-foreground">{customer.customerNumber}</p>
           </div>
         </div>
-        <Button>
-          <Edit className="w-4 h-4 mr-2" />
-          Edit Customer
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setShowMeetingDialog(true)}>
+            <Calendar className="w-4 h-4 mr-2" />
+            Schedule Meeting
+          </Button>
+          <Button variant="outline" onClick={() => setShowTaskDialog(true)}>
+            <CheckSquare className="w-4 h-4 mr-2" />
+            Create Task
+          </Button>
+          <Button>
+            <Edit className="w-4 h-4 mr-2" />
+            Edit Customer
+          </Button>
+        </div>
       </div>
 
       {/* Overview Cards */}
@@ -423,6 +439,30 @@ export default function CustomerProfile() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Dialogs */}
+      <ScheduleMeetingDialog
+        open={showMeetingDialog}
+        onOpenChange={setShowMeetingDialog}
+        entityType="customer"
+        entityId={customerId}
+        entityName={
+          customer.customerType === "company"
+            ? customer.companyName || "Customer"
+            : `${customer.firstName} ${customer.lastName}`
+        }
+      />
+      <CreateTaskDialog
+        open={showTaskDialog}
+        onOpenChange={setShowTaskDialog}
+        entityType="customer"
+        entityId={customerId}
+        entityName={
+          customer.customerType === "company"
+            ? customer.companyName || "Customer"
+            : `${customer.firstName} ${customer.lastName}`
+        }
+      />
     </div>
   );
 }

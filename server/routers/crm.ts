@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { router, protectedProcedure } from '../_core/trpc';
 import { getDb } from "../db";
 import { getWooCommerceSync } from "../services/woocommerceSync";
+import * as googleCalendar from "../services/googleCalendar";
+import { TRPCError } from "@trpc/server";
 import { 
   contacts, 
   companies, 
@@ -14,7 +16,8 @@ import {
   vendors,
   vendorContacts,
   leads,
-  leadActivities
+  leadActivities,
+  tasks
 } from '../../drizzle/schema';
 import { eq, and, or, like, gte, lte, desc, asc, inArray, sql } from 'drizzle-orm';
 
@@ -2034,6 +2037,218 @@ export const crmRouter = router({
           perPage: input.perPage,
           status: input.status,
         });
+      }),
+  }),
+
+  // ============================================================================
+  // GOOGLE CALENDAR INTEGRATION
+  // ============================================================================
+  
+  calendar: router({
+    // Create a meeting for a customer/lead
+    createMeeting: protectedProcedure
+      .input(
+        z.object({
+          entityType: z.enum(["customer", "lead"]),
+          entityId: z.number(),
+          summary: z.string(),
+          description: z.string().optional(),
+          location: z.string().optional(),
+          startTime: z.string(), // ISO 8601 format
+          endTime: z.string(),
+          attendees: z.array(z.string()).optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        // Create calendar event
+        const event = await googleCalendar.createCalendarEvent({
+          summary: input.summary,
+          description: input.description,
+          location: input.location,
+          start_time: input.startTime,
+          end_time: input.endTime,
+          attendees: input.attendees,
+          reminders: [15, 60], // 15 min and 1 hour before
+        });
+
+        // Log activity in CRM
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        if (input.entityType === "customer") {
+          await db.insert(customerActivities).values({
+            customerId: input.entityId,
+            activityType: "meeting",
+            subject: input.summary,
+            description: `Meeting scheduled: ${input.description || ""}`,
+            activityDate: new Date(input.startTime),
+            metadata: JSON.stringify({ calendarEventId: event.id }),
+          });
+        } else {
+          await db.insert(leadActivities).values({
+            leadId: input.entityId,
+            activityType: "meeting",
+            subject: input.summary,
+            description: `Meeting scheduled: ${input.description || ""}`,
+            activityDate: new Date(input.startTime),
+            metadata: JSON.stringify({ calendarEventId: event.id }),
+          });
+        }
+
+        return event;
+      }),
+
+    // Get upcoming meetings for a customer/lead
+    getUpcomingMeetings: protectedProcedure
+      .input(
+        z.object({
+          entityType: z.enum(["customer", "lead"]),
+          entityId: z.number(),
+          searchQuery: z.string().optional(),
+        })
+      )
+      .query(async ({ input }) => {
+        const query = input.searchQuery || `${input.entityType} ${input.entityId}`;
+        return googleCalendar.getUpcomingMeetings(query);
+      }),
+
+    // Update a meeting
+    updateMeeting: protectedProcedure
+      .input(
+        z.object({
+          eventId: z.string(),
+          summary: z.string().optional(),
+          description: z.string().optional(),
+          location: z.string().optional(),
+          startTime: z.string().optional(),
+          endTime: z.string().optional(),
+          attendees: z.array(z.string()).optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        return googleCalendar.updateCalendarEvent({
+          event_id: input.eventId,
+          summary: input.summary,
+          description: input.description,
+          location: input.location,
+          start_time: input.startTime,
+          end_time: input.endTime,
+          attendees: input.attendees,
+        });
+      }),
+
+    // Delete a meeting
+    deleteMeeting: protectedProcedure
+      .input(z.object({ eventId: z.string() }))
+      .mutation(async ({ input }) => {
+        return googleCalendar.deleteCalendarEvent(input.eventId);
+      }),
+  }),
+
+  // ============================================================================
+  // TASKS MANAGEMENT
+  // ============================================================================
+  
+  tasks: router({
+    // Create a task
+    create: protectedProcedure
+      .input(
+        z.object({
+          title: z.string(),
+          description: z.string().optional(),
+          entityType: z.enum(["customer", "lead", "vendor"]),
+          entityId: z.number(),
+          assignedTo: z.number().optional(),
+          dueDate: z.string().optional(), // ISO 8601
+          priority: z.enum(["low", "medium", "high", "urgent"]).default("medium"),
+        })
+      )
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const [task] = await db.insert(tasks).values({
+          title: input.title,
+          description: input.description,
+          entityType: input.entityType,
+          entityId: input.entityId,
+          assignedTo: input.assignedTo || ctx.user.id,
+          dueDate: input.dueDate ? new Date(input.dueDate) : null,
+          priority: input.priority,
+          status: "pending",
+        }).returning();
+
+        return task;
+      }),
+
+    // List tasks for an entity
+    list: protectedProcedure
+      .input(
+        z.object({
+          entityType: z.enum(["customer", "lead", "vendor"]).optional(),
+          entityId: z.number().optional(),
+          assignedTo: z.number().optional(),
+          status: z.enum(["pending", "in_progress", "completed", "cancelled"]).optional(),
+          priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
+        })
+      )
+      .query(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const conditions = [];
+        if (input.entityType) conditions.push(eq(tasks.entityType, input.entityType));
+        if (input.entityId) conditions.push(eq(tasks.entityId, input.entityId));
+        if (input.assignedTo) conditions.push(eq(tasks.assignedTo, input.assignedTo));
+        if (input.status) conditions.push(eq(tasks.status, input.status));
+        if (input.priority) conditions.push(eq(tasks.priority, input.priority));
+
+        const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+        const tasksList = await db
+          .select()
+          .from(tasks)
+          .where(whereClause)
+          .orderBy(desc(tasks.dueDate));
+
+        return tasksList;
+      }),
+
+    // Update task status
+    updateStatus: protectedProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          status: z.enum(["pending", "in_progress", "completed", "cancelled"]),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const updateData: any = { status: input.status };
+        if (input.status === "completed") {
+          updateData.completedAt = new Date();
+        }
+
+        const [updated] = await db
+          .update(tasks)
+          .set(updateData)
+          .where(eq(tasks.id, input.id))
+          .returning();
+
+        return updated;
+      }),
+
+    // Delete task
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        await db.delete(tasks).where(eq(tasks.id, input.id));
+        return { success: true };
       }),
   }),
 });

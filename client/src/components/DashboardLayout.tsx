@@ -1,215 +1,174 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { cn } from "@/lib/utils";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getLoginUrl } from "@/const";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarProvider,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/ui/sidebar";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
-import { useIsMobile } from "@/hooks/useMobile";
-import { 
-  LayoutDashboard, 
-  LogOut, 
-  PanelLeft, 
-  FileText, 
-  Upload, 
-  Settings, 
-  Package, 
-  Box, 
-  FileCheck, 
-  SearchCheck, 
-  BarChart3, 
-  Plus, 
-  Search, 
-  Bell, 
-  Palette, 
-  Mail,
-  ChevronDown,
-  FileStack,
-  Monitor,
-  Database,
-  TrendingUp,
-  Plug,
+  LayoutDashboard,
+  FileText,
+  Package,
+  ShoppingCart,
+  BarChart3,
   Users,
-  Building2,
-  Target,
+  Settings as SettingsIcon,
+  ChevronDown,
+  Menu,
+  X,
   Lightbulb,
-  Sparkles
+  LogOut,
+  User,
+  Palette,
 } from "lucide-react";
-import { CSSProperties, useEffect, useRef, useState } from "react";
-import { useLocation } from "wouter";
-import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
-import { Button } from "./ui/button";
-import AIChatWidget from "./AIChatWidget";
-import { DensityToggle } from "./DensityToggle";
-import { VoiceCommandButton } from "./VoiceCommandButton";
-import { Input } from "./ui/input";
+import { trpc } from "@/lib/trpc";
+import VoiceCommand from "./VoiceCommand";
+import NotificationPanel from "./NotificationPanel";
 
-// Reorganized menu structure with submenus
-const menuStructure = [
+interface MenuItem {
+  title: string;
+  icon: any;
+  path?: string;
+  children?: { title: string; path: string }[];
+}
+
+const menuItems: MenuItem[] = [
   {
+    title: "Dashboard",
     icon: LayoutDashboard,
-    label: "Dashboard",
     path: "/",
   },
   {
+    title: "Cases",
     icon: FileText,
-    label: "Cases",
-    items: [
-      { label: "All Cases", path: "/cases" },
-      { label: "Import Cases", path: "/import" },
-      { label: "Case Templates", path: "/cases/templates" },
-      { label: "Case Settings", path: "/cases/settings" },
+    children: [
+      { title: "All Cases", path: "/cases" },
+      { title: "Import Cases", path: "/import-cases" },
+      { title: "Import from ShipStation", path: "/shipstation-auto-import" },
+      { title: "Templates", path: "/cases/templates" },
+      { title: "Settings", path: "/cases/settings" },
     ],
   },
   {
-    icon: Monitor,
-    label: "Monitoring",
-    items: [
-      { label: "Order Monitoring", path: "/orders" },
-      { label: "Shipment Audits", path: "/audits" },
-      { label: "Gmail Monitoring", path: "/gmail-monitoring" },
-      { label: "Sync Status", path: "/sync-status" },
-      { label: "PDF Invoice Scanner", path: "/pdf-scanner" },
+    title: "Orders",
+    icon: ShoppingCart,
+    children: [
+      { title: "All Orders", path: "/orders" },
+      { title: "Website (CTF)", path: "/orders/website" },
+      { title: "Amazon", path: "/orders/amazon" },
+      { title: "eBay", path: "/orders/ebay" },
+      { title: "Shopify", path: "/orders/shopify" },
+      { title: "WooCommerce", path: "/orders/woocommerce" },
+      { title: "Other Channels", path: "/orders/other" },
     ],
   },
   {
-    icon: Database,
-    label: "Data",
-    items: [
-      { label: "Products", path: "/products" },
-      { label: "Certifications", path: "/certifications" },
-    ],
-  },
-  {
+    title: "Inventory",
     icon: Package,
-    label: "Inventory",
-    items: [
-      { label: "Purchase Orders", path: "/purchase-orders" },
-      { label: "Receiving", path: "/receiving" },
-      { label: "Inventory", path: "/inventory" },
+    children: [
+      { title: "Stock Levels", path: "/inventory/stock-levels" },
+      { title: "Products", path: "/inventory/products" },
+      { title: "Purchase Orders", path: "/purchase-orders" },
+      { title: "Receiving", path: "/inventory/receiving" },
     ],
   },
   {
-    icon: TrendingUp,
-    label: "Reports",
-    items: [
-      { label: "Analytics", path: "/reports" },
-      { label: "Weekly Reports", path: "/reports/weekly" },
-      { label: "Performance", path: "/reports/performance" },
+    title: "Reports",
+    icon: BarChart3,
+    children: [
+      { title: "Analytics", path: "/reports" },
+      { title: "Weekly Reports", path: "/reports/weekly" },
+      { title: "Performance", path: "/reports/performance" },
     ],
   },
   {
+    title: "CRM",
     icon: Users,
-    label: "CRM",
-    items: [
-      { label: "Customers", path: "/crm/customers" },
-      { label: "Leads", path: "/crm/leads" },
-      { label: "Vendors", path: "/crm/vendors" },
-      { label: "Contacts", path: "/crm/contacts" },
-      { label: "Companies", path: "/crm/companies" },
-      { label: "Deals", path: "/crm/deals" },
-      { label: "Analytics", path: "/crm/analytics" },
+    children: [
+      { title: "Contacts", path: "/crm/contacts" },
+      { title: "Companies", path: "/crm/companies" },
+      { title: "Deals", path: "/crm/deals" },
+      { title: "Analytics", path: "/crm/analytics" },
     ],
   },
   {
-    icon: Sparkles,
-    label: "AI Intelligence",
-    items: [
-      { label: "Predictions", path: "/ai/predictions" },
-      { label: "Prescriptions", path: "/ai/prescriptions" },
+    title: "Intelligence",
+    icon: Lightbulb,
+    children: [
+      { title: "Brand Intelligence", path: "/intelligence/brand" },
+      { title: "Competitor Intelligence", path: "/intelligence/competitor" },
+      { title: "Product Intelligence", path: "/intelligence/product" },
+      { title: "Market Intelligence", path: "/intelligence/market" },
+      { title: "Customer Intelligence", path: "/intelligence/customer" },
+      { title: "Threat Intelligence", path: "/intelligence/threat" },
+    ],
+  },
+  {
+    title: "Settings",
+    icon: SettingsIcon,
+    children: [
+      { title: "General", path: "/settings" },
+      { title: "Email Accounts", path: "/settings/email-accounts" },
+      { title: "Email Templates", path: "/settings/email-templates" },
+      { title: "Integrations", path: "/settings/integrations" },
     ],
   },
 ];
 
-const settingsStructure = [
-  {
-    icon: Settings,
-    label: "Settings",
-    items: [
-      { icon: Settings, label: "General", path: "/settings" },
-      { icon: Palette, label: "Theme Colors", path: "/settings/colors" },
-      { icon: Mail, label: "Email Templates", path: "/settings/email-templates" },
-      { icon: Plug, label: "Integrations", path: "/settings/integrations" },
-    ],
-  },
+const themeOptions = [
+  { value: "blue", label: "Blue (ShipStation)" },
+  { value: "dark", label: "Dark Gray" },
+  { value: "night", label: "Night (Black)" },
+  { value: "light", label: "Light" },
 ];
 
-const SIDEBAR_WIDTH_KEY = "sidebar-width";
-const DEFAULT_WIDTH = 280;
-const MIN_WIDTH = 200;
-const MAX_WIDTH = 480;
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  const [collapsed, setCollapsed] = useState(false);
+  const [expandedMenus, setExpandedMenus] = useState<string[]>(["Cases"]);
+  const { user, loading, isAuthenticated } = useAuth();
+  const { theme, setTheme } = useTheme();
+  const logoutMutation = trpc.auth.logout.useMutation();
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [sidebarWidth, setSidebarWidth] = useState(() => {
-    const saved = localStorage.getItem(SIDEBAR_WIDTH_KEY);
-    return saved ? parseInt(saved, 10) : DEFAULT_WIDTH;
-  });
-  const { loading, user } = useAuth();
+  const toggleMenu = (title: string) => {
+    setExpandedMenus((prev) =>
+      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
+    );
+  };
 
-  useEffect(() => {
-    localStorage.setItem(SIDEBAR_WIDTH_KEY, sidebarWidth.toString());
-  }, [sidebarWidth]);
+  const handleLogout = async () => {
+    await logoutMutation.mutateAsync();
+    window.location.href = "/";
+  };
 
   if (loading) {
-    return <DashboardLayoutSkeleton />
+    return (
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
-  if (!user) {
+  if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-8 p-8 max-w-md w-full">
-          <div className="flex flex-col items-center gap-6">
-            <div className="relative group">
-              <div className="relative">
-                <img
-                  src={APP_LOGO}
-                  alt={APP_TITLE}
-                  className="h-20 w-20 rounded-xl object-cover shadow"
-                />
-              </div>
-            </div>
-            <div className="text-center space-y-2">
-              <h1 className="text-2xl font-bold tracking-tight">{APP_TITLE}</h1>
-              <p className="text-sm text-muted-foreground">
-                Please sign in to continue
-              </p>
-            </div>
-          </div>
-          <Button
-            onClick={() => {
-              window.location.href = getLoginUrl();
-            }}
-            size="lg"
-            className="w-full shadow-lg hover:shadow-xl transition-all"
-          >
-            Sign in
+      <div className="flex h-screen items-center justify-center bg-background">
+        <div className="glass p-8 rounded-lg text-center max-w-md">
+          <h1 className="text-2xl font-bold mb-4">Hellcat AI V4</h1>
+          <p className="text-muted-foreground mb-6">
+            Carrier Dispute Claims Management System
+          </p>
+          <Button asChild className="w-full">
+            <a href={getLoginUrl()}>Sign In to Continue</a>
           </Button>
         </div>
       </div>
@@ -217,378 +176,142 @@ export default function DashboardLayout({
   }
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": `${sidebarWidth}px`,
-        } as CSSProperties
-      }
-    >
-      <DashboardLayoutContent setSidebarWidth={setSidebarWidth}>
-        {children}
-      </DashboardLayoutContent>
-    </SidebarProvider>
-  );
-}
+    <div className="flex h-screen bg-background">
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "glass-strong border-r border-border transition-all duration-300 flex flex-col",
+          collapsed ? "w-16" : "w-64"
+        )}
+      >
+        {/* Logo */}
+        <div className="h-16 flex items-center justify-between px-4 border-b border-border flex-shrink-0">
+          {!collapsed && (
+            <h1 className="text-xl font-bold text-primary">Hellcat AI</h1>
+          )}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-2 hover:bg-secondary rounded-lg transition-colors"
+          >
+            {collapsed ? <Menu size={20} /> : <X size={20} />}
+          </button>
+        </div>
 
-type DashboardLayoutContentProps = {
-  children: React.ReactNode;
-  setSidebarWidth: (width: number) => void;
-};
-
-function DashboardLayoutContent({
-  children,
-  setSidebarWidth,
-}: DashboardLayoutContentProps) {
-  const { user, logout } = useAuth();
-  const [location, setLocation] = useLocation();
-  const { state, toggleSidebar } = useSidebar();
-  const isCollapsed = state === "collapsed";
-  const [isResizing, setIsResizing] = useState(false);
-  const [openMenus, setOpenMenus] = useState<string[]>([]);
-  const sidebarRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
-
-  // Determine active menu item
-  const getActiveLabel = () => {
-    for (const menu of menuStructure) {
-      if (menu.path === location) return menu.label;
-      if (menu.items) {
-        const activeItem = menu.items.find(item => item.path === location);
-        if (activeItem) return activeItem.label;
-      }
-    }
-    return "Dashboard";
-  };
-
-  useEffect(() => {
-    if (isCollapsed) {
-      setIsResizing(false);
-    }
-  }, [isCollapsed]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isResizing) return;
-
-      const sidebarLeft = sidebarRef.current?.getBoundingClientRect().left ?? 0;
-      const newWidth = e.clientX - sidebarLeft;
-      if (newWidth >= MIN_WIDTH && newWidth <= MAX_WIDTH) {
-        setSidebarWidth(newWidth);
-      }
-    };
-
-    const handleMouseUp = () => {
-      setIsResizing(false);
-    };
-
-    if (isResizing) {
-      document.addEventListener("mousemove", handleMouseMove);
-      document.addEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
-    }
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
-  }, [isResizing, setSidebarWidth]);
-
-  const toggleMenu = (label: string) => {
-    setOpenMenus(prev =>
-      prev.includes(label)
-        ? prev.filter(item => item !== label)
-        : [...prev, label]
-    );
-  };
-
-  return (
-    <>
-      <div className="relative" ref={sidebarRef}>
-        <Sidebar
-          collapsible="icon"
-          className="border-r-0"
-          disableTransition={isResizing}
-        >
-          <SidebarHeader className="h-16 justify-center bg-[#1a1a1a] border-b border-gray-800">
-            <div className="flex items-center gap-3 pl-2 group-data-[collapsible=icon]:px-0 transition-all w-full">
-              {isCollapsed ? (
-                <div className="relative h-10 w-10 shrink-0 group">
-                  <img
-                    src="/ctf-logo.svg"
-                    className="h-10 w-10 object-contain"
-                    alt="Catch The Fever"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = APP_LOGO;
-                    }}
-                  />
-                  <button
-                    onClick={toggleSidebar}
-                    className="absolute inset-0 flex items-center justify-center bg-gray-800 rounded-md opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                  >
-                    <PanelLeft className="h-4 w-4 text-white" />
-                  </button>
-                </div>
-              ) : (
+        {/* Navigation */}
+        <nav className="p-2 space-y-1 flex-1 overflow-y-auto">
+          {menuItems.map((item) => (
+            <div key={item.title}>
+              {item.children ? (
                 <>
-                  <div className="flex items-center gap-3 min-w-0">
-                    <img
-                      src="/ctf-logo.svg"
-                      className="h-10 w-auto object-contain shrink-0"
-                      alt="Catch The Fever"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = APP_LOGO;
-                      }}
-                    />
-                  </div>
                   <button
-                    onClick={toggleSidebar}
-                    className="ml-auto h-8 w-8 flex items-center justify-center hover:bg-gray-800 rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary shrink-0"
+                    onClick={() => toggleMenu(item.title)}
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    <PanelLeft className="h-4 w-4 text-gray-400" />
+                    <div className="flex items-center gap-3">
+                      <item.icon size={20} />
+                      {!collapsed && <span className="text-sm">{item.title}</span>}
+                    </div>
+                    {!collapsed && (
+                      <ChevronDown
+                        size={16}
+                        className={cn(
+                          "transition-transform",
+                          expandedMenus.includes(item.title) && "rotate-180"
+                        )}
+                      />
+                    )}
                   </button>
+                  {!collapsed && expandedMenus.includes(item.title) && (
+                    <div className="ml-9 mt-1 space-y-1">
+                      {item.children.map((child) => (
+                        <Link key={child.path} href={child.path}>
+                          <span
+                            className={cn(
+                              "block px-3 py-2 rounded-lg text-sm transition-colors cursor-pointer",
+                              location === child.path
+                                ? "bg-primary text-primary-foreground font-medium"
+                                : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            )}
+                          >
+                            {child.title}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                 </>
+              ) : (
+                <Link href={item.path!}>
+                  <span
+                    className={cn(
+                      "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors cursor-pointer",
+                      location === item.path
+                        ? "bg-primary text-primary-foreground font-medium"
+                        : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                    )}
+                  >
+                    <item.icon size={20} />
+                    {!collapsed && <span className="text-sm">{item.title}</span>}
+                  </span>
+                </Link>
               )}
             </div>
-          </SidebarHeader>
+          ))}
+        </nav>
 
-          <SidebarContent className="gap-0">
-            <SidebarMenu className="px-2 py-1">
-              {menuStructure.map((menu) => {
-                const isOpen = openMenus.includes(menu.label);
-                const hasSubmenu = menu.items && menu.items.length > 0;
-                const isActive = menu.path === location || 
-                  (menu.items && menu.items.some(item => item.path === location));
+        {/* Bottom Section: Notifications + Theme + User */}
+        <div className="p-2 border-t border-border flex-shrink-0 space-y-2">
+          {/* Notification Bell */}
+          {!collapsed && (
+            <div className="px-2">
+              <NotificationPanel />
+            </div>
+          )}
 
-                if (!hasSubmenu) {
-                  // Simple menu item
-                  return (
-                    <SidebarMenuItem key={menu.label}>
-                      <SidebarMenuButton
-                        isActive={isActive}
-                        onClick={() => menu.path && setLocation(menu.path)}
-                        tooltip={menu.label}
-                        className="h-10 transition-all font-normal"
-                      >
-                        <menu.icon
-                          className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
-                        />
-                        <span>{menu.label}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  );
-                }
 
-                // Menu with submenu
-                return (
-                  <Collapsible
-                    key={menu.label}
-                    open={isOpen}
-                    onOpenChange={() => toggleMenu(menu.label)}
-                    className="group/collapsible"
-                  >
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuButton
-                          isActive={isActive}
-                          tooltip={menu.label}
-                          className="h-10 transition-all font-normal"
-                        >
-                          <menu.icon
-                            className={`h-4 w-4 ${isActive ? "text-primary" : ""}`}
-                          />
-                          <span>{menu.label}</span>
-                          <ChevronDown
-                            className={`ml-auto h-4 w-4 transition-transform ${
-                              isOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {menu.items!.map((subItem) => {
-                            const isSubActive = subItem.path === location;
-                            return (
-                              <SidebarMenuSubItem key={subItem.path}>
-                                <SidebarMenuSubButton
-                                  isActive={isSubActive}
-                                  onClick={() => setLocation(subItem.path)}
-                                  className="h-9"
-                                >
-                                  <span>{subItem.label}</span>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            );
-                          })}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarContent>
-
-          <SidebarFooter className="p-3 border-t">
-            {/* Settings Menu */}
-            <SidebarMenu className="px-2 mb-2">
-              {settingsStructure.map((menu) => {
-                const isOpen = openMenus.includes(menu.label);
-                const isActive = menu.items!.some(item => item.path === location);
-
-                return (
-                  <Collapsible
-                    key={menu.label}
-                    open={isOpen}
-                    onOpenChange={() => toggleMenu(menu.label)}
-                    className="group/collapsible"
-                  >
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuButton
-                          isActive={isActive}
-                          tooltip={menu.label}
-                          className="h-9 transition-all font-normal text-xs"
-                        >
-                          <menu.icon
-                            className={`h-3.5 w-3.5 ${isActive ? "text-primary" : ""}`}
-                          />
-                          <span>{menu.label}</span>
-                          <ChevronDown
-                            className={`ml-auto h-3.5 w-3.5 transition-transform ${
-                              isOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {menu.items!.map((subItem) => {
-                            const isSubActive = subItem.path === location;
-                            return (
-                              <SidebarMenuSubItem key={subItem.path}>
-                                <SidebarMenuSubButton
-                                  isActive={isSubActive}
-                                  onClick={() => setLocation(subItem.path)}
-                                  className="h-8 text-xs"
-                                >
-                                  {subItem.icon && <subItem.icon className="h-3 w-3" />}
-                                  <span>{subItem.label}</span>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            );
-                          })}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                );
-              })}
-            </SidebarMenu>
-
-            {/* User Profile */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-3 rounded-lg px-1 py-1 hover:bg-accent/50 transition-colors w-full text-left group-data-[collapsible=icon]:justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  <Avatar className="h-9 w-9 border shrink-0">
-                    <AvatarFallback className="text-xs font-medium">
-                      {user?.name?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
-                    <p className="text-sm font-medium truncate leading-none">
-                      {user?.name || "-"}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate mt-1.5">
-                      {user?.email || "-"}
-                    </p>
+          {/* User Section */}
+          {!collapsed ? (
+            <div className="space-y-2">
+              <div className="px-3 py-2 rounded-lg bg-secondary/50">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                    <User size={16} className="text-primary" />
                   </div>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem
-                  onClick={logout}
-                  className="cursor-pointer text-destructive focus:text-destructive"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarFooter>
-        </Sidebar>
-        <div
-          className={`absolute top-0 right-0 w-1 h-full cursor-col-resize hover:bg-primary/20 transition-colors ${isCollapsed ? "hidden" : ""}`}
-          onMouseDown={() => {
-            if (isCollapsed) return;
-            setIsResizing(true);
-          }}
-          style={{ zIndex: 50 }}
-        />
-      </div>
-
-      <SidebarInset>
-        {/* ShipStation-style header */}
-        <div className="ss-header flex border-b h-14 items-center justify-between px-4 backdrop-blur supports-[backdrop-filter]:backdrop-blur sticky top-0 z-40">
-          <div className="flex items-center gap-3">
-            {isMobile && <SidebarTrigger className="h-9 w-9 rounded-lg" />}
-            <h1 className="text-lg font-semibold text-white hidden sm:block">
-              {getActiveLabel()}
-            </h1>
-            {/* Quick Actions */}
-            <div className="hidden md:flex items-center gap-2 ml-4">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{user?.name || "User"}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                  </div>
+                </div>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-8 text-white hover:bg-[var(--ss-green-700)] gap-1.5"
-                onClick={() => setLocation("/cases")}
+                className="w-full justify-start"
+                onClick={handleLogout}
               >
-                <Plus className="h-4 w-4" />
-                <span className="hidden lg:inline">New Case</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 text-white hover:bg-[var(--ss-green-700)] gap-1.5"
-                onClick={() => setLocation("/import")}
-              >
-                <Upload className="h-4 w-4" />
-                <span className="hidden lg:inline">Import</span>
+                <LogOut size={16} className="mr-2" />
+                Logout
               </Button>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* Global Search */}
-            <div className="hidden lg:flex items-center relative">
-              <Search className="absolute left-2.5 h-4 w-4 text-white/70" />
-              <Input
-                placeholder="Search cases..."
-                className="h-8 w-64 pl-8 bg-[var(--ss-green-700)] border-[var(--ss-green-600)] text-white placeholder:text-white/70 focus-visible:ring-white/50"
-              />
-            </div>
-            {/* Notification Bell */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 text-white hover:bg-[var(--ss-green-700)] relative"
+          ) : (
+            <button
+              onClick={handleLogout}
+              className="w-full p-2 hover:bg-secondary rounded-lg transition-colors flex items-center justify-center"
+              title="Logout"
             >
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full" />
-            </Button>
-            {/* Density Toggle */}
-            <div className="text-white">
-              <VoiceCommandButton />
-            <DensityToggle />
-            </div>
-          </div>
+              <LogOut size={20} className="text-muted-foreground" />
+            </button>
+          )}
         </div>
-        <main className="flex-1 p-4">{children}</main>
-      </SidebarInset>
-      <AIChatWidget />
-    </>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 overflow-auto">
+        <div className="container mx-auto p-6">{children}</div>
+      </main>
+      
+      {/* Voice Command Floating Button */}
+      <VoiceCommand />
+    </div>
   );
 }

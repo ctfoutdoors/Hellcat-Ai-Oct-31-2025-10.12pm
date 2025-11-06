@@ -38,9 +38,8 @@ export default defineConfig({
     ],
     hmr: {
       protocol: 'wss',
-      host: process.env.VITE_HMR_HOST || undefined,
+      host: '3000-it8bxob9flrtl0ehnl5zv-c8cb0196.manusvm.computer',
       clientPort: 443,
-      port: 5173,
     },
     fs: {
       strict: true,

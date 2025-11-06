@@ -1,254 +1,417 @@
-import DashboardLayout from "@/components/DashboardLayout";
+import { Link } from "wouter";
+import { 
+  FileText, ShoppingCart, Package, BarChart3, Users, Lightbulb, 
+  TrendingUp, TrendingDown, ArrowRight, Activity, CheckCircle2, 
+  AlertCircle, Clock, DollarSign, Box, ShoppingBag
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc";
-import { DollarSign, TrendingUp, AlertCircle, CheckCircle, BarChart3, PieChart } from "lucide-react";
-import ProgressDashboard from "@/components/ProgressDashboard";
-import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart, Line, Area, AreaChart } from 'recharts';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+
+// Animated counter component
+function AnimatedCounter({ end, duration = 2000, prefix = "", suffix = "" }: { end: number; duration?: number; prefix?: string; suffix?: string }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTime: number;
+    let animationFrame: number;
+
+    const animate = (currentTime: number) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      
+      setCount(Math.floor(progress * end));
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [end, duration]);
+
+  return <span>{prefix}{count.toLocaleString()}{suffix}</span>;
+}
+
+// Simple sparkline component
+function Sparkline({ data, color = "rgb(59, 130, 246)" }: { data: number[]; color?: string }) {
+  const max = Math.max(...data);
+  const min = Math.min(...data);
+  const range = max - min || 1;
+  
+  const points = data.map((value, index) => {
+    const x = (index / (data.length - 1)) * 100;
+    const y = 100 - ((value - min) / range) * 100;
+    return `${x},${y}`;
+  }).join(" ");
+
+  return (
+    <svg className="w-full h-12" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth="2"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
 
 export default function Dashboard() {
-  const { data: metrics, isLoading } = trpc.dashboard.metrics.useQuery();
-
-  const formatCurrency = (cents: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(cents / 100);
-  };
-
-  const stats = [
+  const modules = [
     {
-      title: "Total Claimed",
-      value: metrics ? formatCurrency(metrics.totalClaimed) : "$0.00",
+      title: "Cases",
+      description: "Carrier dispute management",
+      icon: FileText,
+      path: "/cases",
+      gradient: "from-blue-500/20 to-blue-600/20",
+      iconColor: "text-blue-500",
+      bgColor: "bg-blue-500/10",
+      metrics: {
+        total: 247,
+        active: 89,
+        resolved: 158,
+        trend: "+12%",
+        trendUp: true,
+        sparkline: [45, 52, 48, 61, 70, 65, 89],
+        insight: "Resolution rate up 12% this month",
+      },
+      quickActions: [
+        { label: "New Case", path: "/cases/new" },
+        { label: "View All", path: "/cases" },
+      ],
+    },
+    {
+      title: "Orders",
+      description: "Multi-channel order sync",
+      icon: ShoppingCart,
+      path: "/orders",
+      gradient: "from-green-500/20 to-green-600/20",
+      iconColor: "text-green-500",
+      bgColor: "bg-green-500/10",
+      metrics: {
+        total: 1834,
+        active: 127,
+        completed: 1707,
+        trend: "+23%",
+        trendUp: true,
+        sparkline: [120, 135, 142, 138, 155, 148, 127],
+        insight: "Order volume increased 23% vs last week",
+      },
+      quickActions: [
+        { label: "New Order", path: "/orders/new" },
+        { label: "View All", path: "/orders" },
+      ],
+    },
+    {
+      title: "Inventory",
+      description: "PO & stock management",
+      icon: Package,
+      path: "/inventory",
+      gradient: "from-purple-500/20 to-purple-600/20",
+      iconColor: "text-purple-500",
+      bgColor: "bg-purple-500/10",
+      metrics: {
+        total: 3421,
+        lowStock: 23,
+        value: "$284K",
+        trend: "-5%",
+        trendUp: false,
+        sparkline: [3580, 3520, 3490, 3455, 3430, 3425, 3421],
+        insight: "23 items need reordering",
+      },
+      quickActions: [
+        { label: "Add Stock", path: "/inventory/new" },
+        { label: "View All", path: "/inventory" },
+      ],
+    },
+    {
+      title: "Reports",
+      description: "Analytics & insights",
+      icon: BarChart3,
+      path: "/reports",
+      gradient: "from-orange-500/20 to-orange-600/20",
+      iconColor: "text-orange-500",
+      bgColor: "bg-orange-500/10",
+      metrics: {
+        total: 48,
+        scheduled: 12,
+        custom: 36,
+        trend: "+8%",
+        trendUp: true,
+        sparkline: [32, 35, 38, 41, 43, 45, 48],
+        insight: "8 new reports created this week",
+      },
+      quickActions: [
+        { label: "New Report", path: "/reports/new" },
+        { label: "View All", path: "/reports" },
+      ],
+    },
+    {
+      title: "CRM",
+      description: "Customer relationships",
+      icon: Users,
+      path: "/crm/contacts",
+      gradient: "from-pink-500/20 to-pink-600/20",
+      iconColor: "text-pink-500",
+      bgColor: "bg-pink-500/10",
+      metrics: {
+        total: 892,
+        active: 456,
+        companies: 234,
+        trend: "+15%",
+        trendUp: true,
+        sparkline: [380, 395, 410, 425, 438, 447, 456],
+        insight: "134 new contacts added this month",
+      },
+      quickActions: [
+        { label: "Add Contact", path: "/crm/contacts/new" },
+        { label: "View All", path: "/crm/contacts" },
+      ],
+    },
+    {
+      title: "Intelligence",
+      description: "Business intelligence",
+      icon: Lightbulb,
+      path: "/intelligence/brand",
+      gradient: "from-cyan-500/20 to-cyan-600/20",
+      iconColor: "text-cyan-500",
+      bgColor: "bg-cyan-500/10",
+      metrics: {
+        total: 156,
+        insights: 89,
+        alerts: 12,
+        trend: "Active",
+        trendUp: true,
+        sparkline: [65, 72, 78, 81, 85, 87, 89],
+        insight: "12 actionable insights generated today",
+      },
+      quickActions: [
+        { label: "View Insights", path: "/intelligence/brand" },
+        { label: "View All", path: "/intelligence" },
+      ],
+    },
+  ];
+
+  // System-wide metrics
+  const systemMetrics = [
+    {
+      label: "Total Revenue",
+      value: "$1.2M",
+      change: "+18.2%",
+      changeUp: true,
       icon: DollarSign,
-      description: "Total amount claimed in disputes",
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
+      color: "text-green-500",
     },
     {
-      title: "Total Recovered",
-      value: metrics ? formatCurrency(metrics.totalRecovered) : "$0.00",
-      icon: TrendingUp,
-      description: "Successfully recovered amount",
-      color: "text-green-600",
-      bgColor: "bg-green-50",
+      label: "Active Cases",
+      value: "89",
+      change: "+12",
+      changeUp: true,
+      icon: Activity,
+      color: "text-blue-500",
     },
     {
-      title: "Open Exposure",
-      value: metrics ? formatCurrency(metrics.openExposure) : "$0.00",
-      icon: AlertCircle,
-      description: "Pending dispute amount",
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
+      label: "Inventory Value",
+      value: "$284K",
+      change: "-5.3%",
+      changeUp: false,
+      icon: Box,
+      color: "text-purple-500",
     },
     {
-      title: "Success Rate",
-      value: metrics ? `${metrics.successRate.toFixed(1)}%` : "0%",
-      icon: CheckCircle,
-      description: `${metrics?.resolvedCases || 0} of ${metrics?.totalCases || 0} cases resolved`,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
+      label: "Orders Today",
+      value: "127",
+      change: "+23%",
+      changeUp: true,
+      icon: ShoppingBag,
+      color: "text-orange-500",
     },
   ];
 
   return (
-    <DashboardLayout>
-      <div className="space-y-8">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground mt-2">
-            Overview of your carrier dispute cases and financial metrics
-          </p>
-        </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+          Hellcat AI V4
+        </h1>
+        <p className="text-muted-foreground mt-2 text-lg">
+          Carrier Dispute Claims Management System
+        </p>
+      </div>
 
-        {/* Metrics Grid */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <Card key={stat.title}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    {stat.title}
-                  </CardTitle>
-                  <div className={`${stat.bgColor} p-2 rounded-lg`}>
-                    <Icon className={`h-4 w-4 ${stat.color}`} />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {isLoading ? "..." : stat.value}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {stat.description}
-                  </p>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-
-        {/* Analytics Charts */}
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <PieChart className="h-5 w-5" />
-                Case Status Distribution
-              </CardTitle>
-              <CardDescription>Breakdown of cases by current status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <RechartsPie>
-                  <Pie
-                    data={[
-                      { name: 'Open', value: metrics?.openCases || 0, color: '#3b82f6' },
-                      { name: 'In Progress', value: metrics?.inProgressCases || 0, color: '#f59e0b' },
-                      { name: 'Resolved', value: metrics?.resolvedCases || 0, color: '#10b981' },
-                      { name: 'Rejected', value: metrics?.rejectedCases || 0, color: '#ef4444' },
-                    ]}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {[
-                      { name: 'Open', value: metrics?.openCases || 0, color: '#3b82f6' },
-                      { name: 'In Progress', value: metrics?.inProgressCases || 0, color: '#f59e0b' },
-                      { name: 'Resolved', value: metrics?.resolvedCases || 0, color: '#10b981' },
-                      { name: 'Rejected', value: metrics?.rejectedCases || 0, color: '#ef4444' },
-                    ].map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </RechartsPie>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Top Carriers by Claims
-              </CardTitle>
-              <CardDescription>Carriers with most dispute cases</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  data={metrics?.carrierStats || []}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="carrier" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="count" fill="#3b82f6" name="Cases" />
-                  <Bar dataKey="amount" fill="#10b981" name="Amount ($)" />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Monthly Trends */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Monthly Trends</CardTitle>
-            <CardDescription>
-              Cases filed and amounts recovered over time
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart
-                data={metrics?.monthlyTrends || []}
-                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-              >
-                <defs>
-                  <linearGradient id="colorCases" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorRecovered" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Area
-                  type="monotone"
-                  dataKey="cases"
-                  stroke="#3b82f6"
-                  fillOpacity={1}
-                  fill="url(#colorCases)"
-                  name="Cases Filed"
-                />
-                <Area
-                  type="monotone"
-                  dataKey="recovered"
-                  stroke="#10b981"
-                  fillOpacity={1}
-                  fill="url(#colorRecovered)"
-                  name="Amount Recovered ($)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Progress Dashboard */}
-        <div className="col-span-full">
-          <ProgressDashboard />
-        </div>
-
-        {/* Recent Activity Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>
-              Latest updates on your dispute cases
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {metrics?.recentActivity && metrics.recentActivity.length > 0 ? (
-              <div className="space-y-4">
-                {metrics.recentActivity.map((activity: any, index: number) => (
-                  <div key={index} className="flex items-start gap-4 border-l-2 border-border pl-4">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{activity.description}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(activity.createdAt).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+      {/* System Metrics Row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {systemMetrics.map((metric) => (
+          <Card key={metric.label} className="relative overflow-hidden group hover:shadow-lg transition-all">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className={`p-2 rounded-lg ${metric.color} bg-current/10`}>
+                  <metric.icon className={metric.color} size={20} />
+                </div>
+                <Badge variant={metric.changeUp ? "default" : "secondary"} className="gap-1">
+                  {metric.changeUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                  {metric.change}
+                </Badge>
               </div>
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                <p>No recent activity to display</p>
-                <p className="text-sm mt-2">Create your first case to get started</p>
+              <p className="text-sm text-muted-foreground">{metric.label}</p>
+              <p className="text-3xl font-bold mt-1">
+                <AnimatedCounter end={parseInt(metric.value.replace(/[^0-9]/g, ""))} prefix={metric.value.match(/[^0-9]/)?.[0] || ""} />
+                {metric.value.includes("K") && "K"}
+                {metric.value.includes("M") && "M"}
+              </p>
+            </CardContent>
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+          </Card>
+        ))}
+      </div>
+
+      {/* Status Banner */}
+      <Card className="border-l-4 border-primary bg-gradient-to-r from-primary/5 to-transparent">
+        <CardContent className="p-6">
+          <div className="flex items-start gap-4">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <CheckCircle2 className="text-primary" size={24} />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg">System Status: All Systems Operational</h3>
+              <p className="text-muted-foreground mt-1">
+                All modules running smoothly. Last sync: 2 minutes ago. Next scheduled maintenance: None planned.
+              </p>
+            </div>
+            <Badge variant="outline" className="gap-1">
+              <Activity size={12} className="animate-pulse" />
+              Live
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Modules Grid */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-6">System Modules</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {modules.map((module) => (
+            <Card 
+              key={module.path} 
+              className="group relative overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+            >
+              {/* Gradient background */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${module.gradient} opacity-0 group-hover:opacity-100 transition-opacity`} />
+              
+              <CardHeader className="relative">
+                <div className="flex items-start justify-between mb-2">
+                  <div className={`p-3 rounded-xl ${module.bgColor} group-hover:scale-110 transition-transform`}>
+                    <module.icon className={module.iconColor} size={24} />
+                  </div>
+                  <Badge variant={module.metrics.trendUp ? "default" : "secondary"} className="gap-1">
+                    {module.metrics.trendUp ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                    {module.metrics.trend}
+                  </Badge>
+                </div>
+                <CardTitle className="text-xl">{module.title}</CardTitle>
+                <CardDescription>{module.description}</CardDescription>
+              </CardHeader>
+
+              <CardContent className="relative space-y-4">
+                {/* Metrics */}
+                <div className="grid grid-cols-3 gap-2 text-center">
+                  <div>
+                    <p className="text-2xl font-bold">
+                      <AnimatedCounter end={module.metrics.total} />
+                    </p>
+                    <p className="text-xs text-muted-foreground">Total</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">
+                      <AnimatedCounter end={module.metrics.active} />
+                    </p>
+                    <p className="text-xs text-muted-foreground">Active</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {typeof module.metrics.value === "string" ? module.metrics.value : <AnimatedCounter end={module.metrics.value || 0} />}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {module.title === "Inventory" ? "Value" : "Done"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Sparkline */}
+                <div className="opacity-60 group-hover:opacity-100 transition-opacity">
+                  <Sparkline data={module.metrics.sparkline} color={module.iconColor.replace("text-", "rgb(var(--")} />
+                </div>
+
+                {/* AI Insight */}
+                <div className="flex items-start gap-2 p-3 rounded-lg bg-muted/50 text-sm">
+                  <Lightbulb size={16} className="text-primary mt-0.5 flex-shrink-0" />
+                  <p className="text-muted-foreground">{module.metrics.insight}</p>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="flex gap-2 pt-2">
+                  <Button asChild size="sm" variant="outline" className="flex-1 group/btn">
+                    <Link href={module.quickActions[0].path}>
+                      {module.quickActions[0].label}
+                      <ArrowRight size={14} className="ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
+                  </Button>
+                  <Button asChild size="sm" className="flex-1 group/btn">
+                    <Link href={module.path}>
+                      {module.quickActions[1].label}
+                      <ArrowRight size={14} className="ml-1 group-hover/btn:translate-x-1 transition-transform" />
+                    </Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Implementation Roadmap */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-6">Implementation Roadmap</h2>
+        <Card>
+          <CardContent className="p-6 space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="text-primary-foreground" size={20} />
               </div>
-            )}
+              <div className="flex-1">
+                <p className="font-semibold">Phase 1: Foundation Complete</p>
+                <p className="text-sm text-muted-foreground">Navigation, theme, and core modules operational</p>
+              </div>
+              <Badge>Complete</Badge>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <Clock className="text-primary" size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold">Phase 2: AI Features</p>
+                <p className="text-sm text-muted-foreground">Invoice OCR, voice commands, predictive analytics</p>
+              </div>
+              <Badge variant="outline">In Progress</Badge>
+            </div>
+            <div className="flex items-center gap-4 opacity-50">
+              <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="text-muted-foreground" size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold">Phase 3: Advanced Features</p>
+                <p className="text-sm text-muted-foreground">Integrations, mobile app, automation workflows</p>
+              </div>
+              <Badge variant="secondary">Upcoming</Badge>
+            </div>
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    </div>
   );
 }

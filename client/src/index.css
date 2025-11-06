@@ -1,14 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "./styles/trading-theme.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -33,507 +32,496 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
 }
 
 :root {
-  /* ShipStation Color Palette - Military Intelligence Green */
-  --ss-green-950: #0F2410;
-  --ss-green-900: #1E4620;
-  --ss-green-800: #2C5F2D;
-  --ss-green-700: #3A7A3E;
-  --ss-green-600: #48954F;
-  --ss-green-500: #5CAF63;
-  --ss-green-400: #7BC682;
-  --ss-green-300: #9ADDA1;
-  --ss-green-200: #B9EBC0;
-  --ss-green-100: #D8F5DF;
-  --ss-green-50: #F0FAF1;
-
-  /* Status Colors (ShipStation-inspired) */
-  --ss-success: #28A745;
-  --ss-warning: #FFC107;
-  --ss-danger: #DC3545;
-  --ss-info: #17A2B8;
-  --ss-muted: #6C757D;
-
-  /* Neutral Grays */
-  --ss-gray-50: #F8F9FA;
-  --ss-gray-100: #F1F3F5;
-  --ss-gray-200: #E9ECEF;
-  --ss-gray-300: #DEE2E6;
-  --ss-gray-400: #CED4DA;
-  --ss-gray-500: #ADB5BD;
-  --ss-gray-600: #6C757D;
-  --ss-gray-700: #495057;
-  --ss-gray-800: #343A40;
-  --ss-gray-900: #212529;
-
-  /* Primary Theme - ShipStation Green */
-  --primary: var(--ss-green-800);
-  --primary-foreground: white;
-  --sidebar-primary: var(--ss-green-700);
-  --sidebar-primary-foreground: white;
-
-  /* Charts - Green spectrum */
-  --chart-1: var(--ss-green-300);
-  --chart-2: var(--ss-green-500);
-  --chart-3: var(--ss-green-600);
-  --chart-4: var(--ss-green-700);
-  --chart-5: var(--ss-green-800);
-
-  /* Border Radius - Subtle like ShipStation */
-  --radius: 0.25rem; /* 4px - more subtle than default */
-
-  /* Base Colors */
-  --background: white;
-  --foreground: var(--ss-gray-900);
-  --card: white;
-  --card-foreground: var(--ss-gray-900);
-  --popover: white;
-  --popover-foreground: var(--ss-gray-900);
-  --secondary: var(--ss-gray-100);
-  --secondary-foreground: var(--ss-gray-700);
-  --muted: var(--ss-gray-100);
-  --muted-foreground: var(--ss-gray-600);
-  --accent: var(--ss-gray-100);
-  --accent-foreground: var(--ss-gray-900);
-  --destructive: var(--ss-danger);
-  --destructive-foreground: white;
-  --border: var(--ss-gray-300);
-  --input: var(--ss-gray-300);
-  --ring: var(--ss-green-600);
-
-  /* Sidebar */
-  --sidebar: white;
-  --sidebar-foreground: var(--ss-gray-900);
-  --sidebar-accent: var(--ss-gray-100);
-  --sidebar-accent-foreground: var(--ss-gray-900);
-  --sidebar-border: var(--ss-gray-300);
-  --sidebar-ring: var(--ss-green-600);
-
-  /* Density System - 3 Levels */
-  /* Level 1: Compact (Power Users) */
-  --density-compact-row: 32px;
-  --density-compact-padding-y: 4px;
-  --density-compact-padding-x: 8px;
-  --density-compact-text: 12px;
-  --density-compact-gap: 4px;
-  --density-compact-icon: 14px;
-
-  /* Level 2: Normal (Default) */
-  --density-normal-row: 40px;
-  --density-normal-padding-y: 8px;
-  --density-normal-padding-x: 12px;
-  --density-normal-text: 14px;
-  --density-normal-gap: 8px;
-  --density-normal-icon: 16px;
-
-  /* Level 3: Detailed (Focus Mode) */
-  --density-detailed-row: 52px;
-  --density-detailed-padding-y: 12px;
-  --density-detailed-padding-x: 16px;
-  --density-detailed-text: 16px;
-  --density-detailed-gap: 12px;
-  --density-detailed-icon: 20px;
-
-  /* Shadows - Subtle like ShipStation */
-  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.10);
-  --shadow-xl: 0 8px 12px rgba(0, 0, 0, 0.12);
+  /* Typography - Bloomberg uses Inter/System fonts */
+  --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Roboto Mono', 'SF Mono', Consolas, monospace;
+  
+  /* Core sizing - Bloomberg uses minimal radius */
+  --radius: 2px;
+  --transition-fast: 0.1s ease;
+  --transition-med: 0.2s ease;
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.dark {
-  /* Dark mode keeps green primary */
-  --primary: var(--ss-green-600);
-  --primary-foreground: white;
-  --sidebar-primary: var(--ss-green-700);
-  --sidebar-primary-foreground: white;
-
-  --background: var(--ss-gray-900);
-  --foreground: var(--ss-gray-100);
-  --card: var(--ss-gray-800);
-  --card-foreground: var(--ss-gray-100);
-  --popover: var(--ss-gray-800);
-  --popover-foreground: var(--ss-gray-100);
-  --secondary: var(--ss-gray-700);
-  --secondary-foreground: var(--ss-gray-200);
-  --muted: var(--ss-gray-700);
-  --muted-foreground: var(--ss-gray-400);
-  --accent: var(--ss-gray-700);
-  --accent-foreground: var(--ss-gray-100);
-  --destructive: #EF4444;
-  --destructive-foreground: white;
-  --border: var(--ss-gray-700);
-  --input: var(--ss-gray-700);
-  --ring: var(--ss-green-500);
-
-  --chart-1: var(--ss-green-400);
-  --chart-2: var(--ss-green-500);
-  --chart-3: var(--ss-green-600);
-  --chart-4: var(--ss-green-700);
-  --chart-5: var(--ss-green-800);
-
-  --sidebar: var(--ss-gray-800);
-  --sidebar-foreground: var(--ss-gray-100);
-  --sidebar-accent: var(--ss-gray-700);
-  --sidebar-accent-foreground: var(--ss-gray-100);
-  --sidebar-border: var(--ss-gray-700);
-  --sidebar-ring: var(--ss-green-500);
+/* THEME: BLUE (Bloomberg Default) */
+[data-theme="blue"] {
+  --background: 220 15% 4%;
+  --foreground: 0 0% 98%;
+  
+  --card: 220 15% 8%;
+  --card-foreground: 0 0% 98%;
+  
+  --popover: 220 15% 10%;
+  --popover-foreground: 0 0% 98%;
+  
+  --primary: 174 100% 39%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 220 15% 12%;
+  --secondary-foreground: 0 0% 98%;
+  
+  --muted: 220 15% 14%;
+  --muted-foreground: 0 0% 75%;
+  
+  --accent: 174 100% 39%;
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 220 15% 18%;
+  --input: 220 15% 18%;
+  --ring: 174 100% 39%;
+  
+  --chart-1: 174 100% 39%;
+  --chart-2: 0 84% 60%;
+  --chart-3: 217 91% 60%;
+  --chart-4: 38 92% 50%;
+  --chart-5: 280 67% 55%;
+  
+  /* Bloomberg specific colors */
+  --positive: 142 76% 45%;
+  --negative: 0 84% 60%;
+  --neutral: 217 91% 60%;
+  --warning: 38 92% 50%;
 }
 
+/* THEME: DARK GRAY */
+[data-theme="dark-gray"] {
+  --background: 0 0% 4%;
+  --foreground: 0 0% 98%;
+  
+  --card: 0 0% 7%;
+  --card-foreground: 0 0% 98%;
+  
+  --popover: 0 0% 9%;
+  --popover-foreground: 0 0% 98%;
+  
+  --primary: 0 0% 70%;
+  --primary-foreground: 0 0% 10%;
+  
+  --secondary: 0 0% 11%;
+  --secondary-foreground: 0 0% 98%;
+  
+  --muted: 0 0% 13%;
+  --muted-foreground: 0 0% 75%;
+  
+  --accent: 0 0% 70%;
+  --accent-foreground: 0 0% 10%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 0 0% 16%;
+  --input: 0 0% 16%;
+  --ring: 0 0% 70%;
+  
+  --chart-1: 0 0% 70%;
+  --chart-2: 0 0% 60%;
+  --chart-3: 0 0% 50%;
+  --chart-4: 0 0% 40%;
+  --chart-5: 0 0% 30%;
+  
+  --positive: 142 76% 45%;
+  --negative: 0 84% 60%;
+  --neutral: 0 0% 70%;
+  --warning: 38 92% 50%;
+}
+
+/* THEME: NIGHT (Pure Black) */
+[data-theme="night"] {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 98%;
+  
+  --popover: 0 0% 6%;
+  --popover-foreground: 0 0% 98%;
+  
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 0 0% 8%;
+  --secondary-foreground: 0 0% 98%;
+  
+  --muted: 0 0% 10%;
+  --muted-foreground: 0 0% 75%;
+  
+  --accent: 217 91% 60%;
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 0 0% 12%;
+  --input: 0 0% 12%;
+  --ring: 217 91% 60%;
+  
+  --chart-1: 217 91% 60%;
+  --chart-2: 217 91% 50%;
+  --chart-3: 217 91% 40%;
+  --chart-4: 217 91% 70%;
+  --chart-5: 217 91% 30%;
+  
+  --positive: 142 76% 45%;
+  --negative: 0 84% 60%;
+  --neutral: 217 91% 60%;
+  --warning: 38 92% 50%;
+}
+
+/* THEME: HELLCAT (Dark Slate + Green) */
+[data-theme="hellcat"] {
+  --background: 222 47% 11%;        /* #0f172a - dark slate */
+  --foreground: 210 40% 98%;        /* #f8fafc - almost white */
+  
+  --card: 215 28% 17%;              /* #1e293b - slate-800 */
+  --card-foreground: 210 40% 98%;
+  
+  --popover: 215 28% 17%;           /* #1e293b */
+  --popover-foreground: 210 40% 98%;
+  
+  --primary: 142 76% 36%;           /* #10b981 - emerald-500 */
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 215 20% 25%;         /* #334155 - slate-700 */
+  --secondary-foreground: 210 40% 98%;
+  
+  --muted: 215 20% 25%;             /* #334155 */
+  --muted-foreground: 215 16% 47%;  /* #64748b - slate-500 */
+  
+  --accent: 142 76% 36%;            /* #10b981 - green accent */
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 215 25% 27%;            /* #334155 with slight adjustment */
+  --input: 215 25% 27%;
+  --ring: 142 76% 36%;              /* #10b981 */
+  
+  --chart-1: 142 76% 36%;           /* green */
+  --chart-2: 217 91% 60%;           /* blue */
+  --chart-3: 38 92% 50%;            /* orange */
+  --chart-4: 280 67% 55%;           /* purple */
+  --chart-5: 0 84% 60%;             /* red */
+  
+  --positive: 142 76% 45%;          /* green */
+  --negative: 0 84% 60%;            /* red */
+  --neutral: 217 91% 60%;           /* blue */
+  --warning: 38 92% 50%;            /* orange */
+}
+
+/* THEME: LIGHT */
+[data-theme="light"] {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 10%;
+  
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 10%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
+  
+  --primary: 174 100% 35%;
+  --primary-foreground: 0 0% 100%;
+  
+  --secondary: 0 0% 95%;
+  --secondary-foreground: 0 0% 10%;
+  
+  --muted: 0 0% 95%;
+  --muted-foreground: 0 0% 40%;
+  
+  --accent: 174 100% 35%;
+  --accent-foreground: 0 0% 100%;
+  
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --ring: 174 100% 35%;
+  
+  --chart-1: 174 100% 35%;
+  --chart-2: 0 84% 60%;
+  --chart-3: 217 91% 60%;
+  --chart-4: 38 92% 50%;
+  --chart-5: 280 67% 55%;
+  
+  --positive: 142 76% 40%;
+  --negative: 0 84% 55%;
+  --neutral: 217 91% 55%;
+  --warning: 38 92% 45%;
+}
+
+/* Updated: 2025-11-02 01:17 - Text brightness fix */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: hsl(var(--border));
   }
-
   body {
-    @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial, sans-serif;
-    font-size: 14px;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base, 13px);
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  [type="reset"]:not(:disabled),
-  a[href],
-  select:not(:disabled),
-  input[type="checkbox"]:not(:disabled),
-  input[type="radio"]:not(:disabled) {
-    @apply cursor-pointer;
-  }
-
-  /* Typography Scale */
-  h1 {
-    font-size: 24px;
+  h1, h2, h3, h4, h5, h6 {
+    color: hsl(var(--foreground));
     font-weight: 600;
-    line-height: 1.3;
   }
-
-  h2 {
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  h3 {
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  h4 {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  h5 {
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  h6 {
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.4;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  h1 { font-size: var(--font-size-h1, 18px); }
+  h2 { font-size: var(--font-size-h2, 16px); }
+  h3 { font-size: var(--font-size-h3, 14px); }
+  h4, h5, h6 { font-size: var(--font-size-base, 13px); }
+  
+  /* Monospace for numbers */
+  .numeric {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
   }
 }
 
-@layer components {
-  /**
-   * Custom container utility that centers content and adds responsive padding.
-   */
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
+/* Bloomberg-style glass effect - subtle */
+.glass {
+  background: hsl(var(--card) / 0.95);
+  border: 1px solid hsl(var(--border));
+}
 
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
+.glass-strong {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
 
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
+/* Bloomberg hover - minimal */
+.glass:hover {
+  background: hsl(var(--card) / 1);
+  border-color: hsl(var(--primary) / 0.4);
+  transition: all 0.15s ease;
+}
 
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      max-width: 1280px;
-    }
-  }
+/* Custom scrollbar - Bloomberg style */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-  /* Density Classes - Compact */
-  .density-compact {
-    --row-height: var(--density-compact-row);
-    --padding-y: var(--density-compact-padding-y);
-    --padding-x: var(--density-compact-padding-x);
-    --text-size: var(--density-compact-text);
-    --gap-size: var(--density-compact-gap);
-    --icon-size: var(--density-compact-icon);
-  }
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
 
-  .density-compact .table-row {
-    height: var(--density-compact-row);
-    font-size: var(--density-compact-text);
-  }
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted));
+  border-radius: 0;
+}
 
-  .density-compact .table-cell {
-    padding: var(--density-compact-padding-y) var(--density-compact-padding-x);
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
 
-  .density-compact .card {
-    padding: calc(var(--density-compact-padding-y) * 2)
-      calc(var(--density-compact-padding-x) * 1.5);
-  }
+/* Container customization */
+.container {
+  @apply mx-auto px-4 sm:px-6 lg:px-8;
+  max-width: 1600px;
+}
 
-  .density-compact .gap {
-    gap: var(--density-compact-gap);
-  }
+/* Flex min-width fix */
+.flex {
+  min-width: 0;
+  min-height: 0;
+}
 
-  /* Density Classes - Normal (Default) */
-  .density-normal {
-    --row-height: var(--density-normal-row);
-    --padding-y: var(--density-normal-padding-y);
-    --padding-x: var(--density-normal-padding-x);
-    --text-size: var(--density-normal-text);
-    --gap-size: var(--density-normal-gap);
-    --icon-size: var(--density-normal-icon);
-  }
+/* Bloomberg-style tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
 
-  .density-normal .table-row {
-    height: var(--density-normal-row);
-    font-size: var(--density-normal-text);
-  }
+thead {
+  background: hsl(var(--muted) / 0.5);
+  border-bottom: 1px solid hsl(var(--border));
+}
 
-  .density-normal .table-cell {
-    padding: var(--density-normal-padding-y) var(--density-normal-padding-x);
-  }
+th {
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: hsl(var(--muted-foreground));
+}
 
-  .density-normal .card {
-    padding: calc(var(--density-normal-padding-y) * 2)
-      calc(var(--density-normal-padding-x) * 1.5);
-  }
+td {
+  padding: 8px 12px;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
 
-  .density-normal .gap {
-    gap: var(--density-normal-gap);
-  }
+tbody tr:hover {
+  background: hsl(var(--muted) / 0.3);
+}
 
-  /* Density Classes - Detailed */
-  .density-detailed {
-    --row-height: var(--density-detailed-row);
-    --padding-y: var(--density-detailed-padding-y);
-    --padding-x: var(--density-detailed-padding-x);
-    --text-size: var(--density-detailed-text);
-    --gap-size: var(--density-detailed-gap);
-    --icon-size: var(--density-detailed-icon);
-  }
+/* Positive/Negative values */
+.positive {
+  color: hsl(var(--positive));
+}
 
-  .density-detailed .table-row {
-    height: var(--density-detailed-row);
-    font-size: var(--density-detailed-text);
-  }
+.negative {
+  color: hsl(var(--negative));
+}
 
-  .density-detailed .table-cell {
-    padding: var(--density-detailed-padding-y) var(--density-detailed-padding-x);
-  }
+.neutral {
+  color: hsl(var(--neutral));
+}
 
-  .density-detailed .card {
-    padding: calc(var(--density-detailed-padding-y) * 2)
-      calc(var(--density-detailed-padding-x) * 1.5);
-  }
+/* Bloomberg-style buttons */
+button, .button {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  transition: all 0.1s ease;
+}
 
-  .density-detailed .gap {
-    gap: var(--density-detailed-gap);
-  }
+button:hover:not(:disabled), .button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
 
-  /* ShipStation-style shadows */
-  .shadow-xs {
-    box-shadow: var(--shadow-xs);
-  }
+button:active:not(:disabled), .button:active:not(:disabled) {
+  transform: translateY(0);
+}
 
-  .shadow-sm {
-    box-shadow: var(--shadow-sm);
-  }
+/* Dense layout helpers */
+.dense {
+  padding: 4px 8px;
+  font-size: 11px;
+}
 
-  .shadow-md {
-    box-shadow: var(--shadow-md);
-  }
+.compact {
+  padding: 6px 10px;
+  font-size: 12px;
+}
 
-  .shadow-lg {
-    box-shadow: var(--shadow-lg);
-  }
+/* Status indicators */
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
 
-  .shadow-xl {
-    box-shadow: var(--shadow-xl);
-  }
+.status-dot.active {
+  background: hsl(var(--positive));
+  box-shadow: 0 0 4px hsl(var(--positive));
+}
 
-  /* Status Badge Styles */
-  .badge-success {
-    background-color: var(--ss-success);
-    color: white;
-  }
+.status-dot.inactive {
+  background: hsl(var(--muted-foreground));
+}
 
-  .badge-warning {
-    background-color: var(--ss-warning);
-    color: var(--ss-gray-900);
-  }
+.status-dot.error {
+  background: hsl(var(--negative));
+  box-shadow: 0 0 4px hsl(var(--negative));
+}
 
-  .badge-danger {
-    background-color: var(--ss-danger);
-    color: white;
-  }
+/* Bloomberg-style cards */
+.card-dense {
+  padding: 12px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
 
-  .badge-info {
-    background-color: var(--ss-info);
-    color: white;
-  }
+.card-dense:hover {
+  border-color: hsl(var(--primary) / 0.3);
+}
 
-  .badge-muted {
-    background-color: var(--ss-gray-400);
-    color: white;
-  }
+/* Dividers */
+.divider {
+  height: 1px;
+  background: hsl(var(--border));
+  margin: 12px 0;
+}
 
-  /* Dense Table Styles */
-  .dense-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: var(--text-size, 14px);
-  }
+.divider-vertical {
+  width: 1px;
+  background: hsl(var(--border));
+  margin: 0 12px;
+}
 
-  .dense-table thead {
-    background-color: var(--ss-gray-50);
-    border-bottom: 2px solid var(--ss-gray-300);
-  }
 
-  .dense-table th {
-    padding: var(--padding-y, 8px) var(--padding-x, 12px);
-    text-align: left;
-    font-weight: 600;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--ss-gray-700);
-    white-space: nowrap;
-  }
+/* FONT SIZE SETTINGS */
+[data-font-size="small"] {
+  --font-size-base: 11px;
+  --font-size-h1: 16px;
+  --font-size-h2: 14px;
+  --font-size-h3: 12px;
+}
 
-  .dense-table tbody tr {
-    border-bottom: 1px solid var(--ss-gray-200);
-    transition: background-color 0.15s ease;
-  }
+[data-font-size="medium"] {
+  --font-size-base: 13px;
+  --font-size-h1: 18px;
+  --font-size-h2: 16px;
+  --font-size-h3: 14px;
+}
 
-  .dense-table tbody tr:hover {
-    background-color: var(--ss-gray-50);
-  }
+[data-font-size="large"] {
+  --font-size-base: 15px;
+  --font-size-h1: 20px;
+  --font-size-h2: 18px;
+  --font-size-h3: 16px;
+}
 
-  .dense-table td {
-    padding: var(--padding-y, 8px) var(--padding-x, 12px);
-    vertical-align: middle;
-  }
+[data-font-size="extra-large"] {
+  --font-size-base: 17px;
+  --font-size-h1: 24px;
+  --font-size-h2: 20px;
+  --font-size-h3: 18px;
+}
 
-  /* Compact Metric Card */
-  .metric-card {
-    background: white;
-    border: 1px solid var(--ss-gray-300);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  }
+/* Fix dropdown transparency - ensure solid backgrounds */
+[data-radix-select-content],
+[data-radix-popper-content-wrapper],
+[data-radix-dialog-content],
+[data-radix-dialog-overlay],
+[role="listbox"],
+[role="menu"],
+[role="dialog"],
+.select-content,
+.popover-content,
+.dialog-content {
+  background: hsl(var(--popover)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  z-index: 50 !important;
+}
 
-  .metric-card:hover {
-    box-shadow: var(--shadow-md);
-    border-color: var(--ss-gray-400);
-  }
+/* Ensure dialog overlays are semi-transparent */
+[data-radix-dialog-overlay] {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
 
-  /* Button Hierarchy */
-  .btn-primary {
-    background-color: var(--ss-green-800);
-    color: white;
-    border: 1px solid var(--ss-green-800);
-    padding: 8px 16px;
-    border-radius: var(--radius);
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.15s ease;
-  }
+/* Fix Voice Command dialog specifically */
+[data-radix-dialog-content] {
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+}
 
-  .btn-primary:hover:not(:disabled) {
-    background-color: var(--ss-green-900);
-    border-color: var(--ss-green-900);
-  }
+/* Ensure all Select components have solid backgrounds */
+[data-radix-select-viewport] {
+  background: hsl(var(--popover)) !important;
+}
 
-  .btn-secondary {
-    background-color: white;
-    color: var(--ss-gray-700);
-    border: 1px solid var(--ss-gray-300);
-    padding: 8px 16px;
-    border-radius: var(--radius);
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.15s ease;
-  }
-
-  .btn-secondary:hover:not(:disabled) {
-    background-color: var(--ss-gray-50);
-    border-color: var(--ss-gray-400);
-  }
-
-  .btn-ghost {
-    background-color: transparent;
-    color: var(--ss-gray-700);
-    border: none;
-    padding: 8px 12px;
-    border-radius: var(--radius);
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.15s ease;
-  }
-
-  .btn-ghost:hover:not(:disabled) {
-    background-color: var(--ss-gray-100);
-  }
-
-  /* ShipStation-style header */
-  .ss-header {
-    background-color: var(--ss-green-800);
-    color: white;
-    border-bottom: 1px solid var(--ss-green-900);
-    box-shadow: var(--shadow-sm);
-  }
-
-  .ss-header a,
-  .ss-header button {
-    color: white;
-  }
-
-  .ss-header a:hover,
-  .ss-header button:hover {
-    background-color: var(--ss-green-700);
-  }
+/* Fix sidebar navigation menu transparency */
+nav,
+aside,
+.sidebar {
+  background: hsl(var(--background)) !important;
 }

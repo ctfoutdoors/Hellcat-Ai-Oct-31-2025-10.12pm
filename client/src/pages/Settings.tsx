@@ -1,514 +1,365 @@
-import DashboardLayout from "@/components/DashboardLayout";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings as SettingsIcon, Link as LinkIcon, Bell, Shield, Mail } from "lucide-react";
-import EmailManagement from "@/components/EmailManagement";
+import { Button } from "@/components/ui/button";
+import { Palette, Settings as SettingsIcon, Check, X, Package, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
-export default function SettingsPage() {
-  const handleSaveIntegration = () => {
-    toast.success("Integration settings saved");
+export default function Settings() {
+  const { theme, setTheme, fontSize, setFontSize, effectiveTheme } = useTheme();
+  
+  // Track pending changes
+  const [pendingTheme, setPendingTheme] = useState<typeof theme>(theme);
+  const [pendingFontSize, setPendingFontSize] = useState<typeof fontSize>(fontSize);
+  
+  const hasChanges = pendingTheme !== theme || pendingFontSize !== fontSize;
+
+  const themeOptions = [
+    { value: "system", label: "System", description: "Match your operating system theme" },
+    { value: "hellcat", label: "HellcatAI", description: "Dark slate with vibrant green accents" },
+    { value: "blue", label: "Blue (ShipStation)", description: "Default theme with ShipStation green accents" },
+    { value: "dark-gray", label: "Dark Gray", description: "Professional dark gray theme" },
+    { value: "night", label: "Night (Black)", description: "Off-black theme for OLED displays" },
+    { value: "light", label: "Light", description: "Clean light theme for daytime use" },
+  ];
+  
+  const fontSizeOptions = [
+    { value: "small", label: "Small", description: "11px base size" },
+    { value: "medium", label: "Medium", description: "13px base size (default)" },
+    { value: "large", label: "Large", description: "15px base size" },
+    { value: "extra-large", label: "Extra Large", description: "17px base size" },
+  ];
+
+  const currentTheme = themeOptions.find(t => t.value === pendingTheme);
+  const currentFontSize = fontSizeOptions.find(f => f.value === pendingFontSize);
+
+  const handleApplyChanges = () => {
+    try {
+      // Apply theme
+      if (pendingTheme !== theme) {
+        console.log("[Settings] Applying theme:", pendingTheme);
+        setTheme(pendingTheme as any);
+        
+        // Force immediate DOM update
+        const root = window.document.documentElement;
+        const effectiveValue = pendingTheme === "system" 
+          ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "blue")
+          : pendingTheme;
+        
+        root.setAttribute("data-theme", effectiveValue);
+        localStorage.setItem("hellcat-theme", pendingTheme);
+        
+        console.log("[Settings] Theme applied. data-theme attribute:", root.getAttribute("data-theme"));
+      }
+      
+      // Apply font size
+      if (pendingFontSize !== fontSize) {
+        console.log("[Settings] Applying font size:", pendingFontSize);
+        setFontSize(pendingFontSize as any);
+        
+        // Force immediate DOM update
+        const root = window.document.documentElement;
+        root.setAttribute("data-font-size", pendingFontSize);
+        localStorage.setItem("hellcat-font-size", pendingFontSize);
+      }
+      
+      // Success feedback
+      toast.success("Settings Applied", {
+        description: `Theme: ${currentTheme?.label}, Font: ${currentFontSize?.label}`,
+        icon: <Check className="text-green-500" />,
+      });
+    } catch (error) {
+      console.error("[Settings] Error applying changes:", error);
+      toast.error("Failed to Apply Settings", {
+        description: "Please try again or refresh the page",
+        icon: <X className="text-red-500" />,
+      });
+    }
   };
 
-  const handleSaveNotifications = () => {
-    toast.success("Notification settings saved");
+  const handleReset = () => {
+    setPendingTheme(theme);
+    setPendingFontSize(fontSize);
+    toast.info("Changes Discarded", {
+      description: "Settings reset to current values",
+    });
   };
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground mt-2">
-            Configure integrations and system preferences
-          </p>
-        </div>
-
-        {/* Settings Tabs */}
-        <Tabs defaultValue="vault" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="vault">
-              <Shield className="h-4 w-4 mr-2" />
-              Credentials Vault
-            </TabsTrigger>
-            <TabsTrigger value="email">
-              <Mail className="h-4 w-4 mr-2" />
-              Email Accounts
-            </TabsTrigger>
-            <TabsTrigger value="integrations">
-              <LinkIcon className="h-4 w-4 mr-2" />
-              Integrations
-            </TabsTrigger>
-            <TabsTrigger value="notifications">
-              <Bell className="h-4 w-4 mr-2" />
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger value="general">
-              <SettingsIcon className="h-4 w-4 mr-2" />
-              General
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="vault" className="space-y-4">
-            {/* Credentials Vault */}
-            <Card>
-              <CardHeader>
-                <CardTitle>API Credentials Vault</CardTitle>
-                <CardDescription>
-                  Securely store and manage all API credentials for third-party integrations
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* ShipStation */}
-                <div className="border rounded-lg p-4 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">ShipStation API</h3>
-                      <p className="text-sm text-muted-foreground">Multi-carrier shipping platform</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => toast.info("Testing credentials...")}>
-                        Test
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Edit
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="shipstation-key">API Key</Label>
-                      <Input
-                        id="shipstation-key"
-                        type="password"
-                        placeholder="••••••••••••••••"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="shipstation-secret">API Secret</Label>
-                      <Input
-                        id="shipstation-secret"
-                        type="password"
-                        placeholder="••••••••••••••••"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* WooCommerce */}
-                <div className="border rounded-lg p-4 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">WooCommerce API</h3>
-                      <p className="text-sm text-muted-foreground">E-commerce platform integration</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => toast.info("Testing credentials...")}>
-                        Test
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Edit
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="woo-consumer-key">Consumer Key</Label>
-                      <Input
-                        id="woo-consumer-key"
-                        type="password"
-                        placeholder="••••••••••••••••"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="woo-consumer-secret">Consumer Secret</Label>
-                      <Input
-                        id="woo-consumer-secret"
-                        type="password"
-                        placeholder="••••••••••••••••"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Zoho Desk */}
-                <div className="border rounded-lg p-4 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">Zoho Desk API</h3>
-                      <p className="text-sm text-muted-foreground">Help desk and ticketing system</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => toast.info("Testing credentials...")}>
-                        Test
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Edit
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="zoho-org-id">Organization ID</Label>
-                      <Input
-                        id="zoho-org-id"
-                        placeholder="Enter Organization ID"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="zoho-access-token">Access Token</Label>
-                      <Input
-                        id="zoho-access-token"
-                        type="password"
-                        placeholder="••••••••••••••••"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* OpenAI */}
-                <div className="border rounded-lg p-4 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">OpenAI API</h3>
-                      <p className="text-sm text-muted-foreground">AI assistant and automation</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => toast.info("Testing credentials...")}>
-                        Test
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Edit
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="openai-key">API Key</Label>
-                    <Input
-                      id="openai-key"
-                      type="password"
-                      placeholder="sk-••••••••••••••••••••••••••••••••"
-                    />
-                  </div>
-                </div>
-
-                {/* Google Services */}
-                <div className="border rounded-lg p-4 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">Google Services</h3>
-                      <p className="text-sm text-muted-foreground">Drive, Docs, Sheets, Gmail, Calendar</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={() => toast.info("OAuth flow coming soon")}>
-                        Connect
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        Disconnect
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label>OAuth Status</Label>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-gray-400"></div>
-                      <span className="text-sm text-muted-foreground">Not connected</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t">
-                  <Button onClick={handleSaveIntegration}>
-                    Save All Credentials
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Security Notice */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Security Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 text-sm text-muted-foreground">
-                <p>• All credentials are encrypted at rest using AES-256 encryption</p>
-                <p>• Access to credentials is logged and audited</p>
-                <p>• Only administrators can view or modify API credentials</p>
-                <p>• OAuth tokens are automatically refreshed when needed</p>
-                <p>• Test your credentials after saving to ensure they work correctly</p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="email" className="space-y-4">
-            <EmailManagement />
-          </TabsContent>
-
-          <TabsContent value="integrations" className="space-y-4">
-            {/* Zoho Desk Integration */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Zoho Desk Integration</CardTitle>
-                <CardDescription>
-                  Connect to Zoho Desk for automatic ticket creation and synchronization
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="zoho-org-id">Organization ID</Label>
-                  <Input
-                    id="zoho-org-id"
-                    placeholder="Enter your Zoho Desk Organization ID"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="zoho-api-key">API Key</Label>
-                  <Input
-                    id="zoho-api-key"
-                    type="password"
-                    placeholder="Enter your Zoho Desk API Key"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="zoho-department">Department ID</Label>
-                  <Input
-                    id="zoho-department"
-                    placeholder="Enter the Department ID for tickets"
-                  />
-                </div>
-                <Button onClick={handleSaveIntegration}>
-                  Save Integration Settings
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* ShipStation Integration */}
-            <Card>
-              <CardHeader>
-                <CardTitle>ShipStation Integration</CardTitle>
-                <CardDescription>
-                  Connect to ShipStation for automatic delivery monitoring and guarantee tracking
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="shipstation-api-key">API Key</Label>
-                  <Input
-                    id="shipstation-api-key"
-                    type="password"
-                    placeholder="Enter your ShipStation API Key"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="shipstation-api-secret">API Secret</Label>
-                  <Input
-                    id="shipstation-api-secret"
-                    type="password"
-                    placeholder="Enter your ShipStation API Secret"
-                  />
-                </div>
-                <Button onClick={handleSaveIntegration}>
-                  Save Integration Settings
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* WooCommerce Integration */}
-            <Card>
-              <CardHeader>
-                <CardTitle>WooCommerce Integration</CardTitle>
-                <CardDescription>
-                  Connect to WooCommerce for order data enrichment
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="woo-url">Store URL</Label>
-                  <Input
-                    id="woo-url"
-                    placeholder="https://yourstore.com"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="woo-consumer-key">Consumer Key</Label>
-                  <Input
-                    id="woo-consumer-key"
-                    type="password"
-                    placeholder="Enter your WooCommerce Consumer Key"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="woo-consumer-secret">Consumer Secret</Label>
-                  <Input
-                    id="woo-consumer-secret"
-                    type="password"
-                    placeholder="Enter your WooCommerce Consumer Secret"
-                  />
-                </div>
-                <Button onClick={handleSaveIntegration}>
-                  Save Integration Settings
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="notifications" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Email Notifications</CardTitle>
-                <CardDescription>
-                  Configure when to receive email notifications
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">New Case Created</p>
-                    <p className="text-sm text-muted-foreground">
-                      Notify when a new case is created
-                    </p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Enable
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">Case Status Changed</p>
-                    <p className="text-sm text-muted-foreground">
-                      Notify when case status is updated
-                    </p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Enable
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">Delivery Guarantee Missed</p>
-                    <p className="text-sm text-muted-foreground">
-                      Notify when automatic case is created for missed guarantee
-                    </p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Enable
-                  </Button>
-                </div>
-                <Button onClick={handleSaveNotifications}>
-                  Save Notification Settings
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Automation Alerts</CardTitle>
-                <CardDescription>
-                  Alerts for automated system actions
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">Terms of Service Changes</p>
-                    <p className="text-sm text-muted-foreground">
-                      Alert when carrier terms are updated
-                    </p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Enable
-                  </Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">Systematic Issues Detected</p>
-                    <p className="text-sm text-muted-foreground">
-                      Alert when patterns indicate systematic problems
-                    </p>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Enable
-                  </Button>
-                </div>
-                <Button onClick={handleSaveNotifications}>
-                  Save Alert Settings
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="general" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Company Information</CardTitle>
-                <CardDescription>
-                  Your company details for dispute letters
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="company-name">Company Name</Label>
-                  <Input
-                    id="company-name"
-                    defaultValue="CTF Group LLC"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="company-address">Address</Label>
-                  <Input
-                    id="company-address"
-                    defaultValue="1458 Old Durham Rd. Roxboro, NC - 27573"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="contact-email">Contact Email</Label>
-                  <Input
-                    id="contact-email"
-                    type="email"
-                    placeholder="herve@catchthefever.com"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="contact-phone">Contact Phone</Label>
-                  <Input
-                    id="contact-phone"
-                    type="tel"
-                    placeholder="(555) 123-4567"
-                  />
-                </div>
-                <Button onClick={handleSaveIntegration}>
-                  Save Company Information
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  <Shield className="h-5 w-5 inline mr-2" />
-                  Security
-                </CardTitle>
-                <CardDescription>
-                  Manage access and security settings
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">
-                  Security settings are managed through your Google account.
-                  Contact your administrator for access control changes.
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold flex items-center gap-3">
+          <SettingsIcon className="text-primary" size={32} />
+          Settings
+        </h1>
+        <p className="text-muted-foreground mt-2">
+          Configure your Hellcat AI V4 preferences
+        </p>
       </div>
-    </DashboardLayout>
+
+      {/* Design Section */}
+      <Card className="glass">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="text-primary" size={20} />
+            Design & Appearance
+          </CardTitle>
+          <CardDescription>
+            Customize the visual appearance of your workspace
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Theme Selector */}
+          <div className="space-y-3">
+            <Label htmlFor="theme-select" className="text-base font-medium">
+              Color Theme
+            </Label>
+            <Select value={pendingTheme} onValueChange={(value: any) => setPendingTheme(value)}>
+              <SelectTrigger id="theme-select" className="w-full max-w-md">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {themeOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{option.label}</span>
+                      <span className="text-xs text-muted-foreground">{option.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {currentTheme && (
+              <p className="text-sm text-muted-foreground">
+                {currentTheme.description}
+              </p>
+            )}
+            {pendingTheme !== theme && (
+              <p className="text-sm text-amber-500 flex items-center gap-1">
+                <span>⚠️</span>
+                <span>Unsaved changes - click Apply Changes to update</span>
+              </p>
+            )}
+          </div>
+          
+          {/* Font Size Selector */}
+          <div className="space-y-3">
+            <Label htmlFor="font-size-select" className="text-base font-medium">
+              Font Size
+            </Label>
+            <Select value={pendingFontSize} onValueChange={(value: any) => setPendingFontSize(value)}>
+              <SelectTrigger id="font-size-select" className="w-full max-w-md">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {fontSizeOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    <div className="flex flex-col">
+                      <span className="font-medium">{option.label}</span>
+                      <span className="text-xs text-muted-foreground">{option.description}</span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {currentFontSize && (
+              <p className="text-sm text-muted-foreground">
+                {currentFontSize.description}
+              </p>
+            )}
+            {pendingFontSize !== fontSize && (
+              <p className="text-sm text-amber-500 flex items-center gap-1">
+                <span>⚠️</span>
+                <span>Unsaved changes - click Apply Changes to update</span>
+              </p>
+            )}
+          </div>
+
+          {/* Apply/Reset Buttons */}
+          {hasChanges && (
+            <div className="flex gap-3 pt-4 border-t border-border">
+              <Button 
+                onClick={handleApplyChanges}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                <Check className="mr-2" size={16} />
+                Apply Changes
+              </Button>
+              <Button 
+                onClick={handleReset}
+                variant="outline"
+              >
+                <X className="mr-2" size={16} />
+                Discard Changes
+              </Button>
+            </div>
+          )}
+          
+          {/* Debug Info (can be removed later) */}
+          <div className="mt-4 p-3 bg-muted/30 rounded text-xs font-mono space-y-1">
+            <div>Current Theme: <span className="text-primary">{theme}</span></div>
+            <div>Effective Theme: <span className="text-primary">{effectiveTheme}</span></div>
+            <div>Pending Theme: <span className="text-amber-500">{pendingTheme}</span></div>
+            <div>DOM data-theme: <span className="text-primary">{typeof window !== 'undefined' ? document.documentElement.getAttribute('data-theme') : 'N/A'}</span></div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ShipStation Integration */}
+      <Card className="glass">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Package className="text-primary" size={20} />
+            ShipStation Integration
+          </CardTitle>
+          <CardDescription>
+            Test your ShipStation API connection
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ShipStationConnectionTest />
+        </CardContent>
+      </Card>
+
+      {/* Other Settings Sections (Placeholder) */}
+      <Card className="glass">
+        <CardHeader>
+          <CardTitle>General Settings</CardTitle>
+          <CardDescription>
+            Coming in future phases
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Additional settings will be added as we build out the platform.
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+/**
+ * ShipStation Connection Test Component
+ */
+function ShipStationConnectionTest() {
+  const [testing, setTesting] = useState(false);
+  const [result, setResult] = useState<any>(null);
+
+  const handleTest = async () => {
+    setTesting(true);
+    setResult(null);
+    
+    try {
+      // Call the tRPC endpoint
+      const response = await fetch('/api/trpc/shipstation.testConnection', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+      
+      const data = await response.json();
+      const testResult = data.result?.data;
+      
+      setResult(testResult);
+      
+      if (testResult?.success) {
+        toast.success('ShipStation Connected!', {
+          description: testResult.message,
+          icon: <Check className="text-green-500" />,
+        });
+      } else {
+        toast.error('Connection Failed', {
+          description: testResult?.message || 'Unknown error',
+          icon: <X className="text-red-500" />,
+        });
+      }
+    } catch (error) {
+      console.error('[ShipStation Test] Error:', error);
+      toast.error('Test Failed', {
+        description: error instanceof Error ? error.message : 'Unknown error',
+        icon: <X className="text-red-500" />,
+      });
+      setResult({ success: false, message: 'Network error' });
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3">
+        <Button 
+          onClick={handleTest}
+          disabled={testing}
+          className="bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          {testing ? (
+            <>
+              <Loader2 className="mr-2 animate-spin" size={16} />
+              Testing Connection...
+            </>
+          ) : (
+            <>
+              <Package className="mr-2" size={16} />
+              Test Connection
+            </>
+          )}
+        </Button>
+        
+        {result && (
+          <div className="flex items-center gap-2">
+            {result.success ? (
+              <>
+                <Check className="text-green-500" size={20} />
+                <span className="text-sm text-green-500 font-medium">Connected</span>
+              </>
+            ) : (
+              <>
+                <X className="text-red-500" size={20} />
+                <span className="text-sm text-red-500 font-medium">Failed</span>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+      
+      {result && result.success && result.accountInfo && (
+        <div className="p-4 bg-muted/30 rounded-lg space-y-2">
+          <div className="text-sm font-medium">Account Information:</div>
+          <div className="text-xs font-mono space-y-1">
+            <div>Store Count: <span className="text-primary">{result.accountInfo.storeCount}</span></div>
+            {result.accountInfo.stores && result.accountInfo.stores.length > 0 && (
+              <div className="mt-2">
+                <div className="font-medium mb-1">Stores:</div>
+                {result.accountInfo.stores.map((store: any, idx: number) => (
+                  <div key={idx} className="ml-2 text-muted-foreground">
+                    • {store.storeName} (ID: {store.storeId}) - {store.active ? '✅ Active' : '❌ Inactive'}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      
+      {result && !result.success && (
+        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <div className="text-sm text-red-500 font-medium mb-1">Error Details:</div>
+          <div className="text-xs text-red-400 font-mono">{result.message}</div>
+        </div>
+      )}
+    </div>
   );
 }

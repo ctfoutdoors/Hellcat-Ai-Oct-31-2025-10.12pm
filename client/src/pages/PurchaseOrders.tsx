@@ -1,311 +1,222 @@
-import { useState } from 'react';
-import { trpc } from '@/lib/trpc';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Upload, FileText, Search, Plus, Eye } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { FileText, Plus, Search } from "lucide-react";
+import { toast } from "sonner";
 
-export default function PurchaseOrders() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [showUploadDialog, setShowUploadDialog] = useState(false);
+type POStatus = "Pending" | "Approved" | "Shipped" | "Received" | "Cancelled";
 
-  const { data: posData, isLoading } = trpc.purchaseOrders.list.useQuery({});
-
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      draft: 'bg-gray-500',
-      pending_approval: 'bg-yellow-500',
-      approved: 'bg-blue-500',
-      ordered: 'bg-purple-500',
-      partially_received: 'bg-orange-500',
-      received: 'bg-green-500',
-      cancelled: 'bg-red-500',
-    };
-    return colors[status] || 'bg-gray-500';
-  };
-
-  const formatCurrency = (cents: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(cents / 100);
-  };
-
-  return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Purchase Orders</h1>
-          <p className="text-muted-foreground">Manage vendor purchase orders with AI-powered scanning</p>
-        </div>
-        <div className="flex gap-2">
-          <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
-            <DialogTrigger asChild>
-              <Button>
-                <Upload className="mr-2 h-4 w-4" />
-                Scan PO
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl">
-              <DialogHeader>
-                <DialogTitle>AI Purchase Order Scanner</DialogTitle>
-                <DialogDescription>
-                  Upload a PO document (PDF, image) and our AI will extract all details
-                </DialogDescription>
-              </DialogHeader>
-              <POScannerUpload onComplete={() => setShowUploadDialog(false)} />
-            </DialogContent>
-          </Dialog>
-          <Button variant="outline">
-            <Plus className="mr-2 h-4 w-4" />
-            Manual Entry
-          </Button>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search by PO number, vendor..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-4 py-2 border rounded-md"
-            >
-              <option value="all">All Status</option>
-              <option value="draft">Draft</option>
-              <option value="pending_approval">Pending Approval</option>
-              <option value="approved">Approved</option>
-              <option value="ordered">Ordered</option>
-              <option value="partially_received">Partially Received</option>
-              <option value="received">Received</option>
-            </select>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* PO List */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Purchase Orders</CardTitle>
-          <CardDescription>
-            {posData?.total || 0} purchase orders found
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="text-center py-8 text-muted-foreground">Loading...</div>
-          ) : posData?.purchaseOrders && posData.purchaseOrders.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>PO Number</TableHead>
-                  <TableHead>Vendor</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Total</TableHead>
-                  <TableHead>AI Scanned</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {posData.purchaseOrders.map((po: any) => (
-                  <TableRow key={po.id}>
-                    <TableCell className="font-medium">{po.poNumber}</TableCell>
-                    <TableCell>{po.vendorName}</TableCell>
-                    <TableCell>{new Date(po.poDate).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(po.status)}>
-                        {po.status.replace('_', ' ')}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{formatCurrency(po.totalAmount)}</TableCell>
-                    <TableCell>
-                      {po.scannedFromDocument && (
-                        <Badge variant="outline" className="gap-1">
-                          <FileText className="h-3 w-3" />
-                          {po.aiConfidence}%
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className="text-center py-12">
-              <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground mb-4">No purchase orders yet</p>
-              <Button onClick={() => setShowUploadDialog(true)}>
-                <Upload className="mr-2 h-4 w-4" />
-                Scan Your First PO
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
-  );
+interface PurchaseOrder {
+  poNumber: string;
+  vendor: string;
+  date: string;
+  status: POStatus;
+  amount: string;
 }
 
-function POScannerUpload({ onComplete }: { onComplete: () => void }) {
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [scanResult, setScanResult] = useState<any>(null);
+export default function PurchaseOrders() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [pos, setPOs] = useState<PurchaseOrder[]>([
+    { poNumber: "PO-2025-001", vendor: "Uline", date: "2025-01-15", status: "Pending", amount: "$2,450.00" },
+    { poNumber: "PO-2025-002", vendor: "Grainger", date: "2025-01-18", status: "Shipped", amount: "$1,875.50" },
+    { poNumber: "PO-2025-003", vendor: "Staples", date: "2025-01-20", status: "Received", amount: "$892.25" },
+  ]);
 
-  const scanMutation = trpc.purchaseOrders.scanDocument.useMutation();
+  // Form state
+  const [formData, setFormData] = useState({
+    vendor: "",
+    amount: "",
+    status: "Pending" as POStatus,
+    notes: "",
+  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+  const filteredPOs = pos.filter((po) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      po.vendor.toLowerCase().includes(query) ||
+      po.poNumber.toLowerCase().includes(query)
+    );
+  });
+
+  const getStatusVariant = (status: POStatus): "default" | "secondary" | "destructive" | "outline" => {
+    switch (status) {
+      case "Received":
+        return "default";
+      case "Shipped":
+        return "secondary";
+      case "Pending":
+        return "outline";
+      case "Cancelled":
+        return "destructive";
+      default:
+        return "secondary";
     }
   };
 
-  const handleScan = async () => {
-    if (!file) return;
-
-    setUploading(true);
-    try {
-      // In real implementation, upload to S3 first
-      const mockUrl = 'https://example.com/po.pdf';
-
-      const result = await scanMutation.mutateAsync({
-        documentUrl: mockUrl,
-      });
-
-      setScanResult(result.data);
-      toast.success('PO scanned successfully!');
-    } catch (error) {
-      toast.error('Failed to scan PO');
-    } finally {
-      setUploading(false);
+  const handleCreatePO = () => {
+    if (!formData.vendor || !formData.amount) {
+      toast.error("Please fill in all required fields");
+      return;
     }
+
+    const newPO: PurchaseOrder = {
+      poNumber: `PO-2025-${String(pos.length + 1).padStart(3, "0")}`,
+      vendor: formData.vendor,
+      date: new Date().toISOString().split("T")[0],
+      status: formData.status,
+      amount: formData.amount.startsWith("$") ? formData.amount : `$${formData.amount}`,
+    };
+
+    setPOs([newPO, ...pos]);
+    setIsDialogOpen(false);
+    setFormData({ vendor: "", amount: "", status: "Pending", notes: "" });
+    toast.success(`Purchase Order ${newPO.poNumber} created successfully`);
   };
 
   return (
     <div className="space-y-6">
-      {!scanResult ? (
-        <div className="border-2 border-dashed rounded-lg p-12 text-center">
-          <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-          <p className="text-lg font-medium mb-2">Upload Purchase Order</p>
-          <p className="text-sm text-muted-foreground mb-4">
-            PDF, PNG, JPG up to 10MB
-          </p>
-          <Input
-            type="file"
-            accept=".pdf,.png,.jpg,.jpeg"
-            onChange={handleFileChange}
-            className="max-w-xs mx-auto"
-          />
-          {file && (
-            <div className="mt-4">
-              <p className="text-sm mb-2">Selected: {file.name}</p>
-              <Button onClick={handleScan} disabled={uploading}>
-                {uploading ? 'Scanning...' : 'Scan with AI'}
-              </Button>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Purchase Orders</h1>
+          <p className="text-muted-foreground mt-2">Manage vendor purchase orders</p>
+        </div>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="mr-2 h-4 w-4" />
+              New PO
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Create Purchase Order</DialogTitle>
+              <DialogDescription>
+                Enter the details for the new purchase order.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="vendor">Vendor Name *</Label>
+                <Input
+                  id="vendor"
+                  placeholder="e.g., Uline, Grainger, Staples"
+                  value={formData.vendor}
+                  onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="amount">Amount *</Label>
+                <Input
+                  id="amount"
+                  placeholder="e.g., 1500.00"
+                  value={formData.amount}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="status">Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value: POStatus) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger id="status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                    <SelectItem value="Approved">Approved</SelectItem>
+                    <SelectItem value="Shipped">Shipped</SelectItem>
+                    <SelectItem value="Received">Received</SelectItem>
+                    <SelectItem value="Cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="notes">Notes (Optional)</Label>
+                <Input
+                  id="notes"
+                  placeholder="Additional notes..."
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                />
+              </div>
             </div>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Scan Results</h3>
-            <Badge variant="outline">
-              {scanResult.confidence}% Confidence
-            </Badge>
-          </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreatePO}>Create PO</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
 
+      {/* Search Bar */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search by vendor name or PO number..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* PO List */}
+      <div className="grid gap-4">
+        {filteredPOs.length === 0 ? (
           <Card>
-            <CardHeader>
-              <CardTitle>Vendor Information</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground">Vendor Name</p>
-                <p className="font-medium">{scanResult.vendor.name}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">PO Number</p>
-                <p className="font-medium">{scanResult.poNumber}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">PO Date</p>
-                <p className="font-medium">{scanResult.poDate}</p>
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="font-medium">
-                  ${(scanResult.totals.total / 100).toFixed(2)}
-                </p>
-              </div>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              No purchase orders found matching "{searchQuery}"
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Line Items ({scanResult.lineItems.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>SKU</TableHead>
-                    <TableHead>Description</TableHead>
-                    <TableHead>Qty</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Total</TableHead>
-                    <TableHead>Match</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {scanResult.lineItems.map((item: any) => (
-                    <TableRow key={item.lineNumber}>
-                      <TableCell className="font-mono text-sm">{item.vendorSku}</TableCell>
-                      <TableCell>{item.description}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell>${(item.unitPrice / 100).toFixed(2)}</TableCell>
-                      <TableCell>${(item.lineTotal / 100).toFixed(2)}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{item.confidence}%</Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-
-          <div className="flex justify-end gap-2">
-            <Button variant="outline" onClick={() => setScanResult(null)}>
-              Scan Another
-            </Button>
-            <Button onClick={onComplete}>
-              Create Purchase Order
-            </Button>
-          </div>
-        </div>
-      )}
+        ) : (
+          filteredPOs.map((po) => (
+            <Card key={po.poNumber} className="cursor-pointer hover:border-primary transition-colors">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <FileText className="h-5 w-5" />
+                    <div>
+                      <div>{po.poNumber}</div>
+                      <div className="text-sm text-muted-foreground font-normal">{po.vendor}</div>
+                    </div>
+                  </div>
+                  <Badge variant={getStatusVariant(po.status)}>{po.status}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Date:</span> {po.date}
+                  </div>
+                  <div className="font-bold">{po.amount}</div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
     </div>
   );
 }

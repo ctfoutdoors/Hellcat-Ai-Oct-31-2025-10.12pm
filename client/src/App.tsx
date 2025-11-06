@@ -3,113 +3,127 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import DashboardLayout from "./components/DashboardLayout";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import { DensityProvider } from "./contexts/DensityContext";
-import { ThemeCustomizerProvider } from "./contexts/ThemeCustomizerContext";
 import Dashboard from "./pages/Dashboard";
-import Cases from "./pages/CasesNew";
-import CasesEnhanced from "./pages/CasesEnhanced";
-import CaseDetail from "./pages/CaseDetail";
-import OldCases from "./pages/Cases";
+import InventoryDashboard from "./pages/InventoryDashboard";
+import InventoryLive from "./pages/InventoryLive";
+import ProductsManagement from "./pages/ProductsManagement";
+import Cases from "./pages/Cases";
+import AllCases from "./pages/AllCases";
 import ImportCases from "./pages/ImportCases";
-import SettingsPage from "./pages/Settings";
-import OrderMonitoring from "./pages/OrderMonitoringEnhanced";
-import Products from "./pages/Products";
-import Certifications from "./pages/Certifications";
-import ShipmentAudits from "./pages/ShipmentAudits";
-import Reports from "./pages/Reports";
-import ThemeColors from "./pages/ThemeColors";
-import EmailTemplates from "./pages/EmailTemplates";
-import SyncStatus from "./pages/SyncStatus";
-import PDFInvoiceScanner from "./pages/PDFInvoiceScanner";
+import Templates from "./pages/Templates";
+import CasesSettings from "./pages/CasesSettings";
 import CaseTemplates from "./pages/CaseTemplates";
-import WeeklyReports from "./pages/WeeklyReports";
-import Performance from "./pages/Performance";
-import Integrations from "./pages/Integrations";
-import ContactsList from "./pages/crm/ContactsListTrading";
-import ContactDetail from "./pages/crm/ContactDetail";
-import CompaniesList from "./pages/crm/CompaniesListTrading";
-import CompanyDetail from "./pages/crm/CompanyDetail";
-import DealsPipeline from "./pages/crm/DealsPipelineTrading";
-import DealDetail from "./pages/crm/DealDetailTrading";
-import CustomersList from "./pages/crm/CustomersList";
-import LeadsList from "./pages/crm/LeadsList";
-import VendorsList from "./pages/crm/VendorsList";
-import PredictionsDashboard from "./pages/ai/PredictionsDashboard";
-import PrescriptionsQueue from "./pages/ai/PrescriptionsQueue";
-import Analytics from "./pages/crm/Analytics";
 import CaseSettings from "./pages/CaseSettings";
-import AutoStatusUpdates from "./pages/AutoStatusUpdates";
-import MonitoringDashboard from "./pages/MonitoringDashboard";
-import DualScreenFormFiller from "./pages/DualScreenFormFiller";
-import Clipboard from "./pages/Clipboard";
-import ScreenshotOCR from "./pages/ScreenshotOCR";
+import NewCase from "./pages/NewCase";
+import CaseDetail from "./pages/CaseDetail";
+import Orders from "./pages/Orders";
+import OrdersManagement from "./pages/OrdersManagement";
+import OrderDetail from "./pages/OrderDetail";
+import OrdersByChannel from "./pages/OrdersByChannel";
+import Inventory from "./pages/Inventory";
+import InventoryManagement from "./pages/InventoryManagement";
 import PurchaseOrders from "./pages/PurchaseOrders";
 import Receiving from "./pages/Receiving";
-import Inventory from "./pages/Inventory";
-import GmailMonitoring from "./pages/GmailMonitoring";
+import StockLevels from "./pages/StockLevels";
+import Reports from "./pages/Reports";
+import WeeklyReports from "./pages/WeeklyReports";
+import PerformanceReports from "./pages/PerformanceReports";
+import CRMContacts from "./pages/CRMContacts";
+import CRMCompanies from "./pages/CRMCompanies";
+import CRMDeals from "./pages/CRMDeals";
+import CRMAnalytics from "./pages/CRMAnalytics";
+import Settings from "./pages/Settings";
+import EmailAccountsSettings from "./pages/EmailAccountsSettings";
+import SettingsIntegrations from "./pages/SettingsIntegrations";
+import BrandIntelligence from "./pages/BrandIntelligence";
+import CompetitorIntelligence from "./pages/CompetitorIntelligence";
+import ProductIntelligence from "./pages/ProductIntelligence";
+import MarketIntelligence from "./pages/MarketIntelligence";
+import CustomerIntelligence from "./pages/CustomerIntelligence";
+import ThreatIntelligence from "./pages/ThreatIntelligence";
+import InvoiceOCR from "./pages/InvoiceOCR";
+import ImportExport from "./pages/ImportExport";
+import ShipStationAutoImport from "./pages/ShipStationAutoImport";
+import Analytics from "./pages/Analytics";
+import SmartPredictions from "./pages/SmartPredictions";
+import AuditTrail from "./pages/AuditTrail";
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/cases" component={Cases} />
-      <Route path="/cases/:id" component={CaseDetail} />
-      <Route path="/import" component={ImportCases} />
-      <Route path="/orders" component={OrderMonitoring} />
-      <Route path="/products" component={Products} />
-      <Route path="/certifications" component={Certifications} />
-      <Route path="/audits" component={ShipmentAudits} />
-      <Route path="/auto-status" component={AutoStatusUpdates} />
-      <Route path="/monitoring" component={MonitoringDashboard} />
-      <Route path="/form-filler" component={DualScreenFormFiller} />
-      <Route path="/clipboard" component={Clipboard} />
-      <Route path="/screenshot-ocr" component={ScreenshotOCR} />
-      <Route path="/purchase-orders" component={PurchaseOrders} />
-      <Route path="/receiving" component={Receiving} />
-      <Route path="/inventory" component={Inventory} />
-      <Route path="/gmail-monitoring" component={GmailMonitoring} />
-      <Route path="/reports" component={Reports} />
-      <Route path="/settings" component={SettingsPage} />
-      <Route path="/settings/colors" component={ThemeColors} />
-      <Route path="/settings/email-templates" component={EmailTemplates} />
-      <Route path="/sync-status" component={SyncStatus} />
-      <Route path="/pdf-scanner" component={PDFInvoiceScanner} />
-      <Route path="/cases/templates" component={CaseTemplates} />
-      <Route path="/reports/weekly" component={WeeklyReports} />
-      <Route path="/reports/performance" component={Performance} />
-      <Route path="/settings/integrations" component={Integrations} />
-      <Route path="/crm/customers" component={CustomersList} />
-      <Route path="/crm/leads" component={LeadsList} />
-      <Route path="/crm/vendors" component={VendorsList} />
-      <Route path="/crm/contacts/:id" component={ContactDetail} />
-      <Route path="/crm/contacts" component={ContactsList} />
-      <Route path="/crm/companies/:id" component={CompanyDetail} />
-      <Route path="/crm/companies" component={CompaniesList} />
-      <Route path="/crm/deals/:id" component={DealDetail} />
-      <Route path="/crm/deals" component={DealsPipeline} />
-      <Route path="/crm/analytics" component={Analytics} />
-      <Route path="/cases/settings" component={CaseSettings} />
-      <Route path="/ai/predictions" component={PredictionsDashboard} />
-      <Route path="/ai/prescriptions" component={PrescriptionsQueue} />
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <DashboardLayout>
+      <Switch>
+        <Route path={"/"} component={Dashboard} />
+        {/* Cases Module */}
+        <Route path="/cases" component={AllCases} />
+        <Route path="/cases/new" component={NewCase} />
+        <Route path="/cases/:id" component={CaseDetail} />
+        <Route path="/import-cases" component={ImportCases} />
+      <Route path="/templates" component={Templates} />   <Route path="/cases/templates" component={CaseTemplates} />
+        <Route path="/cases/settings" component={CasesSettings} />
+        
+        {/* Orders Module */}
+        <Route path="/orders" component={OrdersManagement} />
+        <Route path="/orders/:channel" component={OrdersByChannel} />
+        <Route path="/order/:id" component={OrderDetail} />
+        
+        {/* Inventory Module */}
+        <Route path="/inventory/live" component={InventoryLive} />
+        <Route path="/inventory" component={InventoryDashboard} />
+        <Route path="/inventory/stock-levels" component={StockLevels} />
+        <Route path="/inventory/products" component={ProductsManagement} />
+        <Route path="/inventory/purchase-orders" component={PurchaseOrders} />
+        <Route path="/purchase-orders" component={PurchaseOrders} />
+        <Route path="/invoice-ocr" component={InvoiceOCR} />
+        <Route path="/import-export" component={ImportExport} />
+        <Route path="/shipstation-auto-import" component={ShipStationAutoImport} />
+        <Route path="/analytics" component={Analytics} />
+        <Route path="/smart-predictions" component={SmartPredictions} />
+      <Route path="/audit-trail" component={AuditTrail} />
+        <Route path="/inventory/receiving" component={Receiving} />
+        
+        {/* Reports Module */}
+        <Route path="/reports" component={Reports} />
+        <Route path="/reports/weekly" component={WeeklyReports} />
+        <Route path="/reports/performance" component={PerformanceReports} />
+        
+        {/* CRM Module */}
+        <Route path="/crm/contacts" component={CRMContacts} />
+        <Route path="/crm/companies" component={CRMCompanies} />
+        <Route path="/crm/deals" component={CRMDeals} />
+        <Route path="/crm/analytics" component={CRMAnalytics} />
+        
+        {/* Intelligence Module */}
+        <Route path="/intelligence/brand" component={BrandIntelligence} />
+        <Route path="/intelligence/competitor" component={CompetitorIntelligence} />
+        <Route path="/intelligence/product" component={ProductIntelligence} />
+        <Route path="/intelligence/market" component={MarketIntelligence} />
+        <Route path="/intelligence/customer" component={CustomerIntelligence} />
+        <Route path="/intelligence/threat" component={ThreatIntelligence} />
+        
+               {/* Settings */}
+        <Route path="/settings" component={Settings} />
+        <Route path="/settings/email-accounts" component={EmailAccountsSettings} />
+        <Route path="/settings/integrations" component={SettingsIntegrations} />
+        <Route path="/settings/email-templates" component={Settings} />
+        <Route path="/settings/integrations" component={Settings} />
+        
+        <Route path="/404" component={NotFound} />
+        <Route component={NotFound} />
+      </Switch>
+    </DashboardLayout>
   );
 }
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
-        <ThemeCustomizerProvider>
-          <DensityProvider defaultDensity="normal">
-            <TooltipProvider>
-              <Toaster />
-              <Router />
-            </TooltipProvider>
-          </DensityProvider>
-        </ThemeCustomizerProvider>
+      <ThemeProvider defaultTheme="hellcat">
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );

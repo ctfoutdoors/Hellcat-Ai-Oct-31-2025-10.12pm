@@ -40,7 +40,7 @@ import VendorsList from "./pages/crm/VendorsList";
 import Customers from "./pages/crm/Customers";
 import CustomerProfile from "./pages/crm/CustomerProfile";
 import Vendors from "./pages/crm/Vendors";
-import VendorDetail from "./pages/crm/VendorDetail";
+import VendorDetailNew from "./pages/crm/VendorDetailNew";
 import PODetail from "./pages/po/PODetail";
 import Leads from "./pages/crm/Leads";
 import Calendar from "./pages/Calendar";
@@ -119,7 +119,7 @@ function Router() {
       <Route path="/crm/leads" component={Leads} />
       <Route path="/crm/vendors-old" component={VendorsList} />
       <Route path="/crm/vendors" component={Vendors} />
-      <Route path="/crm/vendors/:id" component={VendorDetail} />
+      <Route path="/crm/vendors/:id" component={VendorDetailNew} />
       <Route path="/po/:id" component={PODetail} />
       <Route path="/calendar" component={Calendar} />
         

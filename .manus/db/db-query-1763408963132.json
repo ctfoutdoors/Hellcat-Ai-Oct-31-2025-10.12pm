@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO vendor_action_items (vendorId, title, description, assignedTo, dueDate, priority, status, createdBy) VALUES\n(1, 'Follow up on next quarter pricing', 'Schedule call with Mya to discuss 2026 Q1 pricing for shipping tubes. Request volume discount for orders >2000 units.', 1, '2025-12-01 10:00:00', 'high', 'pending', 1),\n(1, 'Review contract renewal terms', 'Current contract expires 03/31/2026. Review terms and negotiate better payment terms (Net 45 instead of Net 30).', 1, '2026-01-15 10:00:00', 'medium', 'pending', 1),\n(1, 'Quality audit for tube shipments', 'Inspect next shipment for quality issues. Recent customer feedback mentioned some tubes arrived dented.', 1, '2025-11-25 10:00:00', 'urgent', 'in_progress', 1)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO vendor_action_items (vendorId, title, description, assignedTo, dueDate, priority, status, createdBy) VALUES\n(1, 'Follow up on next quarter pricing', 'Schedule call with Mya to discuss 2026 Q1 pricing for shipping tubes. Request volume discount for orders >2000 units.', 1, '2025-12-01 10:00:00', 'high', 'pending', 1),\n(1, 'Review contract renewal terms', 'Current contract expires 03/31/2026. Review terms and negotiate better payment terms (Net 45 instead of Net 30).', 1, '2026-01-15 10:00:00', 'medium', 'pending', 1),\n(1, 'Quality audit for tube shipments', 'Inspect next shipment for quality issues. Recent customer feedback mentioned some tubes arrived dented.', 1, '2025-11-25 10:00:00', 'urgent', 'in_progress', 1)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 61
+}

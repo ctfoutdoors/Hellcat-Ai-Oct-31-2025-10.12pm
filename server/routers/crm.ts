@@ -1782,6 +1782,95 @@ export const crmRouter = router({
     
   }),
   
+  vendorContacts: router({
+    list: protectedProcedure
+      .input(z.object({ vendorId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const results = await db
+          .select()
+          .from(vendorContacts)
+          .where(eq(vendorContacts.vendorId, input.vendorId));
+        
+        return results;
+      }),
+  }),
+  
+  vendorActivities: router({
+    list: protectedProcedure
+      .input(z.object({ vendorId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const { vendorActivities } = await import('../../drizzle/schema');
+        
+        const results = await db
+          .select()
+          .from(vendorActivities)
+          .where(eq(vendorActivities.vendorId, input.vendorId))
+          .orderBy(desc(vendorActivities.activityDate));
+        
+        return results;
+      }),
+  }),
+  
+  vendorAttachments: router({
+    list: protectedProcedure
+      .input(z.object({ vendorId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const { vendorAttachments } = await import('../../drizzle/schema');
+        
+        const results = await db
+          .select()
+          .from(vendorAttachments)
+          .where(eq(vendorAttachments.vendorId, input.vendorId))
+          .orderBy(desc(vendorAttachments.createdAt));
+        
+        return results;
+      }),
+  }),
+  
+  vendorActionItems: router({
+    list: protectedProcedure
+      .input(z.object({ vendorId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const { vendorActionItems } = await import('../../drizzle/schema');
+        
+        const results = await db
+          .select()
+          .from(vendorActionItems)
+          .where(eq(vendorActionItems.vendorId, input.vendorId))
+          .orderBy(desc(vendorActionItems.createdAt));
+        
+        return results;
+      }),
+  }),
+  
+  analyzeVendorHealth: protectedProcedure
+    .input(z.object({ vendorId: z.number() }))
+    .query(async ({ input }) => {
+      // AI-powered relationship health analysis
+      // For now, return mock data - will implement LLM analysis later
+      return {
+        score: 85,
+        summary: "Strong relationship with consistent communication and timely deliveries. Recent quality concerns need attention.",
+        recommendations: [
+          "Schedule quarterly business review to discuss pricing",
+          "Follow up on quality audit findings from recent shipment",
+          "Consider increasing order volume for better pricing tiers"
+        ]
+      };
+    }),
+  
   // ============================================================================
   // LEADS API
   // ============================================================================

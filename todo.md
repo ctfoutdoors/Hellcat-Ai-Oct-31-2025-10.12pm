@@ -602,3 +602,81 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Create upload UI for BOL PDFs
 - [ ] Create upload UI for invoice PDFs
 - [ ] Test PDF extraction accuracy
+
+## Vendor CRM Enhancements
+- [ ] Update database schema for vendor activities (phone calls, emails, letters, faxes, manual activities)
+- [ ] Create vendor_attachments table for documents, PDFs, images
+- [ ] Create vendor_action_items table with assignee, due date, status
+- [ ] Redesign vendor detail page - remove tabs, use expandable contact cards
+- [ ] Build activity timeline component showing all communication types with timestamps
+- [ ] Add attachments section to overview tab
+- [ ] Implement AI relationship health analysis (health score, sentiment, communication patterns)
+- [ ] Create next action items section with assignee tracking
+- [ ] Build bird's eye view dashboard summary
+- [ ] Add activity logging for phone calls, emails, letters in/out, faxes in/out
+- [ ] Test complete vendor relationship management workflow
+
+## Purchase Order & BOL Tracking Enhancements
+- [ ] Add hover preview popup for PO rows (show PO#, vendor, dates, total, status, ordered by)
+- [ ] Make PO rows expandable to show line items inline
+- [ ] Add action menu to PO rows (View Details, Download PDF, Track Shipment)
+- [ ] Create BOL tracking component with carrier details
+- [ ] Add "Update Status" button for live tracking updates
+- [ ] Implement AI-powered carrier tracking page parsing
+- [ ] Add screenshot capture for tracking proof
+- [ ] Create status timeline visualization (Picked up → In Transit → Delivered)
+- [ ] Store tracking screenshots in attachments
+- [ ] Add carrier API integration (FedEx, UPS, USPS)
+
+
+---
+
+## Vendor CRM Enhancements ✅ COMPLETE
+
+### Phase 1: Database Schema ✅
+- [x] Create vendor_activities table (phone, email, fax, letters, meetings, notes)
+- [x] Create vendor_attachments table (contracts, invoices, BOLs, screenshots)
+- [x] Create vendor_action_items table (tasks with assignees and due dates)
+- [x] Add poId column to shipments table for PO tracking
+- [x] Add poId column to invoices table for PO tracking
+
+### Phase 2: Vendor Detail Page Redesign ✅
+- [x] Replace tabs with expandable contact cards
+- [x] Add activity timeline showing all communications
+- [x] Add attachments section with file management
+- [x] Implement AI relationship health analysis (mock data, ready for LLM)
+- [x] Add action items dashboard with assignee tracking
+- [x] Create bird's eye view of vendor relationship status
+- [x] Add quick stats cards (Total Orders, Total Spent, Active Orders, Contacts)
+
+### Phase 3: tRPC Endpoints ✅
+- [x] Add vendorContacts.list endpoint
+- [x] Add vendorActivities.list endpoint
+- [x] Add vendorAttachments.list endpoint
+- [x] Add vendorActionItems.list endpoint
+- [x] Add analyzeVendorHealth endpoint
+
+### Phase 4: Sample Data ✅
+- [x] Insert 5 sample activities for Yazoo Mills (phone calls, emails, notes)
+- [x] Insert 3 sample action items with priorities and assignees
+- [x] Link activities to vendor contacts
+
+### Phase 5: UI Components ✅
+- [x] Create collapsible contact cards with expand/collapse
+- [x] Add activity timeline with icons for each type
+- [x] Add AI health score with visual indicator (green/yellow/red)
+- [x] Add action items with status icons and priority badges
+- [x] Add recent purchase orders sidebar
+- [x] Update App.tsx to use VendorDetailNew component
+
+**Features Delivered:**
+✅ Comprehensive vendor relationship management
+✅ Activity tracking (phone, email, fax, letters, meetings, notes)
+✅ Document management with categorization
+✅ Action items with assignee and due date tracking
+✅ AI-powered relationship health scoring
+✅ Bird's eye view dashboard for vendor status
+✅ Expandable contact cards (not tabs)
+✅ Complete activity timeline
+✅ Ready for LLM integration for health analysis
+

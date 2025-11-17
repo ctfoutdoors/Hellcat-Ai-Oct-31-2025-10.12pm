@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS vendor_activities (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  vendorId INT NOT NULL,\n  contactId INT,\n  activityType ENUM('phone_call', 'email', 'letter_in', 'letter_out', 'fax_in', 'fax_out', 'meeting', 'manual', 'note') NOT NULL,\n  subject VARCHAR(500),\n  description TEXT,\n  direction ENUM('inbound', 'outbound'),\n  duration INT,\n  outcome VARCHAR(255),\n  userId INT NOT NULL,\n  activityDate TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS vendor_activities (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  vendorId INT NOT NULL,\n  contactId INT,\n  activityType ENUM('phone_call', 'email', 'letter_in', 'letter_out', 'fax_in', 'fax_out', 'meeting', 'manual', 'note') NOT NULL,\n  subject VARCHAR(500),\n  description TEXT,\n  direction ENUM('inbound', 'outbound'),\n  duration INT,\n  outcome VARCHAR(255),\n  userId INT NOT NULL,\n  activityDate TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 235
+}

@@ -1231,6 +1231,76 @@ export const vendors = mysqlTable("vendors", {
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
 
+// Vendor Activities - Track all interactions with vendors
+export const vendorActivities = mysqlTable("vendor_activities", {
+  id: int("id").autoincrement().primaryKey(),
+  vendorId: int("vendorId").notNull(),
+  contactId: int("contactId"), // Which contact was involved
+  activityType: mysqlEnum("activityType", [
+    "phone_call",
+    "email",
+    "letter_in",
+    "letter_out",
+    "fax_in",
+    "fax_out",
+    "meeting",
+    "manual",
+    "note"
+  ]).notNull(),
+  subject: varchar("subject", { length: 500 }),
+  description: text("description"),
+  direction: mysqlEnum("direction", ["inbound", "outbound"]),
+  duration: int("duration"), // Duration in minutes for calls/meetings
+  outcome: varchar("outcome", { length: 255 }),
+  userId: int("userId").notNull(), // Who logged this activity
+  activityDate: timestamp("activityDate").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+// Vendor Attachments - Documents, PDFs, images related to vendors
+export const vendorAttachments = mysqlTable("vendor_attachments", {
+  id: int("id").autoincrement().primaryKey(),
+  vendorId: int("vendorId").notNull(),
+  activityId: int("activityId"), // Link to activity if applicable
+  fileName: varchar("fileName", { length: 500 }).notNull(),
+  fileUrl: varchar("fileUrl", { length: 1000 }).notNull(),
+  fileType: varchar("fileType", { length: 100 }),
+  fileSize: int("fileSize"), // Size in bytes
+  category: mysqlEnum("category", [
+    "contract",
+    "invoice",
+    "bol",
+    "quote",
+    "correspondence",
+    "screenshot",
+    "other"
+  ]).default("other"),
+  description: text("description"),
+  uploadedBy: int("uploadedBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+// Vendor Action Items - Tasks and follow-ups
+export const vendorActionItems = mysqlTable("vendor_action_items", {
+  id: int("id").autoincrement().primaryKey(),
+  vendorId: int("vendorId").notNull(),
+  title: varchar("title", { length: 500 }).notNull(),
+  description: text("description"),
+  assignedTo: int("assignedTo").notNull(), // User ID
+  dueDate: timestamp("dueDate"),
+  priority: mysqlEnum("priority", ["low", "medium", "high", "urgent"]).default("medium"),
+  status: mysqlEnum("status", ["pending", "in_progress", "completed", "cancelled"]).default("pending"),
+  completedAt: timestamp("completedAt"),
+  completedBy: int("completedBy"),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type VendorActivity = typeof vendorActivities.$inferSelect;
+export type VendorAttachment = typeof vendorAttachments.$inferSelect;
+export type VendorActionItem = typeof vendorActionItems.$inferSelect;
+
 // Companies table - Organization/account management
 export const companies = mysqlTable("companies", {
   id: int("id").autoincrement().primaryKey(),

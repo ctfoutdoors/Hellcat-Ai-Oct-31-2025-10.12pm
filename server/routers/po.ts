@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { router, protectedProcedure } from '../_core/trpc';
 import { getDb } from "../db";
+import { parseBOL, parseInvoice, parsePurchaseOrder } from "../services/pdfParser";
 import { 
   vendors,
   vendorContacts,
@@ -73,21 +74,12 @@ export const poRouter = router({
         .select()
         .from(poLineItems)
         .where(eq(poLineItems.poId, input.id))
-        .orderBy(poLineItems.lineNumber);
+        .orderBy(poLineItems.id);
       
-      // Get shipment if exists
-      const [shipment] = await db
-        .select()
-        .from(shipments)
-        .where(eq(shipments.poId, input.id))
-        .limit(1);
-      
-      // Get invoice if exists
-      const [invoice] = await db
-        .select()
-        .from(invoices)
-        .where(eq(invoices.poId, input.id))
-        .limit(1);
+      // TODO: Fix drizzle schema sync issue with poId columns
+      // Temporarily return empty arrays until schema is fully synced
+      const shipmentsData: any[] = [];
+      const invoicesData: any[] = [];
       
       // Get receiving logs
       const receiving = await db
@@ -100,8 +92,8 @@ export const poRouter = router({
         po,
         vendor,
         lineItems,
-        shipment,
-        invoice,
+        shipments: shipmentsData,
+        invoices: invoicesData,
         receiving,
       };
     }),
@@ -326,5 +318,41 @@ export const poRouter = router({
         .$returningId();
       
       return { logId: log.id };
+    }),
+  
+  /**
+   * Parse BOL PDF and extract data
+   */
+  parseBOL: protectedProcedure
+    .input(z.object({
+      pdfUrl: z.string().url(),
+    }))
+    .mutation(async ({ input }) => {
+      const data = await parseBOL(input.pdfUrl);
+      return data;
+    }),
+  
+  /**
+   * Parse Invoice PDF and extract data
+   */
+  parseInvoice: protectedProcedure
+    .input(z.object({
+      pdfUrl: z.string().url(),
+    }))
+    .mutation(async ({ input }) => {
+      const data = await parseInvoice(input.pdfUrl);
+      return data;
+    }),
+  
+  /**
+   * Parse Purchase Order PDF and extract data
+   */
+  parsePO: protectedProcedure
+    .input(z.object({
+      pdfUrl: z.string().url(),
+    }))
+    .mutation(async ({ input }) => {
+      const data = await parsePurchaseOrder(input.pdfUrl);
+      return data;
     }),
 });

@@ -41,6 +41,7 @@ import Customers from "./pages/crm/Customers";
 import CustomerProfile from "./pages/crm/CustomerProfile";
 import Vendors from "./pages/crm/Vendors";
 import VendorDetail from "./pages/crm/VendorDetail";
+import PODetail from "./pages/po/PODetail";
 import Leads from "./pages/crm/Leads";
 import Calendar from "./pages/Calendar";
 import ProductCard from "./pages/inventory/ProductCard";
@@ -119,6 +120,7 @@ function Router() {
       <Route path="/crm/vendors-old" component={VendorsList} />
       <Route path="/crm/vendors" component={Vendors} />
       <Route path="/crm/vendors/:id" component={VendorDetail} />
+      <Route path="/po/:id" component={PODetail} />
       <Route path="/calendar" component={Calendar} />
         
         {/* Intelligence Module - Legacy */}

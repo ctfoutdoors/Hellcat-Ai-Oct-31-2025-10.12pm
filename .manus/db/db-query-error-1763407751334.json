@@ -1,0 +1,8 @@
+{
+  "query": "ALTER TABLE invoices ADD COLUMN poId INT NULL",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute ALTER TABLE invoices ADD COLUMN poId INT NULL",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1060 (42S21) at line 1: Duplicate column name 'poId'"
+  ]
+}

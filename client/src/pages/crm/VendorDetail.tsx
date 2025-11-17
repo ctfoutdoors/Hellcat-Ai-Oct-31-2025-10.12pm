@@ -1,5 +1,6 @@
 import { useParams, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { formatCurrency } from "@/lib/currency";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -111,7 +112,7 @@ export default function VendorDetail() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${purchaseOrders.reduce((sum, po) => sum + Number(po.totalAmount || 0), 0).toLocaleString()}
+              {formatCurrency(purchaseOrders.reduce((sum, po) => sum + Number(po.totalAmount || 0), 0))}
             </div>
           </CardContent>
         </Card>
@@ -317,7 +318,7 @@ export default function VendorDetail() {
                             ? new Date(po.expectedDeliveryDate).toLocaleDateString()
                             : "-"}
                         </TableCell>
-                        <TableCell>${Number(po.totalAmount).toLocaleString()}</TableCell>
+                        <TableCell>{formatCurrency(po.totalAmount)}</TableCell>
                         <TableCell>
                           <Badge
                             variant={

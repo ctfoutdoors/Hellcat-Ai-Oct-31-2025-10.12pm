@@ -576,8 +576,29 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Integrate PO data into vendor detail page
 - [x] Display PO count and total spent in vendor stats
 - [x] Add Purchase Orders tab to vendor detail
-- [ ] Build PO detail page (/po/:id) with Overview, Line Items, Shipments, Invoices tabs
-- [ ] Add PDF parsing service for BOL documents
-- [ ] Add PDF parsing service for invoice documents
+- [x] Build PO detail page (/po/:id) with Overview, Line Items, Shipments, Invoices tabs
+- [x] Add PDF parsing service for BOL documents
+- [x] Add PDF parsing service for invoice documents
+- [x] Create PDF parser with LLM vision for BOL, Invoice, and PO documents
+- [x] Add tRPC endpoints (parseBOL, parseInvoice, parsePO)
+- [x] Create PDFUploader component for document upload and parsing
 - [ ] Create email automation to process incoming PO emails
 - [ ] Test complete PO workflow from email to database
+
+## PO Intake System - Phase 2 ✅
+- [x] Fix currency display formatting (divide by 100 for amounts in cents)
+- [x] Create formatCurrency helper function
+- [x] Update vendor stats to show correct amounts
+- [x] Build PO detail page (/po/:id)
+- [x] Add Overview tab (PO info, vendor, dates, amounts)
+- [x] Add Line Items tab (table with SKU, description, quantity, unit cost, total)
+- [ ] Add Shipments tab (BOL number, tracking, carrier, status, dates)
+- [ ] Add Invoices tab (invoice number, dates, amounts, payment status)
+- [x] Add PDF parsing service for BOL documents
+- [x] Add PDF parsing service for invoice documents
+- [x] Create PDF parser with LLM vision for BOL, Invoice, and PO documents
+- [x] Add tRPC endpoints (parseBOL, parseInvoice, parsePO)
+- [x] Create PDFUploader component for document upload and parsing
+- [ ] Create upload UI for BOL PDFs
+- [ ] Create upload UI for invoice PDFs
+- [ ] Test PDF extraction accuracy

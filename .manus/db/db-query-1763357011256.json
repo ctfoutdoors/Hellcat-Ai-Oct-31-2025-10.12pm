@@ -1,0 +1,58 @@
+{
+  "query": "SHOW TABLES",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SHOW TABLES",
+  "rows": [
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "__drizzle_migrations"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "calendar_meetings"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "customer_activities"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "customer_contacts"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "customer_shipments"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "customers"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "intelligence_settings"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "launch_missions"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "launch_votes"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "lead_activities"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "leads"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "mission_events"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "tasks"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "users"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "vendor_contacts"
+    },
+    {
+      "Tables_in_bQwuvX7ycRD88MLXJHLZXd": "vendors"
+    }
+  ],
+  "messages": [],
+  "stdout": "Tables_in_bQwuvX7ycRD88MLXJHLZXd\n__drizzle_migrations\ncalendar_meetings\ncustomer_activities\ncustomer_contacts\ncustomer_shipments\ncustomers\nintelligence_settings\nlaunch_missions\nlaunch_votes\nlead_activities\nleads\nmission_events\ntasks\nusers\nvendor_contacts\nvendors\n",
+  "stderr": "",
+  "execution_time_ms": 407
+}

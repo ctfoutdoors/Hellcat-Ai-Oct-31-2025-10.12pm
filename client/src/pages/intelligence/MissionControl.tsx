@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Rocket, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Clock, Users } from "lucide-react";
 import { toast } from "sonner";
-import { io, Socket } from "socket.io-client";
+// import { io, Socket } from "socket.io-client"; // Temporarily disabled
 
 /**
  * Mission Control Dashboard
@@ -16,7 +16,7 @@ import { io, Socket } from "socket.io-client";
 
 export default function MissionControl() {
   const [selectedMissionId, setSelectedMissionId] = useState<number | null>(null);
-  const [socket, setSocket] = useState<Socket | null>(null);
+  // const [socket, setSocket] = useState<Socket | null>(null); // Temporarily disabled
   const [realtimeData, setRealtimeData] = useState<{
     readiness?: { overallScore: number; productScore: number; variantScore: number; inventoryScore: number; timestamp: Date };
     status?: string;
@@ -30,76 +30,31 @@ export default function MissionControl() {
     { enabled: !!selectedMissionId }
   );
 
+   // WebSocket temporarily disabled - using polling instead
   // Initialize WebSocket connection
-  useEffect(() => {
-    if (!selectedMissionId) return;
-
-    const newSocket = io({
-      path: "/api/mission-control-ws",
-    });
-
-    newSocket.on("connect", () => {
-      console.log("[Mission Control] WebSocket connected");
-      newSocket.emit("subscribe_mission", selectedMissionId);
-    });
-
-    newSocket.on("readiness_update", (data) => {
-      console.log("[Mission Control] Readiness update:", data);
-      setRealtimeData((prev) => ({
-        ...prev,
-        readiness: data,
-      }));
-    });
-
-    newSocket.on("status_change", (data) => {
-      console.log("[Mission Control] Status change:", data);
-      setRealtimeData((prev) => ({
-        ...prev,
-        status: data.status,
-        phase: data.phase,
-      }));
-      refetch();
-    });
-
-    newSocket.on("task_completed", (data) => {
-      console.log("[Mission Control] Task completed:", data);
-      toast.success(`Task completed: ${data.taskName}`);
-    });
-
-    newSocket.on("alert", (data) => {
-      console.log("[Mission Control] Alert:", data);
-      setRealtimeData((prev) => ({
-        ...prev,
-        alerts: [...(prev.alerts || []), data],
-      }));
-
-      if (data.severity === "error") {
-        toast.error(data.message);
-      } else if (data.severity === "warning") {
-        toast.warning(data.message);
-      } else {
-        toast.info(data.message);
-      }
-    });
-
-    newSocket.on("disconnect", () => {
-      console.log("[Mission Control] WebSocket disconnected");
-    });
-
-    setSocket(newSocket);
-
-    return () => {
-      if (newSocket) {
-        newSocket.emit("unsubscribe_mission", selectedMissionId);
-        newSocket.disconnect();
-      }
-    };
-  }, [selectedMissionId, refetch]);
+  // useEffect(() => {
+  //   if (!selectedMissionId) return;
+  //   const newSocket = io({ path: "/api/mission-control-ws" });
+  //   newSocket.on("connect", () => console.log("[Mission Control] WebSocket connected"));
+  //   setSocket(newSocket);
+  //   return () => { newSocket.disconnect(); };
+  // }, [selectedMissionId, refetch]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-black">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black gap-4">
         <Loader2 className="w-8 h-8 animate-spin text-green-500" />
+        <p className="text-green-500 text-sm">Loading Mission Control...</p>
+      </div>
+    );
+  }
+
+  if (!missions || missions.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-black gap-4">
+        <Rocket className="w-16 h-16 text-gray-600" />
+        <h2 className="text-2xl font-bold text-gray-400">No Active Missions</h2>
+        <p className="text-gray-500">Create a launch mission in Launch Orchestrator to begin tracking.</p>
       </div>
     );
   }

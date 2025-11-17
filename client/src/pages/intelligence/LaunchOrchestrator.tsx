@@ -176,7 +176,7 @@ export default function LaunchOrchestrator() {
                         <div>
                           <p className="text-sm font-semibold">Launch Date</p>
                           <p className="text-sm text-muted-foreground">
-                            {new Date(mission.launchDate).toLocaleDateString()}
+                            {mission.launchDatetime ? new Date(mission.launchDatetime).toLocaleDateString() : "Not set"}
                           </p>
                         </div>
                       </div>

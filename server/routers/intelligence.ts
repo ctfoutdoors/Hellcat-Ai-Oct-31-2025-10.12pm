@@ -227,6 +227,12 @@ export const intelligenceRouter = router({
       return await getAllMissions();
     }),
 
+    active: protectedProcedure.query(async () => {
+      const { getAllMissions } = await import("../services/launchOrchestrator");
+      const missions = await getAllMissions();
+      return missions.filter((m: any) => m.status === 'active' || m.status === 'planning');
+    }),
+
     get: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ input }) => {

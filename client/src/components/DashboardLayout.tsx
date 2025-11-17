@@ -111,12 +111,13 @@ const menuItems: MenuItem[] = [
     title: "Intelligence",
     icon: Lightbulb,
     children: [
-      { title: "Brand Intelligence", path: "/intelligence/brand" },
-      { title: "Competitor Intelligence", path: "/intelligence/competitor" },
       { title: "Product Intelligence", path: "/intelligence/product" },
-      { title: "Market Intelligence", path: "/intelligence/market" },
-      { title: "Customer Intelligence", path: "/intelligence/customer" },
-      { title: "Threat Intelligence", path: "/intelligence/threat" },
+      { title: "Variant Intelligence", path: "/intelligence/variant" },
+      { title: "Inventory Intelligence", path: "/intelligence/inventory" },
+      { title: "Launch Orchestrator", path: "/intelligence/orchestrator" },
+      { title: "Mission Control", path: "/intelligence/mission-control" },
+      { title: "Templates", path: "/intelligence/templates" },
+      { title: "Settings", path: "/intelligence/settings" },
     ],
   },
   {

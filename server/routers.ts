@@ -29,11 +29,13 @@ import type { URLType } from './stampscom';
 import { integrationsRouter } from './routers/integrations';
 import { storesRouter } from './routers/stores';
 import { crmRouter } from './routers/crm';
+import { intelligenceRouter } from './routers/intelligence';
 
 export const appRouter = router({
   integrations: integrationsRouter,
   stores: storesRouter,
   crm: crmRouter,
+  intelligence: intelligenceRouter,
   orders: router({
     list: publicProcedure
       .input(z.object({

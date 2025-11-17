@@ -545,6 +545,21 @@ export const products = mysqlTable("products", {
   supplier: varchar("supplier", { length: 255 }),
   leadTimeDays: int("leadTimeDays"),
   isActive: boolean("isActive").default(true).notNull(),
+  // Intelligence Suite fields
+  lifecycleState: mysqlEnum("lifecycleState", ["concept", "development", "pre_launch", "active_launch", "post_launch", "cruise", "end_of_life"]).default("concept"),
+  intelligenceMetadata: json("intelligenceMetadata").$type<{
+    assets?: { type: string; status: string; url?: string }[];
+    requirements?: { name: string; completed: boolean }[];
+    readinessScore?: number;
+    blockers?: string[];
+  }>(),
+  variantSummary: json("variantSummary").$type<{
+    total?: number;
+    ready?: number;
+    blocked?: number;
+    avgReadiness?: number;
+  }>(),
+  lastIntelligenceUpdate: timestamp("lastIntelligenceUpdate"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
@@ -573,6 +588,14 @@ export const inventoryLevels = mysqlTable("inventory_levels", {
   quantity: int("quantity").notNull(),
   reservedQuantity: int("reservedQuantity").default(0).notNull(),
   lastCountDate: timestamp("lastCountDate"),
+  // Intelligence Suite fields
+  safetyStockThreshold: int("safetyStockThreshold"),
+  projectedDepletionDate: timestamp("projectedDepletionDate"),
+  intelligenceFlags: json("intelligenceFlags").$type<{
+    lowStock?: boolean;
+    incomingShipment?: boolean;
+    criticalLevel?: boolean;
+  }>(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
@@ -1479,3 +1502,114 @@ export const calendarMeetings = mysqlTable("calendar_meetings", {
 
 export type CalendarMeeting = typeof calendarMeetings.$inferSelect;
 export type InsertCalendarMeeting = typeof calendarMeetings.$inferInsert;
+
+
+// ============================================================================
+// INTELLIGENCE SUITE TABLES
+// ============================================================================
+
+export const launchMissions = mysqlTable("launch_missions", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull(),
+  missionName: varchar("missionName", { length: 255 }).notNull(),
+  launchDatetime: timestamp("launchDatetime").notNull(),
+  currentPhase: mysqlEnum("currentPhase", ["initial_briefing", "pre_launch", "launch_execution", "post_launch", "cruise"]).default("initial_briefing").notNull(),
+  settingsVersion: int("settingsVersion").notNull(),
+  missionConfig: json("missionConfig").$type<{
+    phases?: { name: string; tasks: any[]; checklists: any[] }[];
+    notifications?: any[];
+    collaborators?: any[];
+  }>(),
+  readinessSnapshot: json("readinessSnapshot").$type<{
+    overallScore?: number;
+    productReady?: boolean;
+    variantsReady?: boolean;
+    inventoryReady?: boolean;
+    assetsReady?: boolean;
+    blockers?: string[];
+    lastCalculated?: string;
+  }>(),
+  collaborators: json("collaborators").$type<{
+    internal?: { userId: number; role: string }[];
+    external?: { email: string; name: string; role: string; permissions: string[] }[];
+  }>(),
+  status: mysqlEnum("status", ["planning", "active", "completed", "aborted"]).default("planning").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  productIdx: index("product_idx").on(table.productId),
+  launchDateIdx: index("launch_date_idx").on(table.launchDatetime),
+}));
+
+export const missionEvents = mysqlTable("mission_events", {
+  id: int("id").autoincrement().primaryKey(),
+  missionId: int("missionId").notNull(),
+  eventType: varchar("eventType", { length: 100 }).notNull(),
+  eventData: json("eventData").$type<{
+    taskId?: number;
+    assetType?: string;
+    vote?: string;
+    reasoning?: string;
+    [key: string]: any;
+  }>(),
+  triggeredBy: int("triggeredBy"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+}, (table) => ({
+  missionIdx: index("mission_idx").on(table.missionId),
+  timestampIdx: index("timestamp_idx").on(table.timestamp),
+  eventTypeIdx: index("event_type_idx").on(table.eventType),
+}));
+
+export const intelligenceSettings = mysqlTable("intelligence_settings", {
+  id: int("id").autoincrement().primaryKey(),
+  version: int("version").notNull().unique(),
+  timingRules: json("timingRules").$type<{
+    assetDeadlineDays?: number;
+    copyDeadlineDays?: number;
+    freezeWindowDays?: number;
+    goNoGoTimingDays?: number;
+    reviewTimingDays?: number;
+    escalationDelayHours?: number;
+    syncFrequencyMinutes?: number;
+  }>(),
+  thresholds: json("thresholds").$type<{
+    inventoryThresholds?: { [category: string]: number };
+    safetyStockMultiplier?: number;
+    variantReadinessMinScore?: number;
+    minimumApprovalQuorum?: number;
+  }>(),
+  templates: json("templates").$type<{
+    defaultTasks?: { [productType: string]: any[] };
+    defaultChecklists?: any[];
+    assetRequirements?: any[];
+    notificationRules?: any[];
+    phaseRequirements?: any[];
+    fallbackOwners?: any[];
+  }>(),
+  activeFrom: timestamp("activeFrom").defaultNow().notNull(),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  versionIdx: index("version_idx").on(table.version),
+}));
+
+export const launchVotes = mysqlTable("launch_votes", {
+  id: int("id").autoincrement().primaryKey(),
+  missionId: int("missionId").notNull(),
+  voterId: int("voterId").notNull(),
+  vote: mysqlEnum("vote", ["go", "no_go"]).notNull(),
+  reasoning: text("reasoning"),
+  timestamp: timestamp("timestamp").defaultNow().notNull(),
+}, (table) => ({
+  missionIdx: index("mission_idx").on(table.missionId),
+  voterIdx: index("voter_idx").on(table.voterId),
+}));
+
+export type LaunchMission = typeof launchMissions.$inferSelect;
+export type InsertLaunchMission = typeof launchMissions.$inferInsert;
+export type MissionEvent = typeof missionEvents.$inferSelect;
+export type InsertMissionEvent = typeof missionEvents.$inferInsert;
+export type IntelligenceSettings = typeof intelligenceSettings.$inferSelect;
+export type InsertIntelligenceSettings = typeof intelligenceSettings.$inferInsert;
+export type LaunchVote = typeof launchVotes.$inferSelect;
+export type InsertLaunchVote = typeof launchVotes.$inferInsert;

@@ -53,6 +53,13 @@ import ProductIntelligence from "./pages/ProductIntelligence";
 import MarketIntelligence from "./pages/MarketIntelligence";
 import CustomerIntelligence from "./pages/CustomerIntelligence";
 import ThreatIntelligence from "./pages/ThreatIntelligence";
+import IntelligenceSettings from "./pages/intelligence/Settings";
+import IntelligenceProductIntelligence from "./pages/intelligence/ProductIntelligence";
+import VariantIntelligence from "./pages/intelligence/VariantIntelligence";
+import InventoryIntelligence from "./pages/intelligence/InventoryIntelligence";
+import LaunchOrchestrator from "./pages/intelligence/LaunchOrchestrator";
+import MissionControl from "./pages/intelligence/MissionControl";
+import IntelligenceTemplates from "./pages/intelligence/Templates";
 import InvoiceOCR from "./pages/InvoiceOCR";
 import ImportExport from "./pages/ImportExport";
 import ShipStationAutoImport from "./pages/ShipStationAutoImport";
@@ -114,13 +121,22 @@ function Router() {
       <Route path="/crm/vendors/:id" component={VendorProfile} />
       <Route path="/calendar" component={Calendar} />
         
-        {/* Intelligence Module */}
+        {/* Intelligence Module - Legacy */}
         <Route path="/intelligence/brand" component={BrandIntelligence} />
         <Route path="/intelligence/competitor" component={CompetitorIntelligence} />
-        <Route path="/intelligence/product" component={ProductIntelligence} />
+        <Route path="/intelligence/product-old" component={ProductIntelligence} />
         <Route path="/intelligence/market" component={MarketIntelligence} />
         <Route path="/intelligence/customer" component={CustomerIntelligence} />
         <Route path="/intelligence/threat" component={ThreatIntelligence} />
+        
+        {/* Intelligence Suite - New Multi-Module System */}
+        <Route path="/intelligence/settings" component={IntelligenceSettings} />
+        <Route path="/intelligence/product" component={IntelligenceProductIntelligence} />
+        <Route path="/intelligence/variant" component={VariantIntelligence} />
+        <Route path="/intelligence/inventory" component={InventoryIntelligence} />
+        <Route path="/intelligence/orchestrator" component={LaunchOrchestrator} />
+        <Route path="/intelligence/mission-control" component={MissionControl} />
+        <Route path="/intelligence/templates" component={IntelligenceTemplates} />
         
                {/* Settings */}
         <Route path="/settings" component={Settings} />

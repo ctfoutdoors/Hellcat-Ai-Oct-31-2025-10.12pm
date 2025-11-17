@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 import { router, protectedProcedure } from '../_core/trpc';
 import { getDb } from "../db";
 import { 
@@ -27,6 +27,7 @@ export const poRouter = router({
       vendorId: z.number(),
     }))
     .query(async ({ input }) => {
+      console.log('[PO Router] listByVendor called with vendorId:', input.vendorId);
       const db = await getDb();
       if (!db) throw new Error('Database not available');
       
@@ -36,6 +37,7 @@ export const poRouter = router({
         .where(eq(purchaseOrders.vendorId, input.vendorId))
         .orderBy(desc(purchaseOrders.orderDate));
       
+      console.log('[PO Router] Found orders:', orders.length);
       return { orders };
     }),
   

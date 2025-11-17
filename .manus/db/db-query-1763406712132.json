@@ -1,0 +1,17 @@
+{
+  "query": "SELECT po.id, po.poNumber, po.status, po.totalAmount, COUNT(li.id) as lineItemCount \nFROM purchase_orders po \nLEFT JOIN po_line_items li ON po.id = li.poId \nWHERE po.poNumber = '546337' \nGROUP BY po.id;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT po.id, po.poNumber, po.status, po.totalAmount, COUNT(li.id) as lineItemCount \nFROM purchase_orders po \nLEFT JOIN po_line_items li ON po.id = li.poId \nWHERE po.poNumber = '546337' \nGROUP BY po.id;",
+  "rows": [
+    {
+      "id": "1",
+      "poNumber": "546337",
+      "status": "delivered",
+      "totalAmount": "725287",
+      "lineItemCount": "4"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpoNumber\tstatus\ttotalAmount\tlineItemCount\n1\t546337\tdelivered\t725287\t4\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

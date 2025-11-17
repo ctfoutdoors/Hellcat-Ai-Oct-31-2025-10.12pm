@@ -564,3 +564,20 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Verify invoice linkage (Invoice #555529)
 - [ ] Test receiving verification workflow
 - [ ] Create comprehensive checkpoint
+
+## PO Intake System ✅
+- [x] Fix database schema mismatch (purchaseOrders table)
+- [x] Update drizzle schema to match actual database structure
+- [x] Insert PO #546337 from Yazoo Mills into database  
+- [x] Insert 4 line items (Small Tube, Medium Tube, Large Tube, Extra Large Tube)
+- [x] Insert shipment BOL #167533 with tracking
+- [x] Insert invoice #555529
+- [x] Create PO router with tRPC endpoints (listByVendor, getDetail, list, create, updateStatus, addShipment, addInvoice, addReceiving)
+- [x] Integrate PO data into vendor detail page
+- [x] Display PO count and total spent in vendor stats
+- [x] Add Purchase Orders tab to vendor detail
+- [ ] Build PO detail page (/po/:id) with Overview, Line Items, Shipments, Invoices tabs
+- [ ] Add PDF parsing service for BOL documents
+- [ ] Add PDF parsing service for invoice documents
+- [ ] Create email automation to process incoming PO emails
+- [ ] Test complete PO workflow from email to database

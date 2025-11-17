@@ -1,0 +1,39 @@
+{
+  "query": "SELECT * FROM purchase_orders WHERE vendorId = 1 ORDER BY orderDate DESC;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT * FROM purchase_orders WHERE vendorId = 1 ORDER BY orderDate DESC;",
+  "rows": [
+    {
+      "id": "1",
+      "poNumber": "546337",
+      "vendorId": "1",
+      "orderDate": "2025-11-12 00:00:00",
+      "shipDate": "2025-11-14 00:00:00",
+      "expectedDate": "2025-11-18 00:00:00",
+      "receivedDate": "2025-11-18 10:30:00",
+      "status": "delivered",
+      "subtotal": "631000",
+      "shippingCost": "71787",
+      "tax": "22500",
+      "totalAmount": "725287",
+      "paymentMethod": "Credit Card",
+      "paymentStatus": "paid",
+      "paidDate": "2025-11-20 00:00:00",
+      "shipToName": "Catch The Fever",
+      "shipToAddress": "3 Catch The Fever Lane",
+      "shipToCity": "Byhalia",
+      "shipToState": "MS",
+      "shipToZip": "38611",
+      "shipToCountry": "USA",
+      "notes": "Shipping tubes order - 4 SKUs (2\", 3\", 5\", 6\" diameter). BOL #167533, Invoice #555529",
+      "internalNotes": "NULL",
+      "emailThreadId": "NULL",
+      "createdBy": "1",
+      "createdAt": "2025-11-17 18:44:23",
+      "updatedAt": "2025-11-17 18:44:23"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpoNumber\tvendorId\torderDate\tshipDate\texpectedDate\treceivedDate\tstatus\tsubtotal\tshippingCost\ttax\ttotalAmount\tpaymentMethod\tpaymentStatus\tpaidDate\tshipToName\tshipToAddress\tshipToCity\tshipToState\tshipToZip\tshipToCountry\tnotes\tinternalNotes\temailThreadId\tcreatedBy\tcreatedAt\tupdatedAt\n1\t546337\t1\t2025-11-12 00:00:00\t2025-11-14 00:00:00\t2025-11-18 00:00:00\t2025-11-18 10:30:00\tdelivered\t631000\t71787\t22500\t725287\tCredit Card\tpaid\t2025-11-20 00:00:00\tCatch The Fever\t3 Catch The Fever Lane\tByhalia\tMS\t38611\tUSA\tShipping tubes order - 4 SKUs (2\", 3\", 5\", 6\" diameter). BOL #167533, Invoice #555529\tNULL\tNULL\t1\t2025-11-17 18:44:23\t2025-11-17 18:44:23\n",
+  "stderr": "",
+  "execution_time_ms": 123
+}

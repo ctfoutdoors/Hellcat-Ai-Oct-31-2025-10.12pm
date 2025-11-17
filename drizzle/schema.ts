@@ -649,15 +649,36 @@ export const stockMovements = mysqlTable("stock_movements", {
 export const purchaseOrders = mysqlTable("purchase_orders", {
   id: int("id").autoincrement().primaryKey(),
   poNumber: varchar("poNumber", { length: 100 }).notNull().unique(),
-  vendorName: varchar("vendorName", { length: 255 }).notNull(),
+  vendorId: int("vendorId").notNull(),
   orderDate: timestamp("orderDate").notNull(),
+  shipDate: timestamp("shipDate"),
   expectedDate: timestamp("expectedDate"),
   receivedDate: timestamp("receivedDate"),
-  status: varchar("status", { length: 100 }),
-  totalAmount: decimal("totalAmount", { precision: 10, scale: 2 }),
+  status: varchar("status", { length: 100 }).default("pending"),
+  subtotal: int("subtotal").notNull(), // stored in cents
+  shippingCost: int("shippingCost").default(0),
+  tax: int("tax").default(0),
+  totalAmount: int("totalAmount").notNull(), // stored in cents
+  paymentMethod: varchar("paymentMethod", { length: 100 }),
+  paymentStatus: varchar("paymentStatus", { length: 50 }).default("unpaid"),
+  paidDate: timestamp("paidDate"),
+  shipToName: varchar("shipToName", { length: 255 }),
+  shipToAddress: varchar("shipToAddress", { length: 500 }),
+  shipToCity: varchar("shipToCity", { length: 100 }),
+  shipToState: varchar("shipToState", { length: 50 }),
+  shipToZip: varchar("shipToZip", { length: 20 }),
+  shipToCountry: varchar("shipToCountry", { length: 100 }).default("USA"),
+  notes: text("notes"),
+  internalNotes: text("internalNotes"),
+  emailThreadId: varchar("emailThreadId", { length: 255 }),
+  createdBy: int("createdBy"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 }, (table) => ({
   poNumberIdx: index("po_number_idx").on(table.poNumber),
+  vendorIdx: index("vendor_idx").on(table.vendorId),
+  orderDateIdx: index("order_date_idx").on(table.orderDate),
+  statusIdx: index("status_idx").on(table.status),
 }));
 
 export const poLineItems = mysqlTable("po_line_items", {

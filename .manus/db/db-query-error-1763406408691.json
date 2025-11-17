@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO purchase_orders (\n  poNumber, vendorId, orderDate, expectedDate, status, \n  subtotal, tax, shipping, totalAmount, \n  paymentTerms, notes, createdAt\n) VALUES (\n  '546337', 1, '2024-11-15', '2024-12-01', 'in_transit',\n  6684.00, 468.88, 100.00, 7252.88,\n  'Net 30', 'Shipping tubes order - 4 SKUs (Small, Medium, Large, XL)', NOW()\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO purchase_orders (\n  poNumber, vendorId, orderDate, expectedDate, status, \n  subtotal, tax, shipping, totalAmount, \n  paymentTerms, notes, createdAt\n) VALUES (\n  '546337', 1, '2024-11-15', '2024-12-01', 'in_transit',\n  6684.00, 468.88, 100.00, 7252.88,\n  'Net 30', 'Shipping tubes order - 4 SKUs (Small, Medium, Large, XL)', NOW()\n);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'shipping' in 'field list'"
+  ]
+}

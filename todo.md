@@ -467,3 +467,33 @@ All major phases of the CRM overhaul have been successfully implemented.
 - [ ] Test Templates module
 - [ ] Create final checkpoint
 - [ ] Publish to production
+
+
+---
+
+## MISSION CONTROL REDESIGN - Match Platform Design System
+
+### Issue Identified:
+Mission Control uses dark NASA-style theme (black background, green monospace text, terminal aesthetic) that completely clashes with the rest of Hellcat AI's professional blue/slate design system.
+
+### Phase 1: Design Analysis
+- [ ] Review existing platform colors (background, card, text, borders)
+- [ ] Identify typography system (font family, sizes, weights)
+- [ ] Document spacing and layout patterns
+- [ ] Review other Intelligence modules for consistency
+
+### Phase 2: Mission Control Redesign ✅
+- [x] Replace black background with platform background color
+- [x] Replace green monospace text with platform typography
+- [x] Replace terminal-style cards with shadcn/ui Card components
+- [x] Update color scheme to match platform (blue/slate/accent)
+- [x] Preserve real-time monitoring functionality
+- [x] Keep mission selection dropdown
+- [x] Maintain readiness score displays
+- [x] Keep countdown timers and live indicators
+
+### Phase 3: Testing & Consistency ✅
+- [x] Test Mission Control with new design
+- [x] Verify all functionality still works (mission selection, readiness display, timeline, alerts)
+- [x] Check other Intelligence modules for style consistency
+- [ ] Create final checkpoint

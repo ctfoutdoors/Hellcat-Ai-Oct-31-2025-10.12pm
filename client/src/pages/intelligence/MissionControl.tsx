@@ -4,19 +4,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, Rocket, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Clock, Users } from "lucide-react";
+import { Loader2, Rocket, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Clock, Users, Target, Calendar } from "lucide-react";
 import { toast } from "sonner";
-// import { io, Socket } from "socket.io-client"; // Temporarily disabled
 
 /**
  * Mission Control Dashboard
- * NASA-style mission control with real-time WebSocket updates
- * Dark theme, 3x3 grid layout, high information density
+ * Real-time launch monitoring with platform-consistent design
  */
 
 export default function MissionControl() {
   const [selectedMissionId, setSelectedMissionId] = useState<number | null>(null);
-  // const [socket, setSocket] = useState<Socket | null>(null); // Temporarily disabled
   const [realtimeData, setRealtimeData] = useState<{
     readiness?: { overallScore: number; productScore: number; variantScore: number; inventoryScore: number; timestamp: Date };
     status?: string;
@@ -30,31 +27,21 @@ export default function MissionControl() {
     { enabled: !!selectedMissionId }
   );
 
-   // WebSocket temporarily disabled - using polling instead
-  // Initialize WebSocket connection
-  // useEffect(() => {
-  //   if (!selectedMissionId) return;
-  //   const newSocket = io({ path: "/api/mission-control-ws" });
-  //   newSocket.on("connect", () => console.log("[Mission Control] WebSocket connected"));
-  //   setSocket(newSocket);
-  //   return () => { newSocket.disconnect(); };
-  // }, [selectedMissionId, refetch]);
-
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black gap-4">
-        <Loader2 className="w-8 h-8 animate-spin text-green-500" />
-        <p className="text-green-500 text-sm">Loading Mission Control...</p>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <p className="text-muted-foreground text-sm">Loading Mission Control...</p>
       </div>
     );
   }
 
   if (!missions || missions.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black gap-4">
-        <Rocket className="w-16 h-16 text-gray-600" />
-        <h2 className="text-2xl font-bold text-gray-400">No Active Missions</h2>
-        <p className="text-gray-500">Create a launch mission in Launch Orchestrator to begin tracking.</p>
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <Rocket className="w-16 h-16 text-muted-foreground" />
+        <h2 className="text-2xl font-semibold">No Active Missions</h2>
+        <p className="text-muted-foreground">Create a launch mission in Launch Orchestrator to begin tracking.</p>
       </div>
     );
   }
@@ -65,29 +52,59 @@ export default function MissionControl() {
   const currentStatus = realtimeData.status || mission?.status || "unknown";
   const currentPhase = realtimeData.phase || mission?.currentPhase || "unknown";
 
+  const getReadinessColor = (score: number) => {
+    if (score >= 90) return "text-green-600";
+    if (score >= 75) return "text-yellow-600";
+    if (score >= 50) return "text-orange-600";
+    return "text-red-600";
+  };
+
+  const getReadinessIcon = (score: number) => {
+    if (score >= 90) return <CheckCircle className="w-5 h-5 text-green-600" />;
+    if (score >= 75) return <Clock className="w-5 h-5 text-yellow-600" />;
+    return <AlertTriangle className="w-5 h-5 text-red-600" />;
+  };
+
+  const getStatusBadgeVariant = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "active":
+        return "default";
+      case "planning":
+        return "secondary";
+      case "on_hold":
+        return "outline";
+      case "completed":
+        return "default";
+      case "aborted":
+        return "destructive";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-black text-green-500 p-6 font-mono">
+    <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between border-b border-green-900 pb-4">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-wider">MISSION CONTROL</h1>
-          <p className="text-green-700 text-sm mt-1">REAL-TIME LAUNCH MONITORING SYSTEM</p>
+          <h1 className="text-3xl font-bold">Mission Control</h1>
+          <p className="text-muted-foreground">Real-time launch monitoring and tracking</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm">LIVE</span>
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">Live</span>
           </div>
           <Select
             value={selectedMissionId?.toString() || ""}
             onValueChange={(value) => setSelectedMissionId(parseInt(value))}
           >
-            <SelectTrigger className="w-[300px] bg-black border-green-900 text-green-500">
-              <SelectValue placeholder="SELECT MISSION" />
+            <SelectTrigger className="w-[300px]">
+              <SelectValue placeholder="Select Mission" />
             </SelectTrigger>
-            <SelectContent className="bg-black border-green-900">
+            <SelectContent>
               {activeMissions.map((m) => (
-                <SelectItem key={m.id} value={m.id.toString()} className="text-green-500">
+                <SelectItem key={m.id} value={m.id.toString()}>
                   {m.missionName}
                 </SelectItem>
               ))}
@@ -97,181 +114,216 @@ export default function MissionControl() {
       </div>
 
       {!selectedMissionId ? (
-        <div className="flex flex-col items-center justify-center h-[60vh] text-center">
-          <Rocket className="w-24 h-24 text-green-900 mb-6" />
-          <p className="text-xl text-green-700">SELECT A MISSION TO BEGIN MONITORING</p>
-        </div>
-      ) : !mission ? (
-        <div className="flex items-center justify-center h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin text-green-500" />
-        </div>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <Rocket className="w-16 h-16 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">Select a Mission to Begin Monitoring</h3>
+            <p className="text-muted-foreground">Choose a mission from the dropdown above to view real-time status and readiness metrics.</p>
+          </CardContent>
+        </Card>
       ) : (
-        <div className="space-y-6">
-          {/* Mission Header */}
-          <Card className="bg-black border-green-900">
+        <>
+          {/* Mission Header Card */}
+          <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl text-green-500 tracking-wider">
-                  {mission.missionName}
-                </CardTitle>
-                <div className="flex items-center gap-4">
-                  <Badge variant="outline" className="bg-black border-green-700 text-green-500">
-                    STATUS: {currentStatus.toUpperCase()}
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <CardTitle className="text-2xl">{mission?.missionName}</CardTitle>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Target className="w-4 h-4" />
+                    <span>Product ID: {mission?.productId}</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant={getStatusBadgeVariant(currentStatus)}>
+                    {currentStatus.replace("_", " ").toUpperCase()}
                   </Badge>
-                  <Badge variant="outline" className="bg-black border-green-700 text-green-500">
-                    PHASE: {currentPhase.toUpperCase().replace("_", " ")}
-                  </Badge>
+                  <Badge variant="outline">{currentPhase.replace("_", " ").toUpperCase()}</Badge>
                 </div>
               </div>
             </CardHeader>
           </Card>
 
-          {/* 3x3 Grid Dashboard */}
-          <div className="grid grid-cols-3 gap-4">
+          {/* Readiness Metrics Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Overall Readiness */}
-            <Card className="bg-black border-green-900 col-span-1 row-span-2">
-              <CardHeader>
-                <CardTitle className="text-green-500 text-sm tracking-wider">OVERALL READINESS</CardTitle>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Overall Readiness</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex flex-col items-center justify-center h-full">
-                  <div className="text-7xl font-bold text-green-500 mb-4">
-                    {readiness.overallScore || 0}%
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {getReadinessIcon(readiness.overallScore || 0)}
+                    <span className={`text-3xl font-bold ${getReadinessColor(readiness.overallScore || 0)}`}>
+                      {readiness.overallScore || 0}%
+                    </span>
                   </div>
                   {(readiness.overallScore || 0) >= 90 ? (
-                    <CheckCircle className="w-12 h-12 text-green-500" />
-                  ) : (readiness.overallScore || 0) >= 70 ? (
-                    <Clock className="w-12 h-12 text-yellow-500" />
+                    <TrendingUp className="w-5 h-5 text-green-600" />
                   ) : (
-                    <AlertTriangle className="w-12 h-12 text-red-500" />
+                    <TrendingDown className="w-5 h-5 text-red-600" />
                   )}
                 </div>
               </CardContent>
             </Card>
 
             {/* Product Readiness */}
-            <Card className="bg-black border-green-900">
-              <CardHeader>
-                <CardTitle className="text-green-500 text-xs tracking-wider">PRODUCT READINESS</CardTitle>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Product Readiness</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-green-500">{readiness.productScore || 0}%</div>
-                <div className="mt-2 flex items-center gap-2">
-                  {(readiness.productScore || 0) >= 80 ? (
-                    <TrendingUp className="w-4 h-4 text-green-500" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4 text-red-500" />
-                  )}
-                  <span className="text-xs text-green-700">PRODUCT INTELLIGENCE</span>
+                <div className="flex items-center gap-2">
+                  {getReadinessIcon(readiness.productScore || 0)}
+                  <span className={`text-3xl font-bold ${getReadinessColor(readiness.productScore || 0)}`}>
+                    {readiness.productScore || 0}%
+                  </span>
                 </div>
+                <p className="text-xs text-muted-foreground mt-2">Product Intelligence</p>
               </CardContent>
             </Card>
 
             {/* Variant Readiness */}
-            <Card className="bg-black border-green-900">
-              <CardHeader>
-                <CardTitle className="text-green-500 text-xs tracking-wider">VARIANT READINESS</CardTitle>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Variant Readiness</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-green-500">{readiness.variantScore || 0}%</div>
-                <div className="mt-2 flex items-center gap-2">
-                  {(readiness.variantScore || 0) >= 80 ? (
-                    <TrendingUp className="w-4 h-4 text-green-500" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4 text-red-500" />
-                  )}
-                  <span className="text-xs text-green-700">VARIANT INTELLIGENCE</span>
+                <div className="flex items-center gap-2">
+                  {getReadinessIcon(readiness.variantScore || 0)}
+                  <span className={`text-3xl font-bold ${getReadinessColor(readiness.variantScore || 0)}`}>
+                    {readiness.variantScore || 0}%
+                  </span>
                 </div>
+                <p className="text-xs text-muted-foreground mt-2">Variant Intelligence</p>
               </CardContent>
             </Card>
 
             {/* Inventory Readiness */}
-            <Card className="bg-black border-green-900">
-              <CardHeader>
-                <CardTitle className="text-green-500 text-xs tracking-wider">INVENTORY READINESS</CardTitle>
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-muted-foreground">Inventory Readiness</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-green-500">{readiness.inventoryScore || 0}%</div>
-                <div className="mt-2 flex items-center gap-2">
-                  {(readiness.inventoryScore || 0) >= 80 ? (
-                    <TrendingUp className="w-4 h-4 text-green-500" />
-                  ) : (
-                    <TrendingDown className="w-4 h-4 text-red-500" />
-                  )}
-                  <span className="text-xs text-green-700">INVENTORY INTELLIGENCE</span>
+                <div className="flex items-center gap-2">
+                  {getReadinessIcon(readiness.inventoryScore || 0)}
+                  <span className={`text-3xl font-bold ${getReadinessColor(readiness.inventoryScore || 0)}`}>
+                    {readiness.inventoryScore || 0}%
+                  </span>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Launch Timeline */}
-            <Card className="bg-black border-green-900">
-              <CardHeader>
-                <CardTitle className="text-green-500 text-xs tracking-wider">LAUNCH TIMELINE</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="text-sm">
-                    <span className="text-green-700">TARGET:</span>{" "}
-                    <span className="text-green-500">{new Date(mission.launchDate).toLocaleDateString()}</span>
-                  </div>
-                  <div className="text-sm">
-                    <span className="text-green-700">T-MINUS:</span>{" "}
-                    <span className="text-green-500">
-                      {Math.ceil((new Date(mission.launchDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))} DAYS
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Collaborators */}
-            <Card className="bg-black border-green-900">
-              <CardHeader>
-                <CardTitle className="text-green-500 text-xs tracking-wider flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  TEAM
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold text-green-500">
-                  {(mission.collaborators?.internal?.length || 0) + (mission.collaborators?.external?.length || 0)}
-                </div>
-                <div className="text-xs text-green-700 mt-2">ACTIVE COLLABORATORS</div>
-              </CardContent>
-            </Card>
-
-            {/* Alerts */}
-            <Card className="bg-black border-green-900 col-span-3">
-              <CardHeader>
-                <CardTitle className="text-green-500 text-sm tracking-wider">SYSTEM ALERTS</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 max-h-40 overflow-y-auto">
-                  {realtimeData.alerts && realtimeData.alerts.length > 0 ? (
-                    realtimeData.alerts.slice(-5).reverse().map((alert, idx) => (
-                      <div key={idx} className="flex items-center gap-3 text-xs border-l-2 border-green-700 pl-3 py-2">
-                        <AlertTriangle className={`w-4 h-4 ${
-                          alert.severity === "error" ? "text-red-500" :
-                          alert.severity === "warning" ? "text-yellow-500" :
-                          "text-green-500"
-                        }`} />
-                        <div className="flex-1">
-                          <span className="text-green-500">{alert.message}</span>
-                          <span className="text-green-700 ml-2">({alert.source})</span>
-                        </div>
-                        <span className="text-green-700">
-                          {new Date(alert.timestamp).toLocaleTimeString()}
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center text-green-700 py-4">NO ACTIVE ALERTS</div>
-                  )}
-                </div>
+                <p className="text-xs text-muted-foreground mt-2">Inventory Intelligence</p>
               </CardContent>
             </Card>
           </div>
-        </div>
+
+          {/* Mission Details Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Launch Timeline */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="w-5 h-5" />
+                  Launch Timeline
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Target Launch Date</span>
+                  <span className="font-medium">
+                    {mission?.launchDatetime ? new Date(mission.launchDatetime).toLocaleDateString() : "Not set"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Days Until Launch</span>
+                  <span className="font-medium">
+                    {mission?.launchDatetime
+                      ? Math.ceil((new Date(mission.launchDatetime).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                      : "N/A"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Created</span>
+                  <span className="font-medium">
+                    {mission?.createdAt ? new Date(mission.createdAt).toLocaleDateString() : "Unknown"}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Team */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="w-5 h-5" />
+                  Team
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Active Collaborators</span>
+                  <span className="text-2xl font-bold">{mission?.collaborators?.length || 0}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-4">
+                  {mission?.collaborators?.length
+                    ? "Team members actively working on this launch"
+                    : "No collaborators assigned yet"}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* System Alerts */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="w-5 h-5" />
+                System Alerts
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {!realtimeData.alerts || realtimeData.alerts.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  <CheckCircle className="w-12 h-12 mx-auto mb-2 text-green-600" />
+                  <p>No active alerts</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {realtimeData.alerts.map((alert, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-3 rounded-lg border ${
+                        alert.severity === "critical"
+                          ? "bg-red-50 border-red-200"
+                          : alert.severity === "warning"
+                          ? "bg-yellow-50 border-yellow-200"
+                          : "bg-blue-50 border-blue-200"
+                      }`}
+                    >
+                      <div className="flex items-start gap-2">
+                        <AlertTriangle
+                          className={`w-4 h-4 mt-0.5 ${
+                            alert.severity === "critical"
+                              ? "text-red-600"
+                              : alert.severity === "warning"
+                              ? "text-yellow-600"
+                              : "text-blue-600"
+                          }`}
+                        />
+                        <div className="flex-1">
+                          <p className="text-sm font-medium">{alert.message}</p>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {alert.source} • {new Date(alert.timestamp).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </>
       )}
     </div>
   );

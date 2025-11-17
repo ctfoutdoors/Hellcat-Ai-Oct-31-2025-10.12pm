@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { POCard } from "@/components/POCard";
 
 export default function VendorDetailNew() {
   const { id } = useParams();
@@ -217,12 +218,35 @@ export default function VendorDetailNew() {
                     />
                   </div>
                   <p className="text-sm text-muted-foreground">{healthAnalysis.summary}</p>
-                  {healthAnalysis.recommendations && (
-                    <div className="rounded-lg bg-muted p-4">
-                      <h4 className="font-semibold text-sm mb-2">AI Recommendations</h4>
-                      <ul className="text-sm space-y-1">
+                  
+                  {healthAnalysis.strengths && healthAnalysis.strengths.length > 0 && (
+                    <div className="rounded-lg bg-green-50 dark:bg-green-950 p-4">
+                      <h4 className="font-semibold text-sm mb-2 text-green-700 dark:text-green-300">Strengths</h4>
+                      <ul className="text-sm space-y-1 text-green-600 dark:text-green-400">
+                        {healthAnalysis.strengths.map((strength: string, i: number) => (
+                          <li key={i}>✓ {strength}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {healthAnalysis.concerns && healthAnalysis.concerns.length > 0 && (
+                    <div className="rounded-lg bg-yellow-50 dark:bg-yellow-950 p-4">
+                      <h4 className="font-semibold text-sm mb-2 text-yellow-700 dark:text-yellow-300">Concerns</h4>
+                      <ul className="text-sm space-y-1 text-yellow-600 dark:text-yellow-400">
+                        {healthAnalysis.concerns.map((concern: string, i: number) => (
+                          <li key={i}>⚠ {concern}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {healthAnalysis.recommendations && healthAnalysis.recommendations.length > 0 && (
+                    <div className="rounded-lg bg-blue-50 dark:bg-blue-950 p-4">
+                      <h4 className="font-semibold text-sm mb-2 text-blue-700 dark:text-blue-300">AI Recommendations</h4>
+                      <ul className="text-sm space-y-1 text-blue-600 dark:text-blue-400">
                         {healthAnalysis.recommendations.map((rec: string, i: number) => (
-                          <li key={i}>• {rec}</li>
+                          <li key={i}>→ {rec}</li>
                         ))}
                       </ul>
                     </div>
@@ -484,24 +508,7 @@ export default function VendorDetailNew() {
               </CardHeader>
               <CardContent className="space-y-2">
                 {purchaseOrders.slice(0, 5).map((po: any) => (
-                  <div
-                    key={po.id}
-                    className="flex items-center justify-between rounded-lg border p-3 hover:bg-muted/50 cursor-pointer"
-                    onClick={() => navigate(`/po/${po.id}`)}
-                  >
-                    <div>
-                      <p className="font-medium text-sm">PO #{po.poNumber}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(po.orderDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-sm">{formatCurrency(po.totalAmount)}</p>
-                      <Badge variant="outline" className="text-xs">
-                        {po.status}
-                      </Badge>
-                    </div>
-                  </div>
+                  <POCard key={po.id} po={po} />
                 ))}
               </CardContent>
             </Card>

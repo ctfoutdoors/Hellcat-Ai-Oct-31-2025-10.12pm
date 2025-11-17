@@ -355,4 +355,18 @@ export const poRouter = router({
       const data = await parsePurchaseOrder(input.pdfUrl);
       return data;
     }),
+
+  /**
+   * Track shipment using carrier tracking number
+   * Returns current status, location, and delivery estimate
+   */
+  trackShipment: protectedProcedure
+    .input(z.object({ 
+      trackingNumber: z.string(),
+      carrier: z.string()
+    }))
+    .mutation(async ({ input }) => {
+      const { trackShipment } = await import('../services/carrierTracking');
+      return await trackShipment(input.trackingNumber, input.carrier);
+    }),
 });

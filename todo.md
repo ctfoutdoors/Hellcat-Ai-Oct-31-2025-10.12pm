@@ -680,3 +680,38 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 ✅ Complete activity timeline
 ✅ Ready for LLM integration for health analysis
 
+
+
+---
+
+## Advanced Vendor & PO Features
+
+### Phase 1: Real LLM Vendor Health Analysis ✅
+- [x] Replace mock AI health analysis with real LLM integration
+- [x] Analyze vendor communication patterns from activities
+- [x] Analyze payment history and delivery performance
+- [x] Generate actionable recommendations based on data
+- [x] Calculate health score from multiple factors
+- [x] Create vendorHealthAnalysis service with LLM
+- [x] Update analyzeVendorHealth endpoint to use real service
+- [x] Display strengths, concerns, and recommendations in UI
+
+### Phase 2: PO Hover Previews & Expandable Rows ✅
+- [x] Add hover tooltip with PO quick view (vendor, dates, total, status)
+- [x] Implement expandable row functionality in PO table
+- [x] Show line items inline when row is expanded
+- [x] Add quick actions menu (View Full Details, Download PDF, Track Shipment)
+- [x] Style expanded rows with proper indentation
+- [x] Create POCard component with Tooltip and Collapsible
+- [x] Fetch line items dynamically when expanded
+- [x] Update VendorDetailNew to use POCard
+
+### Phase 3: AI-Powered BOL Tracking Automation ✅
+- [x] Create carrier tracking service (FedEx, UPS, USPS APIs)
+- [x] Implement trackShipment tRPC endpoint
+- [x] Add AI-powered parsing of carrier tracking pages with LLM vision
+- [x] Capture screenshot proof structure (ready for browser automation)
+- [x] Store screenshots in vendor_attachments with category='screenshot'
+- [ ] Display status timeline with visual progress indicator (UI component)
+- [ ] Auto-update shipment status from carrier data (automation)
+

@@ -1858,17 +1858,8 @@ export const crmRouter = router({
   analyzeVendorHealth: protectedProcedure
     .input(z.object({ vendorId: z.number() }))
     .query(async ({ input }) => {
-      // AI-powered relationship health analysis
-      // For now, return mock data - will implement LLM analysis later
-      return {
-        score: 85,
-        summary: "Strong relationship with consistent communication and timely deliveries. Recent quality concerns need attention.",
-        recommendations: [
-          "Schedule quarterly business review to discuss pricing",
-          "Follow up on quality audit findings from recent shipment",
-          "Consider increasing order volume for better pricing tiers"
-        ]
-      };
+      const { analyzeVendorHealth } = await import('../services/vendorHealthAnalysis');
+      return await analyzeVendorHealth(input.vendorId);
     }),
   
   // ============================================================================

@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO shipments (\n  poId, trackingNumber, bolNumber, carrier, shipDate, expectedDeliveryDate, deliveryDate,\n  status, totalPallets, totalCartons, freightClass, packageDescription, freightTerms\n) VALUES (\n  1,\n  '167533',\n  '167533',\n  'Geile Trucking',\n  '2025-11-14 00:00:00',\n  '2025-11-18 00:00:00',\n  '2025-11-18 10:30:00',\n  'delivered',\n  2,\n  4,\n  '100',\n  'Shipping tubes - various sizes (2\", 3\", 5\", 6\" diameter)',\n  'Prepaid'\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO shipments (\n  poId, trackingNumber, bolNumber, carrier, shipDate, expectedDeliveryDate, deliveryDate,\n  status, totalPallets, totalCartons, freightClass, packageDescription, freightTerms\n) VALUES (\n  1,\n  '167533',\n  '167533',\n  'Geile Trucking',\n  '2025-11-14 00:00:00',\n  '2025-11-18 00:00:00',\n  '2025-11-18 10:30:00',\n  'delivered',\n  2,\n  4,\n  '100',\n  'Shipping tubes - various sizes (2\", 3\", 5\", 6\" diameter)',\n  'Prepaid'\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 66
+}

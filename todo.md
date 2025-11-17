@@ -497,3 +497,70 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Verify all functionality still works (mission selection, readiness display, timeline, alerts)
 - [x] Check other Intelligence modules for style consistency
 - [ ] Create final checkpoint
+
+
+---
+
+## PO INTAKE SYSTEM (NEW FEATURE)
+
+### Phase 1: Database Schema Design
+- [ ] Design vendors table (company info, addresses, phone, website, customer#)
+- [ ] Design vendor_contacts table (name, email, phone, role, primary contact flag)
+- [ ] Design purchase_orders table (PO#, vendor, order date, ship date, status, total)
+- [ ] Design po_line_items table (SKU, description, quantity, unit price, extended price)
+- [ ] Design shipments table (BOL#, carrier, ship date, delivery date, weight, pallets, cartons)
+- [ ] Design invoices table (invoice#, PO#, invoice date, payment method, amount)
+- [ ] Design receiving_records table (received date, verified by, discrepancies)
+- [ ] Add foreign key relationships and indexes
+- [ ] Push schema to database
+
+### Phase 2: Document Parsing Service
+- [ ] Build PDF text extraction service for BOL documents
+- [ ] Build PDF text extraction service for invoices
+- [ ] Create BOL field parser (BOL#, carrier, dates, weight, packages)
+- [ ] Create invoice field parser (invoice#, PO#, line items, totals)
+- [ ] Add OCR fallback for scanned documents
+- [ ] Test parsing with Yazoo Mills sample documents
+
+### Phase 3: Vendor & Contact CRM
+- [ ] Add "Vendors" section to CRM module
+- [ ] Create vendor list page with search and filters
+- [ ] Create vendor detail page showing contacts and POs
+- [ ] Build vendor creation/edit forms
+- [ ] Build contact management under vendor accounts
+- [ ] Add Yazoo Mills Inc as sample vendor
+- [ ] Add Mya Scott and Cheryl Brown as contacts
+
+### Phase 4: PO Management UI
+- [ ] Create PO list view under vendor account
+- [ ] Build PO detail page (header, line items, documents)
+- [ ] Add PO creation form (manual entry)
+- [ ] Add PO import from email/documents (automated)
+- [ ] Display linked BOL, invoice, and email thread
+- [ ] Show PO status workflow (Pending → Shipped → Delivered → Received)
+- [ ] Add line item verification checkboxes
+
+### Phase 5: Shipment Tracking
+- [ ] Build shipment tracking page with BOL lookup
+- [ ] Display carrier information and tracking timeline
+- [ ] Show package details (weight, pallets, cartons, special instructions)
+- [ ] Add expected vs actual delivery date tracking
+- [ ] Create shipment status updates (In Transit, Delivered, Received)
+- [ ] Link shipment to PO and vendor
+
+### Phase 6: Email Intake Automation
+- [ ] Design email parsing workflow for PO-related emails
+- [ ] Extract attachments (BOL, invoice PDFs) from emails
+- [ ] Parse email body for dates, tracking info, notes
+- [ ] Auto-create PO records from parsed documents
+- [ ] Link email thread to PO for communication history
+- [ ] Send notifications to receiving team on new shipments
+
+### Phase 7: Testing & Verification
+- [ ] Test complete workflow with Order #546337 sample data
+- [ ] Verify vendor/contact creation (Yazoo Mills)
+- [ ] Verify PO creation with all line items
+- [ ] Verify BOL tracking (BOL #167533)
+- [ ] Verify invoice linkage (Invoice #555529)
+- [ ] Test receiving verification workflow
+- [ ] Create comprehensive checkpoint

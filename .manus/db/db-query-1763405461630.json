@@ -1,0 +1,27 @@
+{
+  "query": "SELECT * FROM vendors LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT * FROM vendors LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "vendorNumber": "YAZOO001",
+      "companyName": "Yazoo Mills Inc",
+      "contactName": "Mya Scott",
+      "email": "mscott@yazoomills.com",
+      "phone": "717-624-8993",
+      "website": "https://yazoomills.com",
+      "address": "NULL",
+      "paymentTerms": "Net 30",
+      "taxId": "NULL",
+      "notes": "Shipping tubes manufacturer - 305 Commerce St, New Oxford, PA 17350",
+      "active": "1",
+      "createdAt": "2025-11-17 18:43:50",
+      "updatedAt": "2025-11-17 18:43:50",
+      "customerNumber": "Q3854"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tvendorNumber\tcompanyName\tcontactName\temail\tphone\twebsite\taddress\tpaymentTerms\ttaxId\tnotes\tactive\tcreatedAt\tupdatedAt\tcustomerNumber\n1\tYAZOO001\tYazoo Mills Inc\tMya Scott\tmscott@yazoomills.com\t717-624-8993\thttps://yazoomills.com\tNULL\tNet 30\tNULL\tShipping tubes manufacturer - 305 Commerce St, New Oxford, PA 17350\t1\t2025-11-17 18:43:50\t2025-11-17 18:43:50\tQ3854\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO vendors (\n  vendorName, customerNumber, contactName, contactEmail, contactPhone,\n  address, city, state, zip, country, website, notes\n) VALUES (\n  'Yazoo Mills Inc',\n  'Q3854',\n  'Mya Scott',\n  'mscott@yazoomills.com',\n  '717-624-8993',\n  '305 Commerce St',\n  'New Oxford',\n  'PA',\n  '17350',\n  'USA',\n  'https://yazoomills.com',\n  'Shipping tubes manufacturer - Order #546337'\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO vendors (\n  vendorName, customerNumber, contactName, contactEmail, contactPhone,\n  address, city, state, zip, country, website, notes\n) VALUES (\n  'Yazoo Mills Inc',\n  'Q3854',\n  'Mya Scott',\n  'mscott@yazoomills.com',\n  '717-624-8993',\n  '305 Commerce St',\n  'New Oxford',\n  'PA',\n  '17350',\n  'USA',\n  'https://yazoomills.com',\n  'Shipping tubes manufacturer - Order #546337'\n)",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'vendorName' in 'field list'"
+  ]
+}

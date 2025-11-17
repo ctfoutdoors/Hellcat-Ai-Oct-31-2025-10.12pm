@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO receiving_logs (\n  poId, shipmentId, receivedDate, quantityReceived, receivedBy,\n  condition, hasDiscrepancies, notes\n) VALUES (\n  1, 1, '2025-11-18 10:30:00', 3000, 1, 'good', FALSE,\n  'All 4 SKUs received in good condition. Verified quantities match invoice.'\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO receiving_logs (\n  poId, shipmentId, receivedDate, quantityReceived, receivedBy,\n  condition, hasDiscrepancies, notes\n) VALUES (\n  1, 1, '2025-11-18 10:30:00', 3000, 1, 'good', FALSE,\n  'All 4 SKUs received in good condition. Verified quantities match invoice.'\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 65
+}

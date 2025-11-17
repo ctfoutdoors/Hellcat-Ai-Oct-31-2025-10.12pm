@@ -1,0 +1,20 @@
+{
+  "query": "SELECT id, vendorNumber, companyName, contactName, email, phone, active, createdAt FROM vendors;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT id, vendorNumber, companyName, contactName, email, phone, active, createdAt FROM vendors;",
+  "rows": [
+    {
+      "id": "1",
+      "vendorNumber": "YAZOO001",
+      "companyName": "Yazoo Mills Inc",
+      "contactName": "Mya Scott",
+      "email": "mscott@yazoomills.com",
+      "phone": "717-624-8993",
+      "active": "1",
+      "createdAt": "2025-11-17 18:43:50"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tvendorNumber\tcompanyName\tcontactName\temail\tphone\tactive\tcreatedAt\n1\tYAZOO001\tYazoo Mills Inc\tMya Scott\tmscott@yazoomills.com\t717-624-8993\t1\t2025-11-17 18:43:50\n",
+  "stderr": "",
+  "execution_time_ms": 52
+}

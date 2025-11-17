@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO po_line_items (\n  poId, sku, productName, description, quantity, receivedQuantity,\n  unitCost, extendedPrice, lineNumber, verified\n) VALUES\n(1, 'RT2X9', '2\" x 9\" Shipping Tube', '2 inch diameter x 9 inch length shipping tube', \n 1000, 1000, 90, 90000, 1, TRUE),\n(1, 'RT3X9', '3\" x 9\" Shipping Tube', '3 inch diameter x 9 inch length shipping tube',\n 1000, 1000, 140, 140000, 2, TRUE),\n(1, 'RT5X9', '5\" x 9\" Shipping Tube', '5 inch diameter x 9 inch length shipping tube',\n 500, 500, 310, 155000, 3, TRUE),\n(1, 'RT6X9', '6\" x 9\" Shipping Tube', '6 inch diameter x 9 inch length shipping tube',\n 500, 500, 452, 226000, 4, TRUE)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO po_line_items (\n  poId, sku, productName, description, quantity, receivedQuantity,\n  unitCost, extendedPrice, lineNumber, verified\n) VALUES\n(1, 'RT2X9', '2\" x 9\" Shipping Tube', '2 inch diameter x 9 inch length shipping tube', \n 1000, 1000, 90, 90000, 1, TRUE),\n(1, 'RT3X9', '3\" x 9\" Shipping Tube', '3 inch diameter x 9 inch length shipping tube',\n 1000, 1000, 140, 140000, 2, TRUE),\n(1, 'RT5X9', '5\" x 9\" Shipping Tube', '5 inch diameter x 9 inch length shipping tube',\n 500, 500, 310, 155000, 3, TRUE),\n(1, 'RT6X9', '6\" x 9\" Shipping Tube', '6 inch diameter x 9 inch length shipping tube',\n 500, 500, 452, 226000, 4, TRUE)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 56
+}

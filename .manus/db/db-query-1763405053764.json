@@ -1,0 +1,49 @@
+{
+  "query": "SHOW CREATE TABLE purchase_orders",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SHOW CREATE TABLE purchase_orders",
+  "rows": [
+    {
+      "Table": "purchase_orders",
+      "Create Table": "CREATE TABLE `purchase_orders` ("
+    }
+  ],
+  "messages": [
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,",
+    "  `poNumber` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,",
+    "  `vendorId` int(11) NOT NULL,",
+    "  `orderDate` timestamp NOT NULL,",
+    "  `shipDate` timestamp NULL DEFAULT NULL,",
+    "  `expectedDate` timestamp NULL DEFAULT NULL,",
+    "  `receivedDate` timestamp NULL DEFAULT NULL,",
+    "  `status` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'pending',",
+    "  `subtotal` int(11) NOT NULL COMMENT 'Cents',",
+    "  `shippingCost` int(11) DEFAULT '0' COMMENT 'Cents',",
+    "  `tax` int(11) DEFAULT '0' COMMENT 'Cents',",
+    "  `totalAmount` int(11) NOT NULL COMMENT 'Cents',",
+    "  `paymentMethod` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `paymentStatus` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'unpaid',",
+    "  `paidDate` timestamp NULL DEFAULT NULL,",
+    "  `shipToName` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `shipToAddress` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `shipToCity` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `shipToState` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `shipToZip` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `shipToCountry` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'USA',",
+    "  `notes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `internalNotes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `emailThreadId` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `createdBy` int(11) DEFAULT NULL,",
+    "  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,",
+    "  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,",
+    "  KEY `idx_po_number` (`poNumber`),",
+    "  KEY `idx_vendor` (`vendorId`),",
+    "  KEY `idx_status` (`status`),",
+    "  KEY `idx_order_date` (`orderDate`),",
+    "  UNIQUE KEY `poNumber` (`poNumber`)",
+    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+  ],
+  "stdout": "Table\tCreate Table\npurchase_orders\tCREATE TABLE `purchase_orders` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `poNumber` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `vendorId` int(11) NOT NULL,\n  `orderDate` timestamp NOT NULL,\n  `shipDate` timestamp NULL DEFAULT NULL,\n  `expectedDate` timestamp NULL DEFAULT NULL,\n  `receivedDate` timestamp NULL DEFAULT NULL,\n  `status` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'pending',\n  `subtotal` int(11) NOT NULL COMMENT 'Cents',\n  `shippingCost` int(11) DEFAULT '0' COMMENT 'Cents',\n  `tax` int(11) DEFAULT '0' COMMENT 'Cents',\n  `totalAmount` int(11) NOT NULL COMMENT 'Cents',\n  `paymentMethod` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `paymentStatus` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'unpaid',\n  `paidDate` timestamp NULL DEFAULT NULL,\n  `shipToName` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `shipToAddress` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `shipToCity` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `shipToState` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `shipToZip` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `shipToCountry` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT 'USA',\n  `notes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `internalNotes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `emailThreadId` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `createdBy` int(11) DEFAULT NULL,\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,\n  KEY `idx_po_number` (`poNumber`),\n  KEY `idx_vendor` (`vendorId`),\n  KEY `idx_status` (`status`),\n  KEY `idx_order_date` (`orderDate`),\n  UNIQUE KEY `poNumber` (`poNumber`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci\n",
+  "stderr": "",
+  "execution_time_ms": 50
+}

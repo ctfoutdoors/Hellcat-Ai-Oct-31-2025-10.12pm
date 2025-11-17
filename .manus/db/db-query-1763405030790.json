@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO vendors (\n  vendorNumber, companyName, customerNumber, contactName, email, phone,\n  website, paymentTerms, notes, active\n) VALUES (\n  'YAZOO001',\n  'Yazoo Mills Inc',\n  'Q3854',\n  'Mya Scott',\n  'mscott@yazoomills.com',\n  '717-624-8993',\n  'https://yazoomills.com',\n  'Net 30',\n  'Shipping tubes manufacturer - 305 Commerce St, New Oxford, PA 17350',\n  1\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO vendors (\n  vendorNumber, companyName, customerNumber, contactName, email, phone,\n  website, paymentTerms, notes, active\n) VALUES (\n  'YAZOO001',\n  'Yazoo Mills Inc',\n  'Q3854',\n  'Mya Scott',\n  'mscott@yazoomills.com',\n  '717-624-8993',\n  'https://yazoomills.com',\n  'Net 30',\n  'Shipping tubes manufacturer - 305 Commerce St, New Oxford, PA 17350',\n  1\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 63
+}

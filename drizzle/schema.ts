@@ -1189,70 +1189,23 @@ export const dashboards = mysqlTable("dashboards", {
 
 
 
-// Vendors table - Supplier and vendor management
+// Vendors table - Supplier and vendor management (PO Intake)
 export const vendors = mysqlTable("vendors", {
   id: int("id").autoincrement().primaryKey(),
-  
-  // Basic info
-  name: varchar("name", { length: 255 }).notNull(),
+  vendorNumber: varchar("vendorNumber", { length: 100 }).notNull().unique(),
+  companyName: varchar("companyName", { length: 255 }).notNull(),
   contactName: varchar("contactName", { length: 255 }),
   email: varchar("email", { length: 320 }),
   phone: varchar("phone", { length: 50 }),
   website: varchar("website", { length: 500 }),
-  
-  // Classification
-  vendorType: mysqlEnum("vendorType", [
-    "manufacturer",      // Product manufacturer
-    "supplier",          // Raw materials
-    "service",           // Service provider
-    "logistics",         // Shipping/fulfillment
-    "technology"         // Software/tools
-  ]).notNull(),
-  
-  status: mysqlEnum("status", [
-    "active",
-    "inactive",
-    "pending",
-    "suspended"
-  ]).default("active").notNull(),
-  
-  // Performance ratings (0-100 scale)
-  qualityRating: int("qualityRating").default(0),
-  deliveryRating: int("deliveryRating").default(0),
-  priceRating: int("priceRating").default(0),
-  overallRating: int("overallRating").default(0),
-  
-  // Financial
-  totalSpend: int("totalSpend").default(0),      // Total paid (cents)
-  totalOrders: int("totalOrders").default(0),
-  averageLeadTime: int("averageLeadTime"),       // Days
+  address: text("address"),
   paymentTerms: varchar("paymentTerms", { length: 100 }),
-  
-  // Location
-  address: varchar("address", { length: 500 }),
-  city: varchar("city", { length: 100 }),
-  state: varchar("state", { length: 50 }),
-  zipCode: varchar("zipCode", { length: 20 }),
-  country: varchar("country", { length: 100 }).default("USA"),
-  
-  // Contract
-  contractStartDate: timestamp("contractStartDate"),
-  contractEndDate: timestamp("contractEndDate"),
-  contractUrl: varchar("contractUrl", { length: 500 }),
-  
-  // Compliance
-  certifications: text("certifications"),  // JSON array
-  insuranceExpiry: timestamp("insuranceExpiry"),
-  
-  // Metadata
-  tags: text("tags"),
-  customFields: text("customFields"),
+  taxId: varchar("taxId", { length: 100 }),
+  customerNumber: varchar("customerNumber", { length: 100 }),
   notes: text("notes"),
-  
-  // Audit
+  active: boolean("active").default(true),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  deletedAt: timestamp("deletedAt"),
 });
 
 // Companies table - Organization/account management

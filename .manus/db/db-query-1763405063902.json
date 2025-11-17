@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO purchase_orders (\n  poNumber, vendorId, orderDate, shipDate, expectedDate, receivedDate,\n  status, subtotal, shippingCost, tax, totalAmount,\n  paymentMethod, paymentStatus, paidDate,\n  shipToName, shipToAddress, shipToCity, shipToState, shipToZip, shipToCountry,\n  notes, createdBy\n) VALUES (\n  '546337',\n  1,\n  '2025-11-12 00:00:00',\n  '2025-11-14 00:00:00',\n  '2025-11-18 00:00:00',\n  '2025-11-18 10:30:00',\n  'delivered',\n  631000,\n  71787,\n  22500,\n  725287,\n  'Credit Card',\n  'paid',\n  '2025-11-20 00:00:00',\n  'Catch The Fever',\n  '3 Catch The Fever Lane',\n  'Byhalia',\n  'MS',\n  '38611',\n  'USA',\n  'Shipping tubes order - 4 SKUs (2\", 3\", 5\", 6\" diameter). BOL #167533, Invoice #555529',\n  1\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO purchase_orders (\n  poNumber, vendorId, orderDate, shipDate, expectedDate, receivedDate,\n  status, subtotal, shippingCost, tax, totalAmount,\n  paymentMethod, paymentStatus, paidDate,\n  shipToName, shipToAddress, shipToCity, shipToState, shipToZip, shipToCountry,\n  notes, createdBy\n) VALUES (\n  '546337',\n  1,\n  '2025-11-12 00:00:00',\n  '2025-11-14 00:00:00',\n  '2025-11-18 00:00:00',\n  '2025-11-18 10:30:00',\n  'delivered',\n  631000,\n  71787,\n  22500,\n  725287,\n  'Credit Card',\n  'paid',\n  '2025-11-20 00:00:00',\n  'Catch The Fever',\n  '3 Catch The Fever Lane',\n  'Byhalia',\n  'MS',\n  '38611',\n  'USA',\n  'Shipping tubes order - 4 SKUs (2\", 3\", 5\", 6\" diameter). BOL #167533, Invoice #555529',\n  1\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 59
+}

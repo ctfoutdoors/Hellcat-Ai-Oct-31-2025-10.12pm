@@ -1,0 +1,9 @@
+{
+  "query": "INSERT INTO vendor_contacts (vendorId, firstName, lastName, email, title, isPrimary) VALUES\n(1, 'Mya', 'Scott', 'mscott@yazoomills.com', 'Customer Service', TRUE),\n(1, 'Cheryl', 'Brown', 'CBrown@yazoomills.com', 'Orders', FALSE)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO vendor_contacts (vendorId, firstName, lastName, email, title, isPrimary) VALUES\n(1, 'Mya', 'Scott', 'mscott@yazoomills.com', 'Customer Service', TRUE),\n(1, 'Cheryl', 'Brown', 'CBrown@yazoomills.com', 'Orders', FALSE)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 62
+}

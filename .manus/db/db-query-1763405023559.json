@@ -1,0 +1,33 @@
+{
+  "query": "SHOW CREATE TABLE vendors",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SHOW CREATE TABLE vendors",
+  "rows": [
+    {
+      "Table": "vendors",
+      "Create Table": "CREATE TABLE `vendors` ("
+    }
+  ],
+  "messages": [
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,",
+    "  `vendorNumber` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,",
+    "  `companyName` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,",
+    "  `contactName` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `email` varchar(320) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `phone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `website` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `address` json DEFAULT NULL,",
+    "  `paymentTerms` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `taxId` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `notes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,",
+    "  `active` tinyint(1) DEFAULT '1',",
+    "  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,",
+    "  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,",
+    "  `customerNumber` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Our customer number in vendor system (e.g., Q3854)',",
+    "  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,",
+    "  UNIQUE KEY `vendorNumber` (`vendorNumber`)",
+    ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+  ],
+  "stdout": "Table\tCreate Table\nvendors\tCREATE TABLE `vendors` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  `vendorNumber` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `companyName` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `contactName` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `email` varchar(320) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `phone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `website` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `address` json DEFAULT NULL,\n  `paymentTerms` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `taxId` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `notes` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `active` tinyint(1) DEFAULT '1',\n  `createdAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  `updatedAt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  `customerNumber` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT 'Our customer number in vendor system (e.g., Q3854)',\n  PRIMARY KEY (`id`) /*T![clustered_index] CLUSTERED */,\n  UNIQUE KEY `vendorNumber` (`vendorNumber`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci\n",
+  "stderr": "",
+  "execution_time_ms": 51
+}

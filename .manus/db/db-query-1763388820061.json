@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS intelligence_products (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  productId INT NOT NULL UNIQUE,\n  lifecycleState ENUM('concept', 'development', 'pre_launch', 'active_launch', 'post_launch', 'cruise', 'end_of_life') DEFAULT 'concept' NOT NULL,\n  readinessScore INT DEFAULT 0 NOT NULL,\n  intelligenceMetadata JSON,\n  variantSummary JSON,\n  lastIntelligenceUpdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX product_idx (productId),\n  INDEX lifecycle_idx (lifecycleState),\n  INDEX readiness_idx (readinessScore)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS intelligence_products (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  productId INT NOT NULL UNIQUE,\n  lifecycleState ENUM('concept', 'development', 'pre_launch', 'active_launch', 'post_launch', 'cruise', 'end_of_life') DEFAULT 'concept' NOT NULL,\n  readinessScore INT DEFAULT 0 NOT NULL,\n  intelligenceMetadata JSON,\n  variantSummary JSON,\n  lastIntelligenceUpdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX product_idx (productId),\n  INDEX lifecycle_idx (lifecycleState),\n  INDEX readiness_idx (readinessScore)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 528
+}

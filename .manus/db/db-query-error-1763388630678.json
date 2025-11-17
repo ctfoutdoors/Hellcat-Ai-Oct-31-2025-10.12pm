@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO intelligence_products (\n  productId, lifecycleState, readinessScore, intelligenceMetadata, variantSummary, lastIntelligenceUpdate\n)\nSELECT \n  p.id,\n  'concept',\n  22,\n  '{\"requirements\":[{\"id\":\"req-1\",\"title\":\"Product specifications finalized\",\"status\":\"pending\"}],\"assets\":[{\"id\":\"asset-1\",\"type\":\"product_image\",\"status\":\"missing\"}],\"blockers\":[{\"id\":\"block-1\",\"severity\":\"high\",\"description\":\"Supplier negotiations pending\"}]}',\n  '{\"totalVariants\":0,\"readyVariants\":0}',\n  NOW()\nFROM products p\nWHERE p.sku = 'LURE-BASS-001'\nON DUPLICATE KEY UPDATE lastIntelligenceUpdate = NOW();",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO intelligence_products (\n  productId, lifecycleState, readinessScore, intelligenceMetadata, variantSummary, lastIntelligenceUpdate\n)\nSELECT \n  p.id,\n  'concept',\n  22,\n  '{\"requirements\":[{\"id\":\"req-1\",\"title\":\"Product specifications finalized\",\"status\":\"pending\"}],\"assets\":[{\"id\":\"asset-1\",\"type\":\"product_image\",\"status\":\"missing\"}],\"blockers\":[{\"id\":\"block-1\",\"severity\":\"high\",\"description\":\"Supplier negotiations pending\"}]}',\n  '{\"totalVariants\":0,\"readyVariants\":0}',\n  NOW()\nFROM products p\nWHERE p.sku = 'LURE-BASS-001'\nON DUPLICATE KEY UPDATE lastIntelligenceUpdate = NOW();",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'bqwuvx7ycrd88mlxjhlzxd.intelligence_products' doesn't exist"
+  ]
+}

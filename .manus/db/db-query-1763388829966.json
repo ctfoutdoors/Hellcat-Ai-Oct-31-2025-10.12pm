@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS intelligence_variants (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  productId INT NOT NULL,\n  variantId INT NOT NULL UNIQUE,\n  inventoryReadiness INT DEFAULT 0 NOT NULL,\n  variantMetadata JSON,\n  lastInventorySync TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX product_idx (productId),\n  INDEX variant_idx (variantId)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS intelligence_variants (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  productId INT NOT NULL,\n  variantId INT NOT NULL UNIQUE,\n  inventoryReadiness INT DEFAULT 0 NOT NULL,\n  variantMetadata JSON,\n  lastInventorySync TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX product_idx (productId),\n  INDEX variant_idx (variantId)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 515
+}

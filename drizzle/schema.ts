@@ -1508,6 +1508,51 @@ export type InsertCalendarMeeting = typeof calendarMeetings.$inferInsert;
 // INTELLIGENCE SUITE TABLES
 // ============================================================================
 
+export const intelligenceProducts = mysqlTable("intelligence_products", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull().unique(),
+  lifecycleState: mysqlEnum("lifecycleState", ["concept", "development", "pre_launch", "active_launch", "post_launch", "cruise", "end_of_life"]).default("concept").notNull(),
+  readinessScore: int("readinessScore").default(0).notNull(),
+  intelligenceMetadata: json("intelligenceMetadata").$type<{
+    requirements?: { id: string; title: string; status: string; assignee?: number }[];
+    assets?: { id: string; type: string; status: string; url?: string }[];
+    blockers?: { id: string; severity: string; description: string; resolvedAt?: string }[];
+    notes?: string;
+  }>(),
+  variantSummary: json("variantSummary").$type<{
+    totalVariants?: number;
+    readyVariants?: number;
+    variantDetails?: { variantId: number; readiness: number }[];
+  }>(),
+  lastIntelligenceUpdate: timestamp("lastIntelligenceUpdate").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  productIdx: index("product_idx").on(table.productId),
+  lifecycleIdx: index("lifecycle_idx").on(table.lifecycleState),
+  readinessIdx: index("readiness_idx").on(table.readinessScore),
+}));
+
+export const intelligenceVariants = mysqlTable("intelligence_variants", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull(),
+  variantId: int("variantId").notNull().unique(),
+  inventoryReadiness: int("inventoryReadiness").default(0).notNull(),
+  variantMetadata: json("variantMetadata").$type<{
+    currentStock?: number;
+    projectedDemand?: number;
+    supplierStatus?: string;
+    imageStatus?: string;
+    pricingStatus?: string;
+  }>(),
+  lastInventorySync: timestamp("lastInventorySync").defaultNow().notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  productIdx: index("product_idx").on(table.productId),
+  variantIdx: index("variant_idx").on(table.variantId),
+}));
+
 export const launchMissions = mysqlTable("launch_missions", {
   id: int("id").autoincrement().primaryKey(),
   productId: int("productId").notNull(),
@@ -1605,6 +1650,10 @@ export const launchVotes = mysqlTable("launch_votes", {
   voterIdx: index("voter_idx").on(table.voterId),
 }));
 
+export type IntelligenceProduct = typeof intelligenceProducts.$inferSelect;
+export type InsertIntelligenceProduct = typeof intelligenceProducts.$inferInsert;
+export type IntelligenceVariant = typeof intelligenceVariants.$inferSelect;
+export type InsertIntelligenceVariant = typeof intelligenceVariants.$inferInsert;
 export type LaunchMission = typeof launchMissions.$inferSelect;
 export type InsertLaunchMission = typeof launchMissions.$inferInsert;
 export type MissionEvent = typeof missionEvents.$inferSelect;

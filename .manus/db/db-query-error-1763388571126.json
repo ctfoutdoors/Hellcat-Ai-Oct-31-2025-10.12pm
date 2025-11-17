@@ -1,0 +1,8 @@
+{
+  "query": "CREATE INDEX IF NOT EXISTS idx_intel_lifecycle_state ON intelligence_products(lifecycle_state);\nCREATE INDEX IF NOT EXISTS idx_intel_readiness_score ON intelligence_products(readiness_score);\nCREATE INDEX IF NOT EXISTS idx_intel_product_id ON intelligence_products(product_id);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE INDEX IF NOT EXISTS idx_intel_lifecycle_state ON intelligence_products(lifecycle_state);\nCREATE INDEX IF NOT EXISTS idx_intel_readiness_score ON intelligence_products(readiness_score);\nCREATE INDEX IF NOT EXISTS idx_intel_product_id ON intelligence_products(product_id);",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1146 (42S02) at line 1: Table 'bqwuvx7ycrd88mlxjhlzxd.intelligence_products' doesn't exist"
+  ]
+}

@@ -55,7 +55,8 @@ export async function createMission(data: {
     missionName: data.missionName,
     status: "planning",
     currentPhase: "pre_launch",
-    launchDate: data.launchDate,
+    launchDatetime: data.launchDate,
+    settingsVersion: 1,
     missionConfig: {},
     readinessSnapshot: {},
     collaborators: {},
@@ -64,13 +65,12 @@ export async function createMission(data: {
   });
 
   // Log event
-  await db.insert(intelligenceEvents).values({
+  await db.insert(missionEvents).values({
+    missionId: result.insertId,
     eventType: "mission_created",
-    entityType: "mission",
-    entityId: result.insertId,
-    userId: data.createdBy,
     eventData: { missionName: data.missionName, productId: data.productId },
-    createdAt: new Date(),
+    triggeredBy: data.createdBy,
+    timestamp: new Date(),
   });
 
   const missions = await db
@@ -83,7 +83,7 @@ export async function createMission(data: {
 }
 
 /**
- * Get all missions
+ * Get all missions with calculated readiness scores
  */
 export async function getAllMissions(): Promise<LaunchMission[]> {
   const db = await getDb();
@@ -94,7 +94,40 @@ export async function getAllMissions(): Promise<LaunchMission[]> {
     .from(launchMissions)
     .orderBy(desc(launchMissions.createdAt));
 
-  return missions as LaunchMission[];
+  // Enhance missions with readiness scores from intelligence_products
+  const enhancedMissions = await Promise.all(
+    missions.map(async (mission) => {
+      try {
+        // Get product intelligence data
+        const { intelligenceProducts } = await import("../../drizzle/schema");
+        const productIntel = await db
+          .select()
+          .from(intelligenceProducts)
+          .where(eq(intelligenceProducts.productId, mission.productId))
+          .limit(1);
+
+        if (productIntel.length > 0) {
+          const intel = productIntel[0];
+          // Update readiness snapshot with actual scores
+          return {
+            ...mission,
+            readinessSnapshot: {
+              overallScore: intel.readinessScore || 0,
+              productScore: intel.readinessScore || 0,
+              variantScore: 0, // TODO: Calculate from variants
+              inventoryScore: 0, // TODO: Calculate from inventory
+              lastCalculated: new Date(),
+            },
+          };
+        }
+      } catch (error) {
+        console.error(`Failed to get intelligence for mission ${mission.id}:`, error);
+      }
+      return mission;
+    })
+  );
+
+  return enhancedMissions as LaunchMission[];
 }
 
 /**
@@ -134,7 +167,7 @@ export async function updateMissionStatus(
     .where(eq(launchMissions.id, missionId));
 
   // Log event
-  await db.insert(intelligenceEvents).values({
+  await db.insert(missionEvents).values({
     eventType: "mission_status_changed",
     entityType: "mission",
     entityId: missionId,
@@ -166,7 +199,7 @@ export async function updateMissionPhase(
     .where(eq(launchMissions.id, missionId));
 
   // Log event
-  await db.insert(intelligenceEvents).values({
+  await db.insert(missionEvents).values({
     eventType: "mission_phase_changed",
     entityType: "mission",
     entityId: missionId,
@@ -244,7 +277,7 @@ export async function addCollaborator(
     .where(eq(launchMissions.id, missionId));
 
   // Log event
-  await db.insert(intelligenceEvents).values({
+  await db.insert(missionEvents).values({
     eventType: "collaborator_added",
     entityType: "mission",
     entityId: missionId,
@@ -288,7 +321,7 @@ export async function updateMissionConfig(
     .where(eq(launchMissions.id, missionId));
 
   // Log event
-  await db.insert(intelligenceEvents).values({
+  await db.insert(missionEvents).values({
     eventType: "mission_config_updated",
     entityType: "mission",
     entityId: missionId,
@@ -311,13 +344,13 @@ export async function getMissionsByStatus(status: MissionStatus): Promise<Launch
     .select()
     .from(launchMissions)
     .where(eq(launchMissions.status, status))
-    .orderBy(desc(launchMissions.launchDate));
+    .orderBy(desc(launchMissions.launchDatetime));
 
   return missions as LaunchMission[];
 }
 
 /**
- * Get active missions (not completed or aborted)
+ * Get active missions (not completed or aborted) with readiness scores
  */
 export async function getActiveMissions(): Promise<LaunchMission[]> {
   const db = await getDb();
@@ -332,7 +365,38 @@ export async function getActiveMissions(): Promise<LaunchMission[]> {
         sql`${launchMissions.status} != 'aborted'`
       )
     )
-    .orderBy(launchMissions.launchDate);
+    .orderBy(desc(launchMissions.launchDatetime));
 
-  return missions as LaunchMission[];
+  // Enhance missions with readiness scores from intelligence_products
+  const enhancedMissions = await Promise.all(
+    missions.map(async (mission) => {
+      try {
+        const { intelligenceProducts } = await import("../../drizzle/schema");
+        const productIntel = await db
+          .select()
+          .from(intelligenceProducts)
+          .where(eq(intelligenceProducts.productId, mission.productId))
+          .limit(1);
+
+        if (productIntel.length > 0) {
+          const intel = productIntel[0];
+          return {
+            ...mission,
+            readinessSnapshot: {
+              overallScore: intel.readinessScore || 0,
+              productScore: intel.readinessScore || 0,
+              variantScore: 0,
+              inventoryScore: 0,
+              lastCalculated: new Date(),
+            },
+          };
+        }
+      } catch (error) {
+        console.error(`Failed to get intelligence for mission ${mission.id}:`, error);
+      }
+      return mission;
+    })
+  );
+
+  return enhancedMissions as LaunchMission[];
 }

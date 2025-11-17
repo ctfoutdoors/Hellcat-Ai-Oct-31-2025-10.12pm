@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, Rocket, Plus, Calendar, Users } from "lucide-react";
+import ProductPicker from "@/components/ProductPicker";
 import { toast } from "sonner";
 
 /**
@@ -26,8 +27,14 @@ const statusConfig = {
 
 export default function LaunchOrchestrator() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [newMission, setNewMission] = useState({
-    productId: "",
+  const [newMission, setNewMission] = useState<{
+    productId: number | null;
+    productName: string;
+    missionName: string;
+    launchDate: string;
+  }>({
+    productId: null,
+    productName: "",
     missionName: "",
     launchDate: "",
   });
@@ -37,7 +44,7 @@ export default function LaunchOrchestrator() {
     onSuccess: () => {
       toast.success("Mission created successfully");
       setIsCreateDialogOpen(false);
-      setNewMission({ productId: "", missionName: "", launchDate: "" });
+      setNewMission({ productId: null, productName: "", missionName: "", launchDate: "" });
       refetch();
     },
     onError: (error) => {
@@ -46,13 +53,13 @@ export default function LaunchOrchestrator() {
   });
 
   const handleCreateMission = () => {
-    if (!newMission.productId || !newMission.missionName || !newMission.launchDate) {
+    if (newMission.productId === null || !newMission.missionName || !newMission.launchDate) {
       toast.error("Please fill in all fields");
       return;
     }
 
     createMutation.mutate({
-      productId: parseInt(newMission.productId),
+      productId: newMission.productId,
       missionName: newMission.missionName,
       launchDate: newMission.launchDate,
     });
@@ -94,14 +101,19 @@ export default function LaunchOrchestrator() {
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <Label htmlFor="productId">Product ID</Label>
-                <Input
-                  id="productId"
-                  type="number"
+                <Label>Product</Label>
+                <ProductPicker
                   value={newMission.productId}
-                  onChange={(e) => setNewMission({ ...newMission, productId: e.target.value })}
-                  placeholder="Enter product ID"
+                  onSelect={(productId, productName) => {
+                    setNewMission({ ...newMission, productId, productName });
+                  }}
+                  placeholder="Select a product to launch..."
                 />
+                {newMission.productName && (
+                  <p className="text-sm text-muted-foreground">
+                    Selected: {newMission.productName}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="missionName">Mission Name</Label>

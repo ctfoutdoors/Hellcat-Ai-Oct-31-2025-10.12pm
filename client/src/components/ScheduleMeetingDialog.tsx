@@ -30,6 +30,9 @@ export function ScheduleMeetingDialog({
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [attendees, setAttendees] = useState("");
+  const [autoCreateTask, setAutoCreateTask] = useState(true);
+
+  const saveMeetingMetaMutation = trpc.crm.calendar.saveMeetingMeta.useMutation();
 
   const createMeetingMutation = trpc.crm.calendar.createMeeting.useMutation({
     onSuccess: () => {
@@ -67,7 +70,7 @@ export function ScheduleMeetingDialog({
       .map((email) => email.trim())
       .filter((email) => email.length > 0);
 
-    createMeetingMutation.mutate({
+    const meetingPayload = {
       entityType,
       entityId,
       summary,
@@ -76,6 +79,24 @@ export function ScheduleMeetingDialog({
       startTime: startDateTime,
       endTime: endDateTime,
       attendees: attendeeList.length > 0 ? attendeeList : undefined,
+    };
+
+    createMeetingMutation.mutate(meetingPayload, {
+      onSuccess: (data: any) => {
+        // Save meeting metadata for auto-task creation
+        if (data?.eventId && autoCreateTask) {
+          saveMeetingMetaMutation.mutate({
+            eventId: data.eventId,
+            entityType,
+            entityId,
+            summary,
+            description,
+            startTime: new Date(startDateTime),
+            endTime: new Date(endDateTime),
+            autoTaskEnabled: true,
+          });
+        }
+      },
     });
   };
 
@@ -178,6 +199,25 @@ export function ScheduleMeetingDialog({
               <p className="text-xs text-muted-foreground">
                 Comma-separated email addresses
               </p>
+            </div>
+
+            {/* Auto-create task option */}
+            <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg border">
+              <div className="flex-1">
+                <label className="text-sm font-medium cursor-pointer" htmlFor="autoTask">
+                  Auto-create follow-up task
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Automatically create a task when this meeting ends
+                </p>
+              </div>
+              <input
+                id="autoTask"
+                type="checkbox"
+                checked={autoCreateTask}
+                onChange={(e) => setAutoCreateTask(e.target.checked)}
+                className="h-4 w-4 cursor-pointer"
+              />
             </div>
           </div>
 

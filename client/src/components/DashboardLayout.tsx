@@ -27,6 +27,7 @@ import {
   LogOut,
   User,
   Palette,
+  Calendar,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import VoiceCommand from "./VoiceCommand";
@@ -92,11 +93,19 @@ const menuItems: MenuItem[] = [
     title: "CRM",
     icon: Users,
     children: [
+      { title: "Customers", path: "/crm/customers" },
+      { title: "Leads", path: "/crm/leads" },
+      { title: "Vendors", path: "/crm/vendors" },
       { title: "Contacts", path: "/crm/contacts" },
       { title: "Companies", path: "/crm/companies" },
       { title: "Deals", path: "/crm/deals" },
       { title: "Analytics", path: "/crm/analytics" },
     ],
+  },
+  {
+    title: "Calendar",
+    icon: Calendar,
+    path: "/calendar",
   },
   {
     title: "Intelligence",

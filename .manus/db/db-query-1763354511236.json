@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS calendar_meetings (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  eventId VARCHAR(255) NOT NULL UNIQUE,\n  entityType ENUM('customer', 'lead', 'vendor') NOT NULL,\n  entityId INT NOT NULL,\n  summary VARCHAR(500),\n  description TEXT,\n  startTime DATETIME NOT NULL,\n  endTime DATETIME NOT NULL,\n  autoTaskEnabled BOOLEAN DEFAULT FALSE,\n  taskCreated BOOLEAN DEFAULT FALSE,\n  createdTaskId INT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_event_id (eventId),\n  INDEX idx_entity (entityType, entityId),\n  INDEX idx_end_time (endTime)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS calendar_meetings (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  eventId VARCHAR(255) NOT NULL UNIQUE,\n  entityType ENUM('customer', 'lead', 'vendor') NOT NULL,\n  entityId INT NOT NULL,\n  summary VARCHAR(500),\n  description TEXT,\n  startTime DATETIME NOT NULL,\n  endTime DATETIME NOT NULL,\n  autoTaskEnabled BOOLEAN DEFAULT FALSE,\n  taskCreated BOOLEAN DEFAULT FALSE,\n  createdTaskId INT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_event_id (eventId),\n  INDEX idx_entity (entityType, entityId),\n  INDEX idx_end_time (endTime)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 2470
+}

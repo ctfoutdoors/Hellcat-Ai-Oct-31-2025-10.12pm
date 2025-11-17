@@ -2143,6 +2143,91 @@ export const crmRouter = router({
       .mutation(async ({ input }) => {
         return googleCalendar.deleteCalendarEvent(input.eventId);
       }),
+
+    // Save meeting metadata for auto-task creation
+    saveMeetingMeta: protectedProcedure
+      .input(
+        z.object({
+          eventId: z.string(),
+          entityType: z.enum(["customer", "lead", "vendor"]),
+          entityId: z.number(),
+          summary: z.string(),
+          description: z.string().optional(),
+          startTime: z.date(),
+          endTime: z.date(),
+          autoTaskEnabled: z.boolean(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
+
+        const { calendarMeetings } = await import("../../drizzle/schema");
+
+        await db.insert(calendarMeetings).values({
+          eventId: input.eventId,
+          entityType: input.entityType,
+          entityId: input.entityId,
+          summary: input.summary,
+          description: input.description || null,
+          startTime: input.startTime,
+          endTime: input.endTime,
+          autoTaskEnabled: input.autoTaskEnabled,
+          taskCreated: false,
+        });
+
+        return { success: true };
+      }),
+
+    // Process completed meetings and create follow-up tasks
+    processCompletedMeetings: protectedProcedure.mutation(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
+
+      const { calendarMeetings } = await import("../../drizzle/schema");
+      const { lt } = await import("drizzle-orm");
+
+      // Find meetings that have ended and need task creation
+      const now = new Date();
+      const completedMeetings = await db
+        .select()
+        .from(calendarMeetings)
+        .where(
+          and(
+            eq(calendarMeetings.autoTaskEnabled, true),
+            eq(calendarMeetings.taskCreated, false),
+            lt(calendarMeetings.endTime, now)
+          )
+        );
+
+      const createdTasks = [];
+      for (const meeting of completedMeetings) {
+        // Create follow-up task
+        const taskResult = await db.insert(tasks).values({
+          entityType: meeting.entityType,
+          entityId: meeting.entityId,
+          title: `Follow-up: ${meeting.summary}`,
+          description: `Follow up on meeting: ${meeting.description || meeting.summary}`,
+          priority: "medium",
+          status: "pending",
+          dueDate: new Date(now.getTime() + 24 * 60 * 60 * 1000), // Due tomorrow
+        });
+
+        // Mark meeting as processed
+        await db
+          .update(calendarMeetings)
+          .set({ taskCreated: true, createdTaskId: Number(taskResult.insertId) })
+          .where(eq(calendarMeetings.id, meeting.id));
+
+        createdTasks.push({
+          meetingId: meeting.id,
+          taskId: taskResult.insertId,
+          summary: meeting.summary,
+        });
+      }
+
+      return { processedCount: createdTasks.length, tasks: createdTasks };
+    }),
   }),
 
   // ============================================================================

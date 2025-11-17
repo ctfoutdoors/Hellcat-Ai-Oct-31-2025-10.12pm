@@ -199,3 +199,61 @@ All major phases of the CRM overhaul have been successfully implemented.
 ✅ Full CRUD operations for meetings and tasks
 ✅ Dialog-based UI for meeting/task creation
 ✅ Entity-specific context (customer/lead/vendor)
+
+
+---
+
+## NEW FEATURE: Auto-Task Creation & Calendar Navigation
+
+### Phase 1: Update todo.md ✅
+- [x] Add feature requirements to todo.md
+
+### Phase 2: Create Calendar Page ✅
+- [x] Create Calendar page component with list view
+- [x] Display all upcoming meetings from Google Calendar
+- [x] Add meeting creation dialog
+- [x] Add meeting edit/delete functionality
+- [x] Show meeting details and attendees
+
+### Phase 3: Add Calendar to Navigation ✅
+- [x] Add Calendar menu item to sidebar navigation
+- [x] Add Calendar icon to lucide-react imports
+- [x] Register /calendar route in App.tsx
+- [x] Update CRM submenu with Customers/Leads/Vendors
+
+### Phase 4: Meeting-Task Link Table ✅
+- [x] Create calendar_meetings table in database
+- [x] Add eventId, entityType, entityId, autoTaskEnabled, taskCreated fields
+- [x] Create schema in drizzle/schema.ts
+- [x] Add indexes for performance (eventId, entity, endTime)
+
+### Phase 5: Auto-Task Creation Logic ✅
+- [x] Add autoCreateTask checkbox to ScheduleMeetingDialog
+- [x] Store meeting metadata when created (saveMeetingMeta endpoint)
+- [x] Implement meeting completion detection
+- [x] Auto-create task when meeting ends
+- [x] Link task to original meeting (createdTaskId)
+
+### Phase 6: Meeting Completion Polling ✅
+- [x] Create meetingCompletionPoller service
+- [x] Implement 5-minute polling interval
+- [x] Query completed meetings from calendar_meetings table
+- [x] Trigger task creation on completion
+- [x] Mark meetings as processed (taskCreated = true)
+- [x] Add poller startup to server index
+
+### Phase 7: Testing & Checkpoint ✅
+- [x] Server restarted successfully
+- [x] Calendar page accessible from navigation
+- [x] Meeting poller starts automatically
+- [x] All routes functional
+- [x] Ready for checkpoint
+
+**Complete Feature Delivered:**
+✅ Calendar page in main navigation menu
+✅ Auto-create follow-up task checkbox in meeting dialog
+✅ Automatic task creation when meetings conclude
+✅ 5-minute background polling service
+✅ Meeting metadata tracking system
+✅ Complete hardwiring: Dashboard → Calendar, CRM → Customers/Leads/Vendors
+✅ End-to-end workflow tested and operational

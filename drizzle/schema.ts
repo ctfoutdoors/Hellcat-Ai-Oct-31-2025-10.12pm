@@ -1459,3 +1459,23 @@ export const tasks = mysqlTable("tasks", {
 
 export type Task = typeof tasks.$inferSelect;
 export type InsertTask = typeof tasks.$inferInsert;
+
+
+export const calendarMeetings = mysqlTable("calendar_meetings", {
+  id: int("id").autoincrement().primaryKey(),
+  eventId: varchar("eventId", { length: 255 }).notNull().unique(),
+  entityType: mysqlEnum("entityType", ["customer", "lead", "vendor"]).notNull(),
+  entityId: int("entityId").notNull(),
+  summary: varchar("summary", { length: 500 }),
+  description: text("description"),
+  startTime: timestamp("startTime").notNull(),
+  endTime: timestamp("endTime").notNull(),
+  autoTaskEnabled: boolean("autoTaskEnabled").default(false),
+  taskCreated: boolean("taskCreated").default(false),
+  createdTaskId: int("createdTaskId"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CalendarMeeting = typeof calendarMeetings.$inferSelect;
+export type InsertCalendarMeeting = typeof calendarMeetings.$inferInsert;

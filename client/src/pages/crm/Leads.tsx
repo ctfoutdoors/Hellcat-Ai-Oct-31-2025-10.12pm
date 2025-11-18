@@ -16,6 +16,7 @@ import { useLocation } from "wouter";
 import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
 import { CreateTaskDialog } from "@/components/CreateTaskDialog";
 import { ConvertLeadDialog } from "@/components/ConvertLeadDialog";
+import { LeadHoverCard } from "@/components/LeadHoverCard";
 
 const LEAD_STATUSES = [
   { value: "new", label: "New", color: "bg-blue-500" },
@@ -158,11 +159,11 @@ export default function Leads() {
               </div>
               <div className="space-y-2">
                 {leadsByStatus[status.value]?.map((lead) => (
-                  <Card
-                    key={lead.id}
-                    className="cursor-pointer hover:shadow-md transition-shadow"
-                    onClick={() => setLocation(`/crm/leads/${lead.id}`)}
-                  >
+                  <LeadHoverCard key={lead.id} leadId={lead.id}>
+                    <Card
+                      className="cursor-pointer hover:shadow-md transition-shadow"
+                      onClick={() => setLocation(`/crm/leads/${lead.id}`)}
+                    >
                     <CardContent className="p-4 space-y-2">
                       <div className="font-medium text-sm">
                         {lead.companyName || `${lead.firstName} ${lead.lastName}`}
@@ -257,6 +258,7 @@ export default function Leads() {
                       </Select>
                     </CardContent>
                   </Card>
+                  </LeadHoverCard>
                 ))}
               </div>
             </div>

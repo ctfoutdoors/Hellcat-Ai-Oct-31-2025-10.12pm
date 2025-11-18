@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Building2, CheckCircle, XCircle } from "lucide-react";
 import { useLocation } from "wouter";
+import { VendorHoverCard } from "@/components/VendorHoverCard";
 
 export default function Vendors() {
   const [, setLocation] = useLocation();
@@ -125,11 +126,11 @@ export default function Vendors() {
                 </TableRow>
               ) : (
                 data?.vendors?.map((vendor) => (
-                  <TableRow
-                    key={vendor.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => setLocation(`/crm/vendors/${vendor.id}`)}
-                  >
+                  <VendorHoverCard key={vendor.id} vendorId={vendor.id}>
+                    <TableRow
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => setLocation(`/crm/vendors/${vendor.id}`)}
+                    >
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <Building2 className="w-4 h-4 text-muted-foreground" />
@@ -166,6 +167,7 @@ export default function Vendors() {
                       {new Date(vendor.createdAt).toLocaleDateString()}
                     </TableCell>
                   </TableRow>
+                  </VendorHoverCard>
                 ))
               )}
             </TableBody>

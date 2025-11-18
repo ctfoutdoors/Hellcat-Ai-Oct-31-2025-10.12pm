@@ -2,6 +2,7 @@ import { z } from "zod";
 import { router, protectedProcedure } from "../_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { getDb } from "../db";
+import { fetchGoogleCalendarEvents, pushEventToGoogleCalendar } from "../services/calendarSync";
 import { eq, and } from "drizzle-orm";
 
 // Note: In production, these would be environment variables
@@ -199,15 +200,8 @@ export const calendarRouter = router({
 
       const connection = result.rows[0];
 
-      // TODO: Implement actual sync logic here
-      // This would fetch events from Google Calendar API and store them in the database
-      // For now, just update the last_sync_at timestamp
-
-      await db.execute(`
-        UPDATE calendar_connections 
-        SET last_sync_at = CURRENT_TIMESTAMP 
-        WHERE id = ?
-      `, [input.connectionId]);
+      // Fetch and sync events from Google Calendar
+      await fetchGoogleCalendarEvents(input.connectionId);
 
       return { success: true, message: "Sync completed" };
     }),
@@ -222,8 +216,34 @@ export const calendarRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
 
-      // Get events from calendar_events table (to be created)
-      // For now, return empty array
-      return [];
+      // Get calendar events linked to this entity
+      const result = await db.execute(`
+        SELECT 
+          ce.*,
+          cc.provider,
+          cc.calendar_name,
+          cc.provider_account_email
+        FROM calendar_events ce
+        JOIN calendar_connections cc ON ce.calendar_connection_id = cc.id
+        WHERE ce.entity_type = ? AND ce.entity_id = ?
+        AND cc.user_id = ?
+        ORDER BY ce.start_time DESC
+      `, [input.entityType, input.entityId, ctx.user.id]);
+
+      return result.rows.map((row: any) => ({
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        location: row.location,
+        startTime: row.start_time,
+        endTime: row.end_time,
+        allDay: Boolean(row.all_day),
+        attendees: row.attendees ? JSON.parse(row.attendees) : [],
+        organizerEmail: row.organizer_email,
+        status: row.status,
+        provider: row.provider,
+        calendarName: row.calendar_name,
+        providerAccountEmail: row.provider_account_email,
+      }));
     }),
 });

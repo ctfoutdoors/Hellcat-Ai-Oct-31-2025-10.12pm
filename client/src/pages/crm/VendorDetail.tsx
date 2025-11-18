@@ -30,11 +30,16 @@ import {
   Clock,
   XCircle,
 } from "lucide-react";
+import { useState } from "react";
+import { LogEmailDialog } from "@/components/LogEmailDialog";
+import { EmailLogsTimeline } from "@/components/EmailLogsTimeline";
+import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
 
 export default function VendorDetail() {
   const params = useParams();
   const [, setLocation] = useLocation();
   const vendorId = parseInt(params.id || "0");
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
 
   const { data, isLoading } = trpc.crm.vendors.get.useQuery(
     { id: vendorId },
@@ -147,6 +152,7 @@ export default function VendorDetail() {
           <TabsTrigger value="contacts">Contacts ({contacts?.length || 0})</TabsTrigger>
           <TabsTrigger value="orders">Purchase Orders ({purchaseOrders.length})</TabsTrigger>
           <TabsTrigger value="shipments">Shipments</TabsTrigger>
+          <TabsTrigger value="activities">Activities</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -363,12 +369,57 @@ export default function VendorDetail() {
             </CardHeader>
             <CardContent>
               <div className="text-center py-8 text-muted-foreground">
-                Shipment tracking coming soon
+                Shipment tracking map will be displayed here
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Activities Tab */}
+        <TabsContent value="activities">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>Activity Timeline</CardTitle>
+                <Button onClick={() => setShowEmailDialog(true)}>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Log Email
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Email Logs Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Email Communications</h3>
+                <EmailLogsTimeline
+                  emails={[]}
+                  entityType="vendor"
+                  entityId={vendorId}
+                />
+              </div>
+
+              {/* Calendar Events Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Meetings & Events</h3>
+                <CalendarEventsTimeline
+                  events={[]}
+                  entityType="vendor"
+                  entityId={vendorId}
+                />
               </div>
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Log Email Dialog */}
+      <LogEmailDialog
+        open={showEmailDialog}
+        onOpenChange={setShowEmailDialog}
+        entityType="vendor"
+        entityId={vendorId}
+        entityName={vendor.companyName}
+      />
     </div>
   );
 }

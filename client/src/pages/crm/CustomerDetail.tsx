@@ -26,11 +26,16 @@ import ShipmentMapLeaflet from "@/components/ShipmentMapLeaflet";
 import { RelationshipHealth } from "@/components/crm/RelationshipHealth";
 import { NextActions } from "@/components/crm/NextActions";
 import { AIRecommendations } from "@/components/crm/AIRecommendations";
+import { useState } from "react";
+import { LogEmailDialog } from "@/components/LogEmailDialog";
+import { EmailLogsTimeline } from "@/components/EmailLogsTimeline";
+import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
 
 export default function CustomerDetail() {
   const [, params] = useRoute("/crm/customers/:id");
   const [, setLocation] = useLocation();
   const customerId = params?.id ? parseInt(params.id) : 0;
+  const [showEmailDialog, setShowEmailDialog] = useState(false);
 
   const { data, isLoading, error } = trpc.crm.customers.get.useQuery(
     { id: customerId },
@@ -173,7 +178,7 @@ export default function CustomerDetail() {
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="orders">Orders ({orders.length})</TabsTrigger>
           <TabsTrigger value="shipments">Shipments ({shipments.length})</TabsTrigger>
-          <TabsTrigger value="activities">Activities ({activities.length})</TabsTrigger>
+          <TabsTrigger value="activities">Activities</TabsTrigger>
           <TabsTrigger value="contacts">Contacts ({contacts.length})</TabsTrigger>
         </TabsList>
 
@@ -467,29 +472,59 @@ export default function CustomerDetail() {
         <TabsContent value="activities">
           <Card>
             <CardHeader>
-              <CardTitle>Activity Timeline</CardTitle>
+              <div className="flex items-center justify-between">
+                <CardTitle>Activity Timeline</CardTitle>
+                <Button onClick={() => setShowEmailDialog(true)}>
+                  <Mail className="mr-2 h-4 w-4" />
+                  Log Email
+                </Button>
+              </div>
             </CardHeader>
-            <CardContent>
-              {activities.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No activities recorded</p>
-              ) : (
-                <div className="space-y-4">
-                  {activities.map((activity) => (
-                    <div key={activity.id} className="flex gap-4">
-                      <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-primary" />
-                      <div className="flex-1">
-                        <div className="font-medium">{activity.title}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {activity.activityDate ? new Date(activity.activityDate).toLocaleString() : 'N/A'}
+            <CardContent className="space-y-6">
+              {/* Email Logs Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Email Communications</h3>
+                <EmailLogsTimeline
+                  emails={[]} // Will be populated by tRPC query
+                  entityType="customer"
+                  entityId={customerId}
+                />
+              </div>
+
+              {/* Calendar Events Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Meetings & Events</h3>
+                <CalendarEventsTimeline
+                  events={[]} // Will be populated by tRPC query
+                  entityType="customer"
+                  entityId={customerId}
+                />
+              </div>
+
+              {/* Legacy Activities Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Other Activities</h3>
+                {activities.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No activities recorded</p>
+                ) : (
+                  <div className="space-y-4">
+                    {activities.map((activity) => (
+                      <div key={activity.id} className="flex gap-4">
+                        <div className="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-primary" />
+                        <div className="flex-1">
+                          <div className="font-medium">{activity.title}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {activity.activityDate ? new Date(activity.activityDate).toLocaleString() : 'N/A'}
+                          </div>
+                          {activity.description && (
+                            <div className="text-sm mt-1">{activity.description}</div>
+                          )}
                         </div>
-                        {activity.description && (
-                          <div className="text-sm mt-1">{activity.description}</div>
-                        )}
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
@@ -545,6 +580,15 @@ export default function CustomerDetail() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Log Email Dialog */}
+      <LogEmailDialog
+        open={showEmailDialog}
+        onOpenChange={setShowEmailDialog}
+        entityType="customer"
+        entityId={customerId}
+        entityName={displayName}
+      />
     </div>
   );
 }

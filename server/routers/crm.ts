@@ -1509,18 +1509,21 @@ export const crmRouter = router({
           .orderBy(desc(customerShipments.shipDate))
           .limit(50);
         
-        // Get orders
-        const customerOrders = await db
-          .select()
-          .from(orders)
-          .where(
-            or(
-              eq(orders.customerEmail, customer.email || ''),
-              like(orders.orderData, `%${customer.email}%`)
-            )
-          )
-          .orderBy(desc(orders.orderDate))
-          .limit(50);
+        // Get orders (only if customer has email)
+        let customerOrders: any[] = [];
+        if (customer.email) {
+          try {
+            customerOrders = await db
+              .select()
+              .from(orders)
+              .where(eq(orders.customerEmail, customer.email))
+              .orderBy(desc(orders.orderDate))
+              .limit(50);
+          } catch (error) {
+            console.warn('[CRM] Failed to fetch customer orders:', error);
+            // Continue without orders if query fails
+          }
+        }
         
         return {
           customer,

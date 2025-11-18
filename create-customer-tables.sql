@@ -1,0 +1,39 @@
+CREATE TABLE IF NOT EXISTS `customer_contacts` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `customerId` INT NOT NULL,
+  `firstName` VARCHAR(255),
+  `lastName` VARCHAR(255),
+  `email` VARCHAR(320),
+  `phone` VARCHAR(50),
+  `title` VARCHAR(255),
+  `isPrimary` BOOLEAN DEFAULT FALSE,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS `customer_activities` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `customerId` INT NOT NULL,
+  `activityType` VARCHAR(100),
+  `activityDate` TIMESTAMP,
+  `title` VARCHAR(500),
+  `description` TEXT,
+  `metadata` JSON,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS `customer_shipments` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `customerId` INT NOT NULL,
+  `orderNumber` VARCHAR(255),
+  `trackingNumber` VARCHAR(255),
+  `carrierCode` VARCHAR(50),
+  `shipDate` TIMESTAMP,
+  `deliveryDate` TIMESTAMP,
+  `origin` VARCHAR(500),
+  `destination` VARCHAR(500),
+  `status` VARCHAR(100),
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

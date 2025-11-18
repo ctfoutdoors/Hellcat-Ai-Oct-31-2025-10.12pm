@@ -1,0 +1,34 @@
+{
+  "query": "SELECT * FROM customers WHERE id = 1 LIMIT 1",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT * FROM customers WHERE id = 1 LIMIT 1",
+  "rows": [
+    {
+      "id": "1",
+      "customerNumber": "CUST-1763477857848",
+      "customerType": "company",
+      "businessType": "wholesale",
+      "firstName": "NULL",
+      "lastName": "NULL",
+      "email": "test@emailtestingservice.com",
+      "phone": "99999998888",
+      "companyName": "Test customer Company",
+      "taxId": "NULL",
+      "website": "testwebsite.com",
+      "billingAddress": "{\"city\": \"Louisville\", \"country\": \"USA\", \"state\": \"KY\", \"street\": \"505 no street S\", \"zip\": \"42701\"}",
+      "shippingAddress": "{\"city\": \"Louisville\", \"country\": \"USA\", \"state\": \"KY\", \"street\": \"505 no street S\", \"zip\": \"42701\"}",
+      "googlePlaceId": "NULL",
+      "latitude": "NULL",
+      "longitude": "NULL",
+      "source": "direct",
+      "externalIds": "NULL",
+      "tags": "NULL",
+      "notes": "NULL",
+      "createdAt": "2025-11-18 14:57:37",
+      "updatedAt": "2025-11-18 14:57:37"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcustomerNumber\tcustomerType\tbusinessType\tfirstName\tlastName\temail\tphone\tcompanyName\ttaxId\twebsite\tbillingAddress\tshippingAddress\tgooglePlaceId\tlatitude\tlongitude\tsource\texternalIds\ttags\tnotes\tcreatedAt\tupdatedAt\n1\tCUST-1763477857848\tcompany\twholesale\tNULL\tNULL\ttest@emailtestingservice.com\t99999998888\tTest customer Company\tNULL\ttestwebsite.com\t{\"city\": \"Louisville\", \"country\": \"USA\", \"state\": \"KY\", \"street\": \"505 no street S\", \"zip\": \"42701\"}\t{\"city\": \"Louisville\", \"country\": \"USA\", \"state\": \"KY\", \"street\": \"505 no street S\", \"zip\": \"42701\"}\tNULL\tNULL\tNULL\tdirect\tNULL\tNULL\tNULL\t2025-11-18 14:57:37\t2025-11-18 14:57:37\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

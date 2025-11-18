@@ -860,3 +860,8 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] 21. Fix TypeScript errors in trackingUrls.ts (472 errors)
 - [ ] 22. Resolve database connection errors in meeting poller
 - [ ] 23. Fix CORS error for analytics endpoint
+
+
+## Critical Bug Fixes
+- [ ] Fix customer detail page showing "Customer not found" when clicking records from list
+- [ ] Debug customer list navigation and click handlers

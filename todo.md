@@ -804,3 +804,21 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Verify carrier (Old Dominion) displays
 - [ ] Verify shipment status displays
 - [ ] Test map interactivity (zoom, pan)
+
+
+---
+
+## AI Carrier Tracking Agent (Vision-based Scraping)
+- [x] Install Puppeteer for headless browser automation
+- [x] Create tracking agent service with screenshot capture
+- [x] Implement GPT-4 Vision extraction for tracking data
+- [x] Build carrier URL mapping (UPS, FedEx, USPS, Old Dominion, etc.)
+- [x] Create manual "Sync Tracking" button on vendor/shipment pages
+- [x] Add tracking_screenshots table to store captured images
+- [x] Store screenshots in S3 with metadata
+- [x] Create tRPC endpoint for manual tracking sync
+- [ ] Add optional 24-hour auto-sync setting
+- [ ] Implement retry logic for failed extractions
+- [ ] Update shipments table with extracted data (status, location, ETA)
+- [ ] Add tracking history timeline with screenshot references
+- [ ] Test with real carrier tracking pages

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Package, MapPin, Clock, Truck, RefreshCw } from "lucide-react";
+import { TrackingSyncButton } from "./TrackingSyncButton";
 
 // Fix Leaflet default marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -152,15 +153,25 @@ export function ShipmentMapLeaflet({ shipments, onRefresh }: ShipmentMapProps) {
                     {shipment.status.replace("_", " ")}
                   </Badge>
                 </div>
-                <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-3 w-3" />
-                    Current: {shipment.currentLocation}
+                <div className="mt-2 flex items-center justify-between">
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      Current: {shipment.currentLocation}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      ETA: {new Date(shipment.estimatedArrival).toLocaleDateString()}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Clock className="h-3 w-3" />
-                    ETA: {new Date(shipment.estimatedArrival).toLocaleDateString()}
-                  </div>
+                  <TrackingSyncButton
+                    shipmentId={shipment.id}
+                    trackingNumber={shipment.trackingNumber}
+                    carrier={shipment.carrier}
+                    size="sm"
+                    variant="ghost"
+                    showLabel={false}
+                  />
                 </div>
               </div>
             ))}

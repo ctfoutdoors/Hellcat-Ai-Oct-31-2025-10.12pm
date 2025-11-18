@@ -280,6 +280,8 @@ export const shipments = mysqlTable("shipments", {
   billedCost: decimal("billedCost", { precision: 10, scale: 2 }),
   originZip: varchar("originZip", { length: 20 }),
   destinationZip: varchar("destinationZip", { length: 20 }),
+  currentLocation: text("currentLocation"),
+  destinationAddress: text("destinationAddress"),
   hasDiscrepancy: boolean("hasDiscrepancy").default(false).notNull(),
   lastAuditDate: timestamp("lastAuditDate"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

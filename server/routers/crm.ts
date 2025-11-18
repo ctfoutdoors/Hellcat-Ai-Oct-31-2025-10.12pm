@@ -1841,17 +1841,73 @@ export const crmRouter = router({
       .input(z.object({ vendorId: z.number() }))
       .query(async ({ input }) => {
         const db = await getDb();
-        if (!db) throw new Error('Database not available');
+        if (!db) return [];
         
         const { vendorActionItems } = await import('../../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
         
         const results = await db
           .select()
           .from(vendorActionItems)
-          .where(eq(vendorActionItems.vendorId, input.vendorId))
-          .orderBy(desc(vendorActionItems.createdAt));
+          .where(eq(vendorActionItems.vendorId, input.vendorId));
         
         return results;
+      }),
+    
+    create: protectedProcedure
+      .input(z.object({
+        vendorId: z.number(),
+        title: z.string(),
+        description: z.string().nullable(),
+        priority: z.enum(['low', 'medium', 'high']),
+        status: z.enum(['todo', 'in_progress', 'done']),
+        assignedTo: z.string().nullable(),
+        dueDate: z.date().nullable(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const { vendorActionItems } = await import('../../drizzle/schema');
+        
+        await db.insert(vendorActionItems).values(input);
+        return { success: true };
+      }),
+    
+    update: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        vendorId: z.number(),
+        title: z.string(),
+        description: z.string().nullable(),
+        priority: z.enum(['low', 'medium', 'high']),
+        status: z.enum(['todo', 'in_progress', 'done']),
+        assignedTo: z.string().nullable(),
+        dueDate: z.date().nullable(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const { vendorActionItems } = await import('../../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        
+        const { id, ...data } = input;
+        await db.update(vendorActionItems).set(data).where(eq(vendorActionItems.id, id));
+        return { success: true };
+      }),
+    
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database not available');
+        
+        const { vendorActionItems } = await import('../../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        
+        await db.delete(vendorActionItems).where(eq(vendorActionItems.id, input.id));
+        return { success: true };
       }),
   }),
   
@@ -1861,6 +1917,38 @@ export const crmRouter = router({
       const { analyzeVendorHealth } = await import('../services/vendorHealthAnalysis');
       return await analyzeVendorHealth(input.vendorId);
     }),
+
+  vendorShipments: router({
+    list: protectedProcedure
+      .input(z.object({ vendorId: z.number() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        
+        // Get all shipments for POs from this vendor
+        const { shipments, purchaseOrders } = await import('../../drizzle/schema');
+        const { eq } = await import('drizzle-orm');
+        
+        const results = await db
+          .select({
+            id: shipments.id,
+            trackingNumber: shipments.trackingNumber,
+            carrier: shipments.carrier,
+            status: shipments.status,
+            shipDate: shipments.shipDate,
+            expectedDeliveryDate: shipments.expectedDeliveryDate,
+            deliveryDate: shipments.deliveryDate,
+            currentLocation: shipments.currentLocation,
+            destinationAddress: shipments.destinationAddress,
+          })
+          .from(shipments)
+          .innerJoin(purchaseOrders, eq(shipments.poId, purchaseOrders.id))
+          .where(eq(purchaseOrders.vendorId, input.vendorId))
+          .orderBy(shipments.shipDate);
+        
+        return results;
+      }),
+  }),
   
   // ============================================================================
   // LEADS API

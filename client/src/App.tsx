@@ -41,6 +41,7 @@ import Customers from "./pages/crm/Customers";
 import CustomerProfile from "./pages/crm/CustomerProfile";
 import Vendors from "./pages/crm/Vendors";
 import VendorDetailNew from "./pages/crm/VendorDetailNew";
+import ActionItemsDashboard from "./pages/crm/ActionItemsDashboard";
 import PODetail from "./pages/po/PODetail";
 import Leads from "./pages/crm/Leads";
 import Calendar from "./pages/Calendar";
@@ -120,6 +121,7 @@ function Router() {
       <Route path="/crm/vendors-old" component={VendorsList} />
       <Route path="/crm/vendors" component={Vendors} />
       <Route path="/crm/vendors/:id" component={VendorDetailNew} />
+      <Route path="/crm/action-items" component={ActionItemsDashboard} />
       <Route path="/po/:id" component={PODetail} />
       <Route path="/calendar" component={Calendar} />
         

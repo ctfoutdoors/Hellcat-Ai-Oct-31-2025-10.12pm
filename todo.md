@@ -715,3 +715,78 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Display status timeline with visual progress indicator (UI component)
 - [ ] Auto-update shipment status from carrier data (automation)
 
+
+
+---
+
+## Shipment Tracking Map & Action Items Management
+
+### Phase 1: Interactive Shipment Map ✅
+- [x] Create ShipmentMap component using Google Maps integration
+- [x] Display departure point marker with vendor address
+- [x] Display arrival point marker with destination address
+- [x] Calculate and display route between points using Directions API
+- [x] Show mileage and estimated travel time
+- [x] Display current truck location (if available from carrier)
+- [x] Support multiple shipments on single map view
+- [x] Add shipment info cards with status, carrier, tracking number
+- [x] Add real-time position updates with auto-refresh
+- [x] Add vendorShipments router to fetch shipments by vendor
+- [x] Integrate ShipmentMap into VendorDetailNew page
+- [x] Add currentLocation and destinationAddress to shipments schema
+- [x] Insert sample shipment data for testing
+
+### Phase 2: Route Visualization & Tracking
+- [ ] Fetch actual route from Google Directions API
+- [ ] Display route polyline on map with custom styling
+- [ ] Calculate total mileage along route
+- [ ] Show intermediate checkpoints from carrier tracking
+- [ ] Add timeline view showing pickup → checkpoints → delivery
+- [ ] Display ETA and actual delivery time
+- [ ] Show route progress percentage
+- [ ] Add traffic layer for real-time conditions
+- [ ] Implement zoom-to-fit for all shipments
+
+### Phase 3: Action Items CRUD Operations ✅
+- [x] Create ActionItemDialog component for Add/Edit
+- [x] Implement createActionItem tRPC endpoint
+- [x] Implement updateActionItem tRPC endpoint
+- [x] Implement deleteActionItem tRPC endpoint
+- [x] Add form validation for title, priority, due date
+- [x] Support assignee selection from team members
+- [x] Add status dropdown (To Do, In Progress, Done)
+- [x] Add priority selection (Low, Medium, High)
+- [x] Add due date calendar picker
+- [ ] Implement bulk selection with checkboxes
+- [ ] Add bulk delete and bulk assign operations
+- [ ] Add drag-and-drop status workflow (Kanban-style)
+
+### Phase 4: Assignee Management & Notifications
+- [ ] Create team members table for assignees
+- [ ] Add assignee picker with search/filter
+- [ ] Display assignee avatar and name on action items
+- [ ] Send notifications when action item is assigned
+- [ ] Add due date calendar picker
+- [ ] Show overdue indicators with red badges
+- [ ] Add priority badges (High=red, Medium=yellow, Low=green)
+- [ ] Implement filter by assignee, status, priority
+- [ ] Add "My Tasks" view for current user
+- [ ] Create action items dashboard with statistics
+
+
+
+---
+
+## Fix Shipment Tracking & Action Items ✅
+- [x] Create MapView component wrapper for Google Maps
+- [x] Fix ShipmentMap import to use correct Map component
+- [x] Integrate ActionItemDialog into VendorDetailNew page
+- [x] Add "New Action" button to action items section
+- [x] Wire up edit and delete actions for existing items
+- [x] Build action items dashboard page at /crm/action-items
+- [x] Add filtering by status, priority, assignee
+- [x] Add overdue indicators with red badges
+- [x] Group action items by assignee
+- [x] Add search functionality for action items
+- [x] Add summary stats (Total, To Do, In Progress, Overdue)
+- [x] Add route to App.tsx for action items dashboard

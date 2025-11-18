@@ -32,6 +32,8 @@ import {
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { POCard } from "@/components/POCard";
+import { ShipmentMap } from "@/components/ShipmentMap";
+import { ActionItemDialog } from "@/components/ActionItemDialog";
 
 export default function VendorDetailNew() {
   const { id } = useParams();
@@ -45,8 +47,11 @@ export default function VendorDetailNew() {
   const { data: attachments } = trpc.crm.vendorAttachments.list.useQuery({ vendorId });
   const { data: actionItems } = trpc.crm.vendorActionItems.list.useQuery({ vendorId });
   const { data: healthAnalysis } = trpc.crm.analyzeVendorHealth.useQuery({ vendorId });
+  const { data: shipmentsData, refetch: refetchShipments } = trpc.crm.vendorShipments.list.useQuery({ vendorId });
 
   const [expandedContacts, setExpandedContacts] = useState<Set<number>>(new Set());
+  const [actionDialogOpen, setActionDialogOpen] = useState(false);
+  const [editingActionItem, setEditingActionItem] = useState<any>(null);
 
   if (isLoading) {
     return <div className="p-8">Loading vendor...</div>;
@@ -118,6 +123,7 @@ export default function VendorDetailNew() {
   };
 
   return (
+    <>
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b bg-card">
@@ -324,6 +330,24 @@ export default function VendorDetailNew() {
               </CardContent>
             </Card>
 
+            {/* Shipments Map */}
+            {shipmentsData && shipmentsData.length > 0 && (
+              <ShipmentMap 
+                shipments={shipmentsData.map((s: any) => ({
+                  id: s.id,
+                  trackingNumber: s.trackingNumber || 'N/A',
+                  carrier: s.carrier || 'Unknown',
+                  status: s.status || 'pending',
+                  originAddress: vendor?.address || '',
+                  destinationAddress: s.destinationAddress || '',
+                  currentLocation: s.currentLocation,
+                  estimatedDelivery: s.expectedDeliveryDate,
+                  shipDate: s.shipDate,
+                }))}
+                onRefresh={() => refetchShipments()}
+              />
+            )}
+
             {/* Activity Timeline */}
             <Card>
               <CardHeader>
@@ -465,9 +489,20 @@ export default function VendorDetailNew() {
 
             {/* Action Items */}
             <Card>
-              <CardHeader>
-                <CardTitle>Next Actions</CardTitle>
-                <CardDescription>Pending tasks and follow-ups</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Next Actions</CardTitle>
+                  <CardDescription>Pending tasks and follow-ups</CardDescription>
+                </div>
+                <Button 
+                  size="sm"
+                  onClick={() => {
+                    setEditingActionItem(null);
+                    setActionDialogOpen(true);
+                  }}
+                >
+                  New Action
+                </Button>
               </CardHeader>
               <CardContent className="space-y-3">
                 {actionItems?.filter((item: any) => item.status !== 'completed').map((item: any) => (
@@ -484,17 +519,44 @@ export default function VendorDetailNew() {
                     {item.description && (
                       <p className="text-xs text-muted-foreground mb-2">{item.description}</p>
                     )}
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      {item.dueDate && (
-                        <span className="flex items-center gap-1">
-                          <Calendar className="h-3 w-3" />
-                          {new Date(item.dueDate).toLocaleDateString()}
-                        </span>
-                      )}
-                      <span className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        Assigned to User #{item.assignedTo}
-                      </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        {item.dueDate && (
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {new Date(item.dueDate).toLocaleDateString()}
+                          </span>
+                        )}
+                        {item.assignedTo && (
+                          <span className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {item.assignedTo}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setEditingActionItem(item);
+                            setActionDialogOpen(true);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            if (confirm('Delete this action item?')) {
+                              trpc.crm.vendorActionItems.delete.useMutation().mutate({ id: item.id });
+                            }
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -516,5 +578,16 @@ export default function VendorDetailNew() {
         </div>
       </div>
     </div>
+
+    <ActionItemDialog
+      open={actionDialogOpen}
+      onOpenChange={setActionDialogOpen}
+      vendorId={vendorId}
+      actionItem={editingActionItem}
+      onSuccess={() => {
+        // Refresh action items list
+      }}
+    />
+    </>
   );
 }

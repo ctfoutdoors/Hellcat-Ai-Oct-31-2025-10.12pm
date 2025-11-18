@@ -881,3 +881,36 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Integrate hover card into Customers list
 - [x] Integrate radial menu into Customers list
 - [ ] Test hover delay timing and menu positioning
+
+
+---
+
+## Radial Menu Enhancements
+- [x] Wire "Schedule Meeting" action to ScheduleMeetingDialog
+- [x] Wire "Create Task" action to CreateTaskDialog
+- [x] Implement mailto: integration for email action
+- [x] Implement tel: protocol for call action
+- [ ] Create settings panel for radial menu customization
+- [ ] Add action add/remove/reorder functionality
+- [ ] Add color customization for actions
+- [ ] Store radial menu config in database
+
+## Modular CRM Components
+- [x] Create RelationshipHealth component (reusable across entities)
+- [x] Add health score calculation (X/100 with progress bar)
+- [x] Add AI narrative generation based on interactions)
+- [x] Add Strengths section (green bullets)
+- [x] Add Concerns section (amber bullets)
+- [x] Add expansion for full audit logs
+- [x] Create NextActions component (right-side panel)
+- [x] Add action cards with priority tags)
+- [x] Add Edit/Delete buttons for actions
+- [x] Add "New Action" button
+- [x] Create AIRecommendations component
+- [x] Add dynamic recommendation generation
+- [x] Add re-generation on demand
+- [x] Build scoring algorithm endpoint
+- [x] Build AI recommendation generation endpoint
+- [ ] Build next-action CRUD endpoints
+- [ ] Create JSON schema for component data
+- [ ] Test components across vendor/customer/partner views

@@ -23,6 +23,8 @@ import { Search, Plus, Building2, User, Filter } from "lucide-react";
 import { useLocation } from "wouter";
 import { CustomerHoverCard } from "@/components/CustomerHoverCard";
 import { RadialContextMenu, DEFAULT_CUSTOMER_ACTIONS, type RadialAction } from "@/components/RadialContextMenu";
+import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
+import { CreateTaskDialog } from "@/components/CreateTaskDialog";
 import { toast } from "sonner";
 
 export default function Customers() {
@@ -32,6 +34,9 @@ export default function Customers() {
   const [businessType, setBusinessType] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; customerId: number } | null>(null);
+  const [meetingDialog, setMeetingDialog] = useState<{ open: boolean; customerId: number | null }>({ open: false, customerId: null });
+  const [taskDialog, setTaskDialog] = useState<{ open: boolean; customerId: number | null }>({ open: false, customerId: null });
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
 
   const { data, isLoading } = trpc.crm.customers.list.useQuery({
     search: search || undefined,
@@ -282,21 +287,32 @@ export default function Customers() {
           actions={DEFAULT_CUSTOMER_ACTIONS.map((action) => ({
             ...action,
             onClick: () => {
+              const customer = data?.customers?.find(c => c.id === contextMenu.customerId);
               switch (action.id) {
                 case "edit":
                   setLocation(`/crm/customers/${contextMenu.customerId}`);
                   break;
                 case "email":
-                  toast.info("Email feature coming soon");
+                  if (customer?.email) {
+                    window.location.href = `mailto:${customer.email}`;
+                  } else {
+                    toast.error("No email address found for this customer");
+                  }
                   break;
                 case "call":
-                  toast.info("Call feature coming soon");
+                  if (customer?.phone) {
+                    window.location.href = `tel:${customer.phone}`;
+                  } else {
+                    toast.error("No phone number found for this customer");
+                  }
                   break;
                 case "meeting":
-                  toast.info("Meeting scheduling coming soon");
+                  setSelectedCustomer(customer);
+                  setMeetingDialog({ open: true, customerId: contextMenu.customerId });
                   break;
                 case "task":
-                  toast.info("Task creation coming soon");
+                  setSelectedCustomer(customer);
+                  setTaskDialog({ open: true, customerId: contextMenu.customerId });
                   break;
                 case "delete":
                   toast.error("Delete functionality coming soon");
@@ -305,6 +321,34 @@ export default function Customers() {
             },
           }))}
           onClose={() => setContextMenu(null)}
+        />
+      )}
+
+      {/* Meeting Dialog */}
+      {meetingDialog.open && selectedCustomer && (
+        <ScheduleMeetingDialog
+          open={meetingDialog.open}
+          onClose={() => {
+            setMeetingDialog({ open: false, customerId: null });
+            setSelectedCustomer(null);
+          }}
+          entityType="customer"
+          entityId={meetingDialog.customerId!}
+          entityName={selectedCustomer.companyName || `${selectedCustomer.firstName} ${selectedCustomer.lastName}`}
+        />
+      )}
+
+      {/* Task Dialog */}
+      {taskDialog.open && selectedCustomer && (
+        <CreateTaskDialog
+          open={taskDialog.open}
+          onClose={() => {
+            setTaskDialog({ open: false, customerId: null });
+            setSelectedCustomer(null);
+          }}
+          entityType="customer"
+          entityId={taskDialog.customerId!}
+          entityName={selectedCustomer.companyName || `${selectedCustomer.firstName} ${selectedCustomer.lastName}`}
         />
       )}
     </div>

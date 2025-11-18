@@ -32,11 +32,13 @@ import { crmRouter } from './routers/crm';
 import { intelligenceRouter } from './routers/intelligence';
 import { poRouter } from './routers/po';
 import { trackingAgentRouter } from './routers/trackingAgent';
+import { crmComponentsRouter } from './routers/crmComponents';
 
 export const appRouter = router({
   integrations: integrationsRouter,
   stores: storesRouter,
   crm: crmRouter,
+  crmComponents: crmComponentsRouter,
   intelligence: intelligenceRouter,
   po: poRouter,
   trackingAgent: trackingAgentRouter,

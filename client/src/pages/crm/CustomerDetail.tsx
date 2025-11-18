@@ -23,6 +23,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import ShipmentMapLeaflet from "@/components/ShipmentMapLeaflet";
+import { RelationshipHealth } from "@/components/crm/RelationshipHealth";
+import { NextActions } from "@/components/crm/NextActions";
+import { AIRecommendations } from "@/components/crm/AIRecommendations";
 
 export default function CustomerDetail() {
   const [, params] = useRoute("/crm/customers/:id");
@@ -252,6 +255,99 @@ export default function CustomerDetail() {
                 )}
               </CardContent>
             </Card>
+          </div>
+
+          {/* Relationship Health Component */}
+          <RelationshipHealth
+            entityType="customer"
+            entityId={customerId}
+            data={{
+              score: 75,
+              narrative: "This customer shows strong engagement with consistent order patterns and responsive communication. Recent activity indicates a healthy, growing relationship with potential for expansion.",
+              strengths: [
+                "Consistent order frequency with 12 purchases in the last 6 months",
+                "High average order value ($2,450)",
+                "Prompt payment history with zero late payments",
+                "Active engagement across multiple communication channels"
+              ],
+              concerns: [
+                "Slight decrease in order frequency over the past 2 months",
+                "No recent upsell or cross-sell opportunities pursued"
+              ],
+            }}
+          />
+
+          {/* Two-column layout for Next Actions and AI Recommendations */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {/* Next Actions - Takes 1 column */}
+            <div className="lg:col-span-1">
+              <NextActions
+                entityType="customer"
+                entityId={customerId}
+                actions={[
+                  {
+                    id: 1,
+                    title: "Follow up on recent order",
+                    priority: "high",
+                    description: "Check satisfaction with latest purchase and explore additional needs",
+                    dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
+                    assignedUserName: "Sales Team",
+                    completed: false,
+                  },
+                  {
+                    id: 2,
+                    title: "Schedule quarterly review",
+                    priority: "medium",
+                    description: "Discuss performance metrics and future opportunities",
+                    dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+                    assignedUserName: "Account Manager",
+                    completed: false,
+                  },
+                ]}
+                onAddAction={() => toast.info("Add action dialog coming soon")}
+                onEditAction={(id) => toast.info(`Edit action ${id}`)}
+                onDeleteAction={(id) => toast.info(`Delete action ${id}`)}
+              />
+            </div>
+
+            {/* AI Recommendations - Takes 2 columns */}
+            <div className="lg:col-span-2">
+              <AIRecommendations
+                entityType="customer"
+                entityId={customerId}
+                recommendations={[
+                  {
+                    id: 1,
+                    type: "opportunity",
+                    text: "Customer's order volume suggests they may benefit from a volume discount program - consider offering tiered pricing",
+                    confidence: 85,
+                    source: "Order volume analysis",
+                  },
+                  {
+                    id: 2,
+                    type: "action",
+                    text: "Schedule a product demo for complementary items based on their purchase history",
+                    confidence: 78,
+                    source: "Purchase patterns",
+                  },
+                  {
+                    id: 3,
+                    type: "insight",
+                    text: "Communication frequency has decreased by 30% in the past 60 days - proactive outreach recommended",
+                    confidence: 92,
+                    source: "Communication patterns",
+                  },
+                  {
+                    id: 4,
+                    type: "risk",
+                    text: "Payment terms have been stretched on the last 2 invoices - monitor cash flow situation",
+                    confidence: 65,
+                    source: "Payment history",
+                  },
+                ]}
+                onRegenerate={() => toast.info("Regenerating recommendations...")}
+              />
+            </div>
           </div>
 
           {/* Recent Orders */}

@@ -21,6 +21,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Building2, User, Filter } from "lucide-react";
 import { useLocation } from "wouter";
+import { CustomerHoverCard } from "@/components/CustomerHoverCard";
+import { RadialContextMenu, DEFAULT_CUSTOMER_ACTIONS, type RadialAction } from "@/components/RadialContextMenu";
+import { toast } from "sonner";
 
 export default function Customers() {
   const [, setLocation] = useLocation();
@@ -28,6 +31,7 @@ export default function Customers() {
   const [customerType, setCustomerType] = useState<string>("all");
   const [businessType, setBusinessType] = useState<string>("all");
   const [page, setPage] = useState(1);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; customerId: number } | null>(null);
 
   const { data, isLoading } = trpc.crm.customers.list.useQuery({
     search: search || undefined,
@@ -178,11 +182,19 @@ export default function Customers() {
                 </TableRow>
               ) : (
                 data?.customers?.map((customer) => (
-                  <TableRow
-                    key={customer.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => setLocation(`/crm/customers/${customer.id}`)}
-                  >
+                  <CustomerHoverCard key={customer.id} customerId={customer.id}>
+                    <TableRow
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => setLocation(`/crm/customers/${customer.id}`)}
+                      onContextMenu={(e) => {
+                        e.preventDefault();
+                        setContextMenu({ x: e.clientX, y: e.clientY, customerId: customer.id });
+                      }}
+                      onDoubleClick={(e) => {
+                        e.preventDefault();
+                        setContextMenu({ x: e.clientX, y: e.clientY, customerId: customer.id });
+                      }}
+                    >
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {customer.customerType === "company" ? (
@@ -229,6 +241,7 @@ export default function Customers() {
                       {new Date(customer.createdAt).toLocaleDateString()}
                     </TableCell>
                   </TableRow>
+                  </CustomerHoverCard>
                 ))
               )}
             </TableBody>
@@ -259,6 +272,40 @@ export default function Customers() {
             </Button>
           </div>
         </div>
+      )}
+
+      {/* Radial Context Menu */}
+      {contextMenu && (
+        <RadialContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          actions={DEFAULT_CUSTOMER_ACTIONS.map((action) => ({
+            ...action,
+            onClick: () => {
+              switch (action.id) {
+                case "edit":
+                  setLocation(`/crm/customers/${contextMenu.customerId}`);
+                  break;
+                case "email":
+                  toast.info("Email feature coming soon");
+                  break;
+                case "call":
+                  toast.info("Call feature coming soon");
+                  break;
+                case "meeting":
+                  toast.info("Meeting scheduling coming soon");
+                  break;
+                case "task":
+                  toast.info("Task creation coming soon");
+                  break;
+                case "delete":
+                  toast.error("Delete functionality coming soon");
+                  break;
+              }
+            },
+          }))}
+          onClose={() => setContextMenu(null)}
+        />
       )}
     </div>
   );

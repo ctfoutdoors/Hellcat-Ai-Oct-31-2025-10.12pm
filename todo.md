@@ -790,3 +790,17 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Add search functionality for action items
 - [x] Add summary stats (Total, To Do, In Progress, Overdue)
 - [x] Add route to App.tsx for action items dashboard
+
+
+---
+
+## Test Shipment Map with BOL #167533
+- [ ] Verify shipment data exists in database for Yazoo Mills
+- [ ] Check origin address (305 Commerce St, New Oxford, PA 17350)
+- [ ] Check destination address (3 Catch The Fever Lane, Byhalia, MS 38611)
+- [ ] Navigate to vendor detail page and verify map loads
+- [ ] Verify route displays from PA to MS
+- [ ] Verify tracking number PRO 167533 displays
+- [ ] Verify carrier (Old Dominion) displays
+- [ ] Verify shipment status displays
+- [ ] Test map interactivity (zoom, pan)

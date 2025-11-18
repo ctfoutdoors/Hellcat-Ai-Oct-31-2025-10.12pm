@@ -1,0 +1,35 @@
+{
+  "query": "SELECT * FROM shipments WHERE poId = 1 LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT * FROM shipments WHERE poId = 1 LIMIT 1;",
+  "rows": [
+    {
+      "id": "1",
+      "poId": "1",
+      "trackingNumber": "167533",
+      "bolNumber": "167533",
+      "packSlipNumber": "NULL",
+      "carrier": "Geile Trucking",
+      "service": "NULL",
+      "shipDate": "2025-11-14 00:00:00",
+      "deliveryDate": "2025-11-18 10:30:00",
+      "expectedDeliveryDate": "2025-11-18 00:00:00",
+      "status": "delivered",
+      "weight": "NULL",
+      "totalPallets": "2",
+      "totalCartons": "4",
+      "freightClass": "100",
+      "specialInstructions": "NULL",
+      "packageDescription": "Shipping tubes - various sizes (2\", 3\", 5\", 6\" diameter)",
+      "freightTerms": "Prepaid",
+      "trackingUrl": "NULL",
+      "createdAt": "2025-11-17 18:44:46",
+      "updatedAt": "2025-11-17 18:44:46",
+      "currentLocation": "NULL",
+      "destinationAddress": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tpoId\ttrackingNumber\tbolNumber\tpackSlipNumber\tcarrier\tservice\tshipDate\tdeliveryDate\texpectedDeliveryDate\tstatus\tweight\ttotalPallets\ttotalCartons\tfreightClass\tspecialInstructions\tpackageDescription\tfreightTerms\ttrackingUrl\tcreatedAt\tupdatedAt\tcurrentLocation\tdestinationAddress\n1\t1\t167533\t167533\tNULL\tGeile Trucking\tNULL\t2025-11-14 00:00:00\t2025-11-18 10:30:00\t2025-11-18 00:00:00\tdelivered\tNULL\t2\t4\t100\tNULL\tShipping tubes - various sizes (2\", 3\", 5\", 6\" diameter)\tPrepaid\tNULL\t2025-11-17 18:44:46\t2025-11-17 18:44:46\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 286
+}

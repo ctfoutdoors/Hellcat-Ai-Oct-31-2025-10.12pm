@@ -32,7 +32,7 @@ import {
 import { useState } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { POCard } from "@/components/POCard";
-import { ShipmentMap } from "@/components/ShipmentMap";
+import { ShipmentMapLeaflet } from "@/components/ShipmentMapLeaflet";
 import { ActionItemDialog } from "@/components/ActionItemDialog";
 
 export default function VendorDetailNew() {
@@ -332,17 +332,19 @@ export default function VendorDetailNew() {
 
             {/* Shipments Map */}
             {shipmentsData && shipmentsData.length > 0 && (
-              <ShipmentMap 
+              <ShipmentMapLeaflet 
                 shipments={shipmentsData.map((s: any) => ({
                   id: s.id,
                   trackingNumber: s.trackingNumber || 'N/A',
                   carrier: s.carrier || 'Unknown',
                   status: s.status || 'pending',
-                  originAddress: vendor?.address || '',
-                  destinationAddress: s.destinationAddress || '',
-                  currentLocation: s.currentLocation,
-                  estimatedDelivery: s.expectedDeliveryDate,
-                  shipDate: s.shipDate,
+                  departureLocation: s.departureLocation || 'New Oxford, PA',
+                  arrivalLocation: s.arrivalLocation || 'Byhalia, MS',
+                  currentLocation: s.currentLocation || 'Memphis, TN',
+                  departureCoords: s.departureCoords || { lat: 39.8686, lng: -77.0564 },
+                  arrivalCoords: s.arrivalCoords || { lat: 34.8715, lng: -89.6870 },
+                  currentCoords: s.currentCoords || { lat: 35.1495, lng: -90.0490 },
+                  estimatedArrival: s.expectedDeliveryDate || new Date().toISOString(),
                 }))}
                 onRefresh={() => refetchShipments()}
               />

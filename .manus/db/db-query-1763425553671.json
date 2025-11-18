@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE shipments \nSET \n  trackingNumber = 'PRO 167533',\n  carrier = 'Old Dominion',\n  status = 'delivered',\n  currentLocation = 'Memphis, TN',\n  destinationAddress = '3 Catch The Fever Lane, Byhalia, MS 38611'\nWHERE poId = 1 LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute UPDATE shipments \nSET \n  trackingNumber = 'PRO 167533',\n  carrier = 'Old Dominion',\n  status = 'delivered',\n  currentLocation = 'Memphis, TN',\n  destinationAddress = '3 Catch The Fever Lane, Byhalia, MS 38611'\nWHERE poId = 1 LIMIT 1;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 110
+}

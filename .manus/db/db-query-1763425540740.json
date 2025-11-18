@@ -1,0 +1,22 @@
+{
+  "query": "SELECT id, trackingNumber, carrier, status FROM shipments WHERE poId = 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT id, trackingNumber, carrier, status FROM shipments WHERE poId = 1;",
+  "rows": [
+    {
+      "id": "1",
+      "trackingNumber": "167533",
+      "carrier": "Geile Trucking",
+      "status": "delivered"
+    },
+    {
+      "id": "30001",
+      "trackingNumber": "1Z999AA10123456784",
+      "carrier": "UPS",
+      "status": "in_transit"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttrackingNumber\tcarrier\tstatus\n1\t167533\tGeile Trucking\tdelivered\n30001\t1Z999AA10123456784\tUPS\tin_transit\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

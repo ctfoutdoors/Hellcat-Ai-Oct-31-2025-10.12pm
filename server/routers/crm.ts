@@ -1536,33 +1536,73 @@ export const crmRouter = router({
      */
     create: protectedProcedure
       .input(z.object({
-        customerNumber: z.string(),
-        customerType: z.enum(['individual', 'company']),
-        businessType: z.enum(['retail', 'wholesale', 'distributor', 'direct']),
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
-        email: z.string().email().optional(),
+        name: z.string(),
+        email: z.string().optional(),
         phone: z.string().optional(),
-        companyName: z.string().optional(),
-        taxId: z.string().optional(),
-        website: z.string().optional(),
-        billingAddress: z.any().optional(),
-        shippingAddress: z.any().optional(),
+        type: z.enum(['individual', 'company']),
+        businessType: z.enum(['retail', 'wholesale', 'distributor', 'manufacturer']),
         source: z.string().optional(),
-        externalIds: z.any().optional(),
-        tags: z.any().optional(),
+        website: z.string().optional(),
+        address: z.string().optional(),
+        city: z.string().optional(),
+        state: z.string().optional(),
+        zip: z.string().optional(),
+        country: z.string().optional(),
         notes: z.string().optional(),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new Error('Database not available');
         
-        const [customer] = await db
+        // Generate customer number
+        const customerNumber = `CUST-${Date.now()}`;
+        
+        // Parse name into first/last or use as company name
+        let firstName: string | undefined;
+        let lastName: string | undefined;
+        let companyName: string | undefined;
+        
+        if (input.type === 'company') {
+          companyName = input.name;
+        } else {
+          const nameParts = input.name.trim().split(' ');
+          if (nameParts.length === 1) {
+            firstName = nameParts[0];
+          } else {
+            firstName = nameParts[0];
+            lastName = nameParts.slice(1).join(' ');
+          }
+        }
+        
+        // Build address JSON
+        const billingAddress = input.address ? {
+          street: input.address,
+          city: input.city,
+          state: input.state,
+          zip: input.zip,
+          country: input.country || 'USA',
+        } : undefined;
+        
+        const [result] = await db
           .insert(customers)
-          .values(input)
+          .values({
+            customerNumber,
+            customerType: input.type,
+            businessType: input.businessType,
+            firstName,
+            lastName,
+            companyName,
+            email: input.email || null,
+            phone: input.phone || null,
+            website: input.website || null,
+            billingAddress,
+            shippingAddress: billingAddress,
+            source: input.source || 'direct',
+            notes: input.notes || null,
+          })
           .$returningId();
         
-        return { customer };
+        return { id: result.id };
       }),
     
     /**
@@ -2104,11 +2144,8 @@ export const crmRouter = router({
     convertToCustomer: protectedProcedure
       .input(z.object({
         leadId: z.number(),
-        customerData: z.object({
-          customerNumber: z.string(),
-          customerType: z.enum(['individual', 'company']),
-          businessType: z.enum(['retail', 'wholesale', 'distributor', 'direct']),
-        }),
+        customerType: z.enum(['individual', 'company']),
+        createOpportunity: z.boolean().default(false),
       }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -2123,11 +2160,26 @@ export const crmRouter = router({
         
         if (!lead) throw new Error('Lead not found');
         
+        // Determine business type based on lead type
+        const businessTypeMap: Record<string, 'retail' | 'wholesale' | 'distributor' | 'direct'> = {
+          'retail': 'retail',
+          'wholesale': 'wholesale',
+          'distributor': 'distributor',
+          'affiliate': 'direct',
+          'partnership': 'direct',
+        };
+        const businessType = businessTypeMap[lead.leadType] || 'direct';
+        
+        // Generate customer number
+        const customerNumber = `CUST-${Date.now()}`;
+        
         // Create customer
         const [customer] = await db
           .insert(customers)
           .values({
-            ...input.customerData,
+            customerNumber,
+            customerType: input.customerType,
+            businessType,
             firstName: lead.firstName,
             lastName: lead.lastName,
             companyName: lead.companyName,
@@ -2149,7 +2201,10 @@ export const crmRouter = router({
           })
           .where(eq(leads.id, input.leadId));
         
-        return { customer };
+        // TODO: Create opportunity if requested
+        // if (input.createOpportunity) { ... }
+        
+        return { customerId: customer.id, success: true };
       }),
   }),
 

@@ -39,6 +39,8 @@ import LeadsList from "./pages/crm/LeadsList";
 import VendorsList from "./pages/crm/VendorsList";
 import Customers from "./pages/crm/Customers";
 import CustomerProfile from "./pages/crm/CustomerProfile";
+import CustomerNew from "./pages/crm/CustomerNew";
+import CustomerDetail from "./pages/crm/CustomerDetail";
 import Vendors from "./pages/crm/Vendors";
 import VendorDetailNew from "./pages/crm/VendorDetailNew";
 import ActionItemsDashboard from "./pages/crm/ActionItemsDashboard";
@@ -115,7 +117,8 @@ function Router() {
         <Route path="/crm/analytics" component={CRMAnalytics} />
       <Route path="/crm/customers-old" component={CustomersList} />
       <Route path="/crm/customers" component={Customers} />
-      <Route path="/crm/customers/:id" component={CustomerProfile} />
+      <Route path="/crm/customers/new" component={CustomerNew} />
+      <Route path="/crm/customers/:id" component={CustomerDetail} />
       <Route path="/crm/leads-old" component={LeadsList} />
       <Route path="/crm/leads" component={Leads} />
       <Route path="/crm/vendors-old" component={VendorsList} />

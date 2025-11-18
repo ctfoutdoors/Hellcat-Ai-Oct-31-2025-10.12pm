@@ -96,7 +96,7 @@ export const STANDARD_BOX_SIZES = [
  */
 export function getBoxSizesForCarrier(carrier: Carrier) {
   return STANDARD_BOX_SIZES.filter(box => 
-    box.shipsVia.includes(carrier) || box.shipsVia.includes('ALL' as any)
+    (box.shipsVia as any).includes(carrier) || (box.shipsVia as any).includes('ALL')
   );
 }
 
@@ -104,7 +104,7 @@ export function getBoxSizesForCarrier(carrier: Carrier) {
  * Find the closest standard box size based on dimensions
  */
 export function findClosestBoxSize(length: number, width: number, height: number) {
-  let closest = STANDARD_BOX_SIZES[0];
+  let closest: typeof STANDARD_BOX_SIZES[number] = STANDARD_BOX_SIZES[0];
   let minDiff = Infinity;
   
   for (const box of STANDARD_BOX_SIZES) {
@@ -114,7 +114,7 @@ export function findClosestBoxSize(length: number, width: number, height: number
     
     if (diff < minDiff) {
       minDiff = diff;
-      closest = box;
+      closest = box as any;
     }
   }
   

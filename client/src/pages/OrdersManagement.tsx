@@ -470,7 +470,9 @@ export default function OrdersManagement() {
                       )}
                       {column.id === "customerName" && (
                         <div>
-                          <div className="font-medium">{order.customerName}</div>
+                          <Link href={`/crm/customers?search=${encodeURIComponent(order.customerEmail)}`}>
+                            <div className="font-medium hover:underline cursor-pointer text-primary">{order.customerName}</div>
+                          </Link>
                           <div className="text-xs text-muted-foreground">{order.customerEmail}</div>
                         </div>
                       )}

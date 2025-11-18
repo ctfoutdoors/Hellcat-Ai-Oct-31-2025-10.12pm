@@ -822,3 +822,41 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Update shipments table with extracted data (status, location, ETA)
 - [ ] Add tracking history timeline with screenshot references
 - [ ] Test with real carrier tracking pages
+
+
+---
+
+## CRM Complete Overhaul - 23 Enhancements
+
+### P0 Critical Issues
+- [x] 1. Fix customer creation flow (broken /crm/customers/new page)
+- [x] 2. Implement customer-to-order linking (bidirectional)
+- [ ] 3. Create vendor-to-PO integration (clickable POs, detail pages)
+- [x] 4. Fix lead-to-customer conversion workflow
+
+### P1 High Priority
+- [ ] 5. Improve empty state UX across all modules
+- [ ] 6. Add bulk operations to all list views
+- [ ] 7. Implement advanced search & filtering
+- [ ] 8. Add column customization to tables
+- [ ] 9. Build unified activity feed across modules
+- [ ] 10. Implement Customer Lifetime Value (CLV) calculation
+- [ ] 11. Create vendor performance scorecard
+- [ ] 12. Link shipments to customer orders
+
+### P2 Medium Priority
+- [ ] 13. Build PO → Inventory receipt workflow
+- [ ] 14. Integrate calendar meetings with CRM entities
+- [ ] 15. Expand AI health scoring to customers
+- [ ] 16. Automate action item creation from AI insights
+- [ ] 17. Implement predictive lead scoring
+- [ ] 18. Add AI-powered email drafting
+
+### P3 Analytics & Reporting
+- [ ] 19. Build CRM analytics dashboard
+- [ ] 20. Implement RFM segmentation for customers
+
+### Technical Debt
+- [ ] 21. Fix TypeScript errors in trackingUrls.ts (472 errors)
+- [ ] 22. Resolve database connection errors in meeting poller
+- [ ] 23. Fix CORS error for analytics endpoint

@@ -15,6 +15,7 @@ import { Search, Plus, DollarSign, Calendar, User, CheckSquare } from "lucide-re
 import { useLocation } from "wouter";
 import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
 import { CreateTaskDialog } from "@/components/CreateTaskDialog";
+import { ConvertLeadDialog } from "@/components/ConvertLeadDialog";
 
 const LEAD_STATUSES = [
   { value: "new", label: "New", color: "bg-blue-500" },
@@ -32,6 +33,7 @@ export default function Leads() {
   const [view, setView] = useState<"kanban" | "list">("kanban");
   const [showMeetingDialog, setShowMeetingDialog] = useState(false);
   const [showTaskDialog, setShowTaskDialog] = useState(false);
+  const [showConvertDialog, setShowConvertDialog] = useState(false);
   const [selectedLead, setSelectedLead] = useState<any>(null);
 
   const { data: allLeads, isLoading } = trpc.crm.leads.list.useQuery({
@@ -191,32 +193,49 @@ export default function Leads() {
                         </div>
                       )}
                       <div className="flex gap-1 pt-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-xs flex-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedLead(lead);
-                            setShowMeetingDialog(true);
-                          }}
-                        >
-                          <Calendar className="w-3 h-3 mr-1" />
-                          Meet
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-xs flex-1"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedLead(lead);
-                            setShowTaskDialog(true);
-                          }}
-                        >
-                          <CheckSquare className="w-3 h-3 mr-1" />
-                          Task
-                        </Button>
+                        {lead.leadStatus === 'won' || lead.leadStatus === 'qualified' ? (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="h-7 text-xs flex-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedLead(lead);
+                              setShowConvertDialog(true);
+                            }}
+                          >
+                            Convert to Customer
+                          </Button>
+                        ) : (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs flex-1"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedLead(lead);
+                                setShowMeetingDialog(true);
+                              }}
+                            >
+                              <Calendar className="w-3 h-3 mr-1" />
+                              Meet
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs flex-1"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedLead(lead);
+                                setShowTaskDialog(true);
+                              }}
+                            >
+                              <CheckSquare className="w-3 h-3 mr-1" />
+                              Task
+                            </Button>
+                          </>
+                        )}
                       </div>
                       <Select
                         value={lead.leadStatus}
@@ -310,6 +329,11 @@ export default function Leads() {
               selectedLead.companyName ||
               `${selectedLead.firstName} ${selectedLead.lastName}`
             }
+          />
+          <ConvertLeadDialog
+            open={showConvertDialog}
+            onOpenChange={setShowConvertDialog}
+            lead={selectedLead}
           />
         </>
       )}

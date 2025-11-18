@@ -33,6 +33,7 @@ import { intelligenceRouter } from './routers/intelligence';
 import { poRouter } from './routers/po';
 import { trackingAgentRouter } from './routers/trackingAgent';
 import { crmComponentsRouter } from './routers/crmComponents';
+import { calendarRouter } from './routers/calendar';
 
 export const appRouter = router({
   integrations: integrationsRouter,
@@ -42,6 +43,7 @@ export const appRouter = router({
   intelligence: intelligenceRouter,
   po: poRouter,
   trackingAgent: trackingAgentRouter,
+  calendar: calendarRouter,
   orders: router({
     list: publicProcedure
       .input(z.object({

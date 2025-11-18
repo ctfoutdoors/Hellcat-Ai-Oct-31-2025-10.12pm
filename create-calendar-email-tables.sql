@@ -1,0 +1,51 @@
+-- Calendar connections table
+CREATE TABLE IF NOT EXISTS calendar_connections (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  provider VARCHAR(50) NOT NULL COMMENT 'google, outlook, apple',
+  provider_account_id VARCHAR(255) NOT NULL,
+  provider_account_email VARCHAR(320),
+  access_token TEXT,
+  refresh_token TEXT,
+  token_expires_at TIMESTAMP NULL,
+  is_primary BOOLEAN DEFAULT FALSE,
+  sync_enabled BOOLEAN DEFAULT TRUE,
+  last_sync_at TIMESTAMP NULL,
+  calendar_id VARCHAR(255) COMMENT 'External calendar ID',
+  calendar_name VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_provider_account (user_id, provider, provider_account_id)
+);
+
+-- Email logs table
+CREATE TABLE IF NOT EXISTS email_logs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  entity_type VARCHAR(50) NOT NULL COMMENT 'customer, vendor, lead, contact',
+  entity_id INT NOT NULL,
+  subject VARCHAR(500),
+  body_preview TEXT,
+  full_body LONGTEXT,
+  direction VARCHAR(20) NOT NULL COMMENT 'sent, received',
+  from_email VARCHAR(320),
+  to_emails JSON COMMENT 'Array of recipient emails',
+  cc_emails JSON,
+  bcc_emails JSON,
+  thread_id VARCHAR(255) COMMENT 'Email thread identifier',
+  message_id VARCHAR(255) COMMENT 'Unique message ID',
+  in_reply_to VARCHAR(255),
+  sent_at TIMESTAMP NOT NULL,
+  visibility VARCHAR(20) DEFAULT 'private' COMMENT 'private, public, shared',
+  shared_with_users JSON COMMENT 'Array of user IDs who can view this email',
+  has_attachments BOOLEAN DEFAULT FALSE,
+  attachment_count INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_entity (entity_type, entity_id),
+  INDEX idx_thread (thread_id),
+  INDEX idx_sent_at (sent_at),
+  INDEX idx_visibility (visibility)
+);

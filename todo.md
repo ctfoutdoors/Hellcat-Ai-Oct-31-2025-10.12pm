@@ -983,3 +983,33 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Implement contact edit dialog
 - [ ] Implement contact delete with confirmation
 - [ ] Verify contact-to-entity linking (customers, vendors, leads)
+
+
+---
+
+## Calendar Integration System
+- [x] Create calendar settings page with multi-account support
+- [x] Implement Google Calendar OAuth 2.0 integration
+- [x] Add calendar provider selection (Google, Outlook, Apple)
+- [x] Build calendar connection management UI (add/remove/refresh)
+- [x] Create calendar_connections table in database
+- [ ] Implement two-way sync: CRM events → Google Calendar
+- [ ] Implement two-way sync: Google Calendar → CRM activities
+- [ ] Add calendar event display in CRM activity timelines
+- [ ] Create calendar sync status indicators
+- [ ] Add manual sync trigger button
+- [ ] Implement automatic background sync (every 15 minutes)
+
+## Email Tracking System
+- [x] Create email_logs table with privacy and sharing fields
+- [ ] Build email tracking UI in CRM activity timelines
+- [ ] Add "Log Email" button to customer/vendor/lead pages
+- [ ] Implement email privacy toggle (private/public)
+- [ ] Create team member selector for email sharing
+- [ ] Add email thread grouping and conversation view
+- [ ] Build email visibility badges (Private, Shared with X members)
+- [ ] Implement email filtering by visibility level
+- [ ] Add email search across CRM entities
+- [ ] Create email analytics (sent/received counts, response times)
+- [ ] Integrate with mailto: links to auto-log sent emails
+- [ ] Add email templates for common CRM communications

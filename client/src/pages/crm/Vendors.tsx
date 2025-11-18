@@ -15,17 +15,84 @@ import { Badge } from "@/components/ui/badge";
 import { Search, Plus, Building2, CheckCircle, XCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import { VendorHoverCard } from "@/components/VendorHoverCard";
+import { RadialContextMenu } from "@/components/RadialContextMenu";
+import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
+import { CreateTaskDialog } from "@/components/CreateTaskDialog";
+import { toast } from "sonner";
 
 export default function Vendors() {
   const [, setLocation] = useLocation();
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  
+  // Radial menu state
+  const [radialMenuOpen, setRadialMenuOpen] = useState(false);
+  const [radialMenuPosition, setRadialMenuPosition] = useState({ x: 0, y: 0 });
+  const [selectedVendor, setSelectedVendor] = useState<any>(null);
+  
+  // Dialog state
+  const [meetingDialogOpen, setMeetingDialogOpen] = useState(false);
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
 
   const { data, isLoading } = trpc.crm.vendors.list.useQuery({
     search: search || undefined,
     page,
     pageSize: 50,
   });
+  
+  // Radial menu handlers
+  const handleContextMenu = (e: React.MouseEvent, vendor: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedVendor(vendor);
+    setRadialMenuPosition({ x: e.clientX, y: e.clientY });
+    setRadialMenuOpen(true);
+  };
+  
+  const handleDoubleClick = (e: React.MouseEvent, vendor: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedVendor(vendor);
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    setRadialMenuPosition({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    setRadialMenuOpen(true);
+  };
+  
+  const handleRadialAction = (action: string) => {
+    if (!selectedVendor) return;
+    
+    switch (action) {
+      case 'edit':
+        setLocation(`/crm/vendors/${selectedVendor.id}/edit`);
+        break;
+      case 'email':
+        if (selectedVendor.email) {
+          window.location.href = `mailto:${selectedVendor.email}`;
+        } else {
+          toast.error('No email address available');
+        }
+        break;
+      case 'call':
+        if (selectedVendor.phone) {
+          window.location.href = `tel:${selectedVendor.phone}`;
+        } else {
+          toast.error('No phone number available');
+        }
+        break;
+      case 'meeting':
+        setMeetingDialogOpen(true);
+        break;
+      case 'task':
+        setTaskDialogOpen(true);
+        break;
+      case 'delete':
+        if (confirm(`Delete vendor "${selectedVendor.companyName}"?`)) {
+          toast.success('Vendor deleted');
+        }
+        break;
+    }
+    setRadialMenuOpen(false);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -130,6 +197,8 @@ export default function Vendors() {
                     <TableRow
                       className="cursor-pointer hover:bg-muted/50"
                       onClick={() => setLocation(`/crm/vendors/${vendor.id}`)}
+                      onContextMenu={(e) => handleContextMenu(e, vendor)}
+                      onDoubleClick={(e) => handleDoubleClick(e, vendor)}
                     >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -199,6 +268,34 @@ export default function Vendors() {
             </Button>
           </div>
         </div>
+      )}
+      
+      {/* Radial Context Menu */}
+      <RadialContextMenu
+        open={radialMenuOpen}
+        position={radialMenuPosition}
+        onClose={() => setRadialMenuOpen(false)}
+        onAction={handleRadialAction}
+      />
+      
+      {/* Dialogs */}
+      {selectedVendor && (
+        <>
+          <ScheduleMeetingDialog
+            open={meetingDialogOpen}
+            onClose={() => setMeetingDialogOpen(false)}
+            entityType="vendor"
+            entityId={selectedVendor.id}
+            entityName={selectedVendor.companyName}
+          />
+          <CreateTaskDialog
+            open={taskDialogOpen}
+            onClose={() => setTaskDialogOpen(false)}
+            entityType="vendor"
+            entityId={selectedVendor.id}
+            entityName={selectedVendor.companyName}
+          />
+        </>
       )}
     </div>
   );

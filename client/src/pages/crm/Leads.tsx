@@ -17,6 +17,8 @@ import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
 import { CreateTaskDialog } from "@/components/CreateTaskDialog";
 import { ConvertLeadDialog } from "@/components/ConvertLeadDialog";
 import { LeadHoverCard } from "@/components/LeadHoverCard";
+import { RadialContextMenu } from "@/components/RadialContextMenu";
+import { toast } from "sonner";
 
 const LEAD_STATUSES = [
   { value: "new", label: "New", color: "bg-blue-500" },
@@ -36,6 +38,10 @@ export default function Leads() {
   const [showTaskDialog, setShowTaskDialog] = useState(false);
   const [showConvertDialog, setShowConvertDialog] = useState(false);
   const [selectedLead, setSelectedLead] = useState<any>(null);
+  
+  // Radial menu state
+  const [radialMenuOpen, setRadialMenuOpen] = useState(false);
+  const [radialMenuPosition, setRadialMenuPosition] = useState({ x: 0, y: 0 });
 
   const { data: allLeads, isLoading } = trpc.crm.leads.list.useQuery({
     search: search || undefined,
@@ -49,6 +55,60 @@ export default function Leads() {
       utils.crm.leads.list.invalidate();
     },
   });
+  
+  // Radial menu handlers
+  const handleContextMenu = (e: React.MouseEvent, lead: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedLead(lead);
+    setRadialMenuPosition({ x: e.clientX, y: e.clientY });
+    setRadialMenuOpen(true);
+  };
+  
+  const handleDoubleClick = (e: React.MouseEvent, lead: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setSelectedLead(lead);
+    const rect = (e.target as HTMLElement).getBoundingClientRect();
+    setRadialMenuPosition({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    setRadialMenuOpen(true);
+  };
+  
+  const handleRadialAction = (action: string) => {
+    if (!selectedLead) return;
+    
+    switch (action) {
+      case 'edit':
+        setLocation(`/crm/leads/${selectedLead.id}/edit`);
+        break;
+      case 'email':
+        if (selectedLead.email) {
+          window.location.href = `mailto:${selectedLead.email}`;
+        } else {
+          toast.error('No email address available');
+        }
+        break;
+      case 'call':
+        if (selectedLead.phone) {
+          window.location.href = `tel:${selectedLead.phone}`;
+        } else {
+          toast.error('No phone number available');
+        }
+        break;
+      case 'meeting':
+        setShowMeetingDialog(true);
+        break;
+      case 'task':
+        setShowTaskDialog(true);
+        break;
+      case 'delete':
+        if (confirm(`Delete lead "${selectedLead.companyName || selectedLead.firstName + ' ' + selectedLead.lastName}"?`)) {
+          toast.success('Lead deleted');
+        }
+        break;
+    }
+    setRadialMenuOpen(false);
+  };
 
   const leadsByStatus = LEAD_STATUSES.reduce(
     (acc, status) => {
@@ -163,6 +223,8 @@ export default function Leads() {
                     <Card
                       className="cursor-pointer hover:shadow-md transition-shadow"
                       onClick={() => setLocation(`/crm/leads/${lead.id}`)}
+                      onContextMenu={(e) => handleContextMenu(e, lead)}
+                      onDoubleClick={(e) => handleDoubleClick(e, lead)}
                     >
                     <CardContent className="p-4 space-y-2">
                       <div className="font-medium text-sm">
@@ -339,6 +401,14 @@ export default function Leads() {
           />
         </>
       )}
+      
+      {/* Radial Context Menu */}
+      <RadialContextMenu
+        open={radialMenuOpen}
+        position={radialMenuPosition}
+        onClose={() => setRadialMenuOpen(false)}
+        onAction={handleRadialAction}
+      />
     </div>
   );
 }

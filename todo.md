@@ -933,3 +933,53 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Create LeadHoverCard component
 - [x] Integrate LeadHoverCard into leads kanban board
 - [x] Test hover cards across all CRM modules
+
+
+---
+
+## Radial Menu Expansion
+- [x] Add radial context menu to vendors list page
+- [ ] Add radial context menu to vendor detail page
+- [x] Add radial context menu to leads kanban board
+- [ ] Add radial context menu to lead detail page
+
+## Connect Modular Components to Live Data
+- [ ] Connect RelationshipHealth to real tRPC health scoring endpoint
+- [ ] Connect NextActions to real action items from database
+- [ ] Connect AIRecommendations to GPT-4 recommendation generation
+- [ ] Replace all hardcoded sample data with live queries
+
+## Customer CRUD Operations
+- [ ] Implement customer edit dialog/form
+- [ ] Implement customer delete with confirmation
+- [ ] Implement contact add/edit/delete for customers
+- [ ] Verify customer creation flow works end-to-end
+- [ ] Test customer-to-order linking
+
+## Vendor CRUD Operations
+- [ ] Implement vendor edit dialog/form
+- [ ] Implement vendor delete with confirmation
+- [ ] Implement vendor contact add/edit/delete
+- [ ] Verify vendor creation flow works end-to-end
+- [ ] Test vendor-to-PO linking
+
+## Lead CRUD Operations
+- [ ] Implement lead edit dialog/form
+- [ ] Implement lead delete with confirmation
+- [ ] Implement lead status update workflow
+- [ ] Verify lead-to-customer conversion works
+- [ ] Test lead assignment functionality
+
+## Action Items CRUD
+- [ ] Implement action item create dialog
+- [ ] Implement action item edit dialog
+- [ ] Implement action item delete with confirmation
+- [ ] Implement action item status toggle
+- [ ] Verify action items sync across all entity pages
+
+## Company/Contact Management
+- [ ] Implement company edit functionality
+- [ ] Implement company delete with cascade handling
+- [ ] Implement contact edit dialog
+- [ ] Implement contact delete with confirmation
+- [ ] Verify contact-to-entity linking (customers, vendors, leads)

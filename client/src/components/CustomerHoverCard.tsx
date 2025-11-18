@@ -39,8 +39,11 @@ export function CustomerHoverCard({ customerId, children }: CustomerHoverCardPro
       </HoverCardTrigger>
       <HoverCardContent 
         side="right" 
-        align="start"
-        className="w-96 p-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl"
+        align="center"
+        sideOffset={10}
+        alignOffset={0}
+        collisionPadding={20}
+        className="w-96 p-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl z-50"
       >
         {isLoading || !data ? (
           <div className="p-6 flex items-center justify-center">

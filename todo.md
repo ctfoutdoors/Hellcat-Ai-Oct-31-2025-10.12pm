@@ -914,3 +914,9 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Build next-action CRUD endpoints
 - [ ] Create JSON schema for component data
 - [ ] Test components across vendor/customer/partner views
+
+
+## CustomerHoverCard Positioning Fix
+- [x] Fix popover positioning to prevent off-screen rendering
+- [x] Ensure hover card stays within viewport boundaries
+- [ ] Test across different table positions (top, middle, bottom rows)

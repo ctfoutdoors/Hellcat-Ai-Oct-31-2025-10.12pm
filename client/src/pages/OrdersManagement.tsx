@@ -45,6 +45,38 @@ import { trpc } from "@/lib/trpc";
 import { Loader2 } from "lucide-react";
 import { ColumnCustomizer, type Column } from "@/components/ColumnCustomizer";
 
+// Import Today's Orders Button Component
+function ImportTodaysOrdersButton() {
+  const importMutation = trpc.shipstation.importTodaysOrders.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Imported ${data.imported} orders, skipped ${data.skipped} duplicates`);
+    },
+    onError: (error) => {
+      toast.error(`Import failed: ${error.message}`);
+    },
+  });
+
+  return (
+    <Button
+      variant="default"
+      onClick={() => importMutation.mutate()}
+      disabled={importMutation.isPending}
+    >
+      {importMutation.isPending ? (
+        <>
+          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          Importing...
+        </>
+      ) : (
+        <>
+          <Download className="h-4 w-4 mr-2" />
+          Import Today's Orders
+        </>
+      )}
+    </Button>
+  );
+}
+
 // Mock data matching SellerCloud structure
 const mockOrders = [
   {
@@ -220,6 +252,7 @@ export default function OrdersManagement() {
           </p>
         </div>
         <div className="flex gap-2">
+          <ImportTodaysOrdersButton />
           <Button
             variant="outline"
             onClick={() => syncMutation.mutate({ daysBack: 30 })}

@@ -36,6 +36,8 @@ import { crmComponentsRouter } from './routers/crmComponents';
 import { calendarRouter } from "./routers/calendar";
 import { attachmentsRouter } from "./routers/attachments";
 import { emailTemplatesRouter } from "./routers/emailTemplates";
+import { woocommerceRouter } from "./routers/woocommerce";
+import { shipstationRouter } from "./routers/shipstation";
 
 
 export const appRouter = router({
@@ -49,6 +51,8 @@ export const appRouter = router({
   calendar: calendarRouter,
   attachments: attachmentsRouter,
   emailTemplates: emailTemplatesRouter,
+  woocommerce: woocommerceRouter,
+  shipstation: shipstationRouter,
 
   orders: router({
     list: publicProcedure

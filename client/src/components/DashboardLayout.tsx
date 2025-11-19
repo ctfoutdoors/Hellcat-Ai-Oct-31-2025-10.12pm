@@ -76,6 +76,8 @@ const menuItems: MenuItem[] = [
     children: [
       { title: "Stock Levels", path: "/inventory/stock-levels" },
       { title: "Products", path: "/inventory/products" },
+      { title: "Product Source - WooCommerce", path: "/inventory/source/woocommerce" },
+      { title: "Master Inventory - ShipStation", path: "/inventory/source/shipstation" },
       { title: "Purchase Orders", path: "/purchase-orders" },
       { title: "Receiving", path: "/inventory/receiving" },
     ],

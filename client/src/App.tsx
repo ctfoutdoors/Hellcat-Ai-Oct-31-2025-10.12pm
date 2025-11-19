@@ -50,6 +50,8 @@ import LeadDetail from "./pages/crm/LeadDetail";
 import EmailTemplates from "./pages/crm/EmailTemplates";
 import Calendar from "./pages/Calendar";
 import ProductCard from "./pages/inventory/ProductCard";
+import WooCommerceProducts from "./pages/inventory/WooCommerceProducts";
+import ShipStationInventory from "./pages/inventory/ShipStationInventory";
 import Settings from "./pages/Settings";
 import EmailAccountsSettings from "./pages/EmailAccountsSettings";
 import SettingsIntegrations from "./pages/SettingsIntegrations";
@@ -94,7 +96,8 @@ function Router() {
         {/* Inventory Module */}
         <Route path="/inventory" component={Inventory} />
         <Route path="/inventory/products/:id" component={ProductCard} />
-        <Route path="/inventory" component={InventoryDashboard} />
+        <Route path="/inventory/source/woocommerce" component={WooCommerceProducts} />
+        <Route path="/inventory/source/shipstation" component={ShipStationInventory} />        <Route path="/inventory" component={InventoryDashboard} />
         <Route path="/inventory/stock-levels" component={StockLevels} />
         <Route path="/inventory/products" component={ProductsManagement} />
         <Route path="/inventory/purchase-orders" component={PurchaseOrders} />

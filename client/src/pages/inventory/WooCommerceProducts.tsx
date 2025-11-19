@@ -12,14 +12,16 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
-import { Download, RefreshCw, Package, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { Download, RefreshCw, Package, AlertCircle, CheckCircle2, Loader2, ChevronDown, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import DashboardLayout from "@/components/DashboardLayout";
 
 export default function WooCommerceProducts() {
   const { user, loading: authLoading } = useAuth();
   const [importing, setImporting] = useState<number | null>(null);
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [expandedProducts, setExpandedProducts] = useState<Set<number>>(new Set());
 
   // Fetch WooCommerce products
   const { data: wooProducts, isLoading, refetch } = trpc.woocommerce.listProducts.useQuery();
@@ -74,6 +76,17 @@ export default function WooCommerceProducts() {
     },
   });
 
+  // Import variant mutation
+  const importVariant = trpc.woocommerce.importVariant.useMutation({
+    onSuccess: () => {
+      toast.success("Variant imported successfully");
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(`Variant import failed: ${error.message}`);
+    },
+  });
+
   const handleImport = (productId: number) => {
     setImporting(productId);
     importProduct.mutate({ productId });
@@ -85,10 +98,11 @@ export default function WooCommerceProducts() {
   };
 
   const handleSelectAll = () => {
-    if (selectedProducts.length === products.length) {
+    if (!wooProducts) return;
+    if (selectedProducts.length === wooProducts.length) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(products.map((p: any) => p.id));
+      setSelectedProducts(wooProducts.map((p: any) => p.id));
     }
   };
 
@@ -100,27 +114,9 @@ export default function WooCommerceProducts() {
     );
   };
 
-  const handleImportAll = () => {
-    const notImported = products.filter((p: any) => !p.imported).map((p: any) => p.id);
-    if (notImported.length === 0) {
-      toast.error("All products are already imported");
-      return;
-    }
-    bulkImport.mutate({ productIds: notImported });
-  };
-
-  const handleUpdateAll = () => {
-    const needsUpdate = products.filter((p: any) => p.hasChanges).map((p: any) => p.id);
-    if (needsUpdate.length === 0) {
-      toast.error("No products need updates");
-      return;
-    }
-    bulkUpdate.mutate({ productIds: needsUpdate });
-  };
-
   const handleBulkImport = () => {
     if (selectedProducts.length === 0) {
-      toast.error("Please select products to import");
+      toast.error("No products selected");
       return;
     }
     bulkImport.mutate({ productIds: selectedProducts });
@@ -128,141 +124,144 @@ export default function WooCommerceProducts() {
 
   const handleBulkUpdate = () => {
     if (selectedProducts.length === 0) {
-      toast.error("Please select products to update");
+      toast.error("No products selected");
       return;
     }
     bulkUpdate.mutate({ productIds: selectedProducts });
   };
 
+  const toggleProductExpansion = (productId: number) => {
+    setExpandedProducts(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+      } else {
+        newSet.add(productId);
+      }
+      return newSet;
+    });
+  };
+
+  const products = wooProducts || [];
+  const importedCount = products.filter((p: any) => p.imported).length;
+  const notImportedCount = products.length - importedCount;
+  const hasChangesCount = products.filter((p: any) => p.hasChanges).length;
+
   if (authLoading || isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <RefreshCw className="h-8 w-8 animate-spin text-primary" />
-      </div>
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-96">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </DashboardLayout>
     );
   }
 
-  const products = wooProducts || [];
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <DashboardLayout>
+      <div className="space-y-6">
+        {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold">WooCommerce Product Source</h1>
-          <p className="text-muted-foreground">
-            Import and sync products from WooCommerce
+          <h1 className="text-3xl font-bold">WooCommerce Products</h1>
+          <p className="text-muted-foreground mt-2">
+            Import and sync products from your WooCommerce store
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button
-            onClick={handleImportAll}
-            disabled={bulkImport.isPending || products.filter((p: any) => !p.imported).length === 0}
-          >
-            {bulkImport.isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="mr-2 h-4 w-4" />
-            )}
-            Import All ({products.filter((p: any) => !p.imported).length})
-          </Button>
-          <Button
-            onClick={handleUpdateAll}
-            disabled={bulkUpdate.isPending || products.filter((p: any) => p.hasChanges).length === 0}
-          >
-            {bulkUpdate.isPending ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <RefreshCw className="mr-2 h-4 w-4" />
-            )}
-            Update All ({products.filter((p: any) => p.hasChanges).length})
-          </Button>
-          {selectedProducts.length > 0 && (
-            <>
-              <Button
-                variant="outline"
-                onClick={handleBulkImport}
-                disabled={bulkImport.isPending}
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Import Selected ({selectedProducts.length})
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleBulkUpdate}
-                disabled={bulkUpdate.isPending}
-              >
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Update Selected ({selectedProducts.length})
-              </Button>
-            </>
-          )}
-          <Button onClick={() => refetch()} variant="outline">
-            <RefreshCw className="mr-2 h-4 w-4" />
-            Refresh
-          </Button>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Total Products
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{products.length}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Imported
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">{importedCount}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Not Imported
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600">{notImportedCount}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                Has Changes
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-blue-600">{hasChangesCount}</div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
 
-      {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3">
+        {/* Actions */}
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle>Product List</CardTitle>
+                <CardDescription>
+                  Select products to import or update in bulk
+                </CardDescription>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => refetch()}
+                  disabled={isLoading}
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Refresh
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={handleBulkImport}
+                  disabled={selectedProducts.length === 0 || bulkImport.isPending}
+                >
+                  {bulkImport.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4 mr-2" />
+                  )}
+                  Import Selected ({selectedProducts.length})
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleBulkUpdate}
+                  disabled={selectedProducts.length === 0 || bulkUpdate.isPending}
+                >
+                  {bulkUpdate.isPending ? (
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                  )}
+                  Update Selected ({selectedProducts.length})
+                </Button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{products.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Available in WooCommerce
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Imported</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {products.filter((p: any) => p.imported).length}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Synced to HellcatAI
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Needs Update</CardTitle>
-            <AlertCircle className="h-4 w-4 text-yellow-500" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {products.filter((p: any) => p.hasChanges).length}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Fields have changed
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Products Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Products</CardTitle>
-          <CardDescription>
-            {products.length} products found in WooCommerce
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {products.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">
-              <Package className="mx-auto h-12 w-12 mb-4 opacity-50" />
-              <p>No products found in WooCommerce</p>
-            </div>
-          ) : (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -272,122 +271,257 @@ export default function WooCommerceProducts() {
                       onCheckedChange={handleSelectAll}
                     />
                   </TableHead>
-                  <TableHead>ID</TableHead>
-                  <TableHead className="w-16">Image</TableHead>
+                  <TableHead className="w-12"></TableHead>
+                  <TableHead className="w-20">Image</TableHead>
                   <TableHead>SKU</TableHead>
-                  <TableHead>Product Title</TableHead>
+                  <TableHead>Product Name</TableHead>
+                  <TableHead>Price</TableHead>
                   <TableHead>Variations</TableHead>
-                  <TableHead className="text-right">Price</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.map((product: any) => (
-                  <TableRow key={product.id}>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedProducts.includes(product.id)}
-                        onCheckedChange={() => handleSelectProduct(product.id)}
-                      />
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">
-                      {product.id}
-                    </TableCell>
-                    <TableCell>
-                      {product.image ? (
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-12 h-12 object-cover rounded border"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
-                          <Package className="h-6 w-6 text-muted-foreground" />
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">
-                      {product.sku || <span className="text-muted-foreground">—</span>}
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-medium">{product.name}</div>
-                      {product.hasChanges && (
-                        <div className="text-xs text-yellow-600 mt-1">
-                          Fields changed: {product.changedFields?.join(", ")}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {product.variations && product.variations.length > 0 ? (
-                        <Badge variant="outline">
-                          {product.variations.length} variation{product.variations.length > 1 ? "s" : ""}
-                        </Badge>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Simple</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      ${Number(product.price || 0).toFixed(2)}
-                    </TableCell>
-                    <TableCell>
-                      {product.imported ? (
-                        product.hasChanges ? (
-                          <Badge variant="outline" className="bg-yellow-500/10 text-yellow-600 border-yellow-500/20">
-                            Needs Update
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
-                            Synced
-                          </Badge>
-                        )
-                      ) : (
-                        <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/20">
-                          Not Imported
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {product.imported ? (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleUpdate(product.id)}
-                          disabled={importing === product.id || !product.hasChanges}
-                        >
-                          {importing === product.id ? (
-                            <RefreshCw className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <>
-                              <RefreshCw className="mr-2 h-4 w-4" />
-                              Update
-                            </>
-                          )}
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => handleImport(product.id)}
-                          disabled={importing === product.id}
-                        >
-                          {importing === product.id ? (
-                            <RefreshCw className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <>
-                              <Download className="mr-2 h-4 w-4" />
-                              Import
-                            </>
-                          )}
-                        </Button>
-                      )}
+                {products.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                      No products found
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  products.map((product: any) => (
+                    <ProductRow
+                      key={product.id}
+                      product={product}
+                      selected={selectedProducts.includes(product.id)}
+                      expanded={expandedProducts.has(product.id)}
+                      onSelect={() => handleSelectProduct(product.id)}
+                      onToggleExpand={() => toggleProductExpansion(product.id)}
+                      onImport={() => handleImport(product.id)}
+                      onUpdate={() => handleUpdate(product.id)}
+                      onImportVariant={(variationId) => 
+                        importVariant.mutate({ productId: product.id, variationId })
+                      }
+                      importing={importing === product.id}
+                    />
+                  ))
+                )}
               </TableBody>
             </Table>
+          </CardContent>
+        </Card>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+// Product Row Component with Variant Support
+function ProductRow({
+  product,
+  selected,
+  expanded,
+  onSelect,
+  onToggleExpand,
+  onImport,
+  onUpdate,
+  onImportVariant,
+  importing,
+}: {
+  product: any;
+  selected: boolean;
+  expanded: boolean;
+  onSelect: () => void;
+  onToggleExpand: () => void;
+  onImport: () => void;
+  onUpdate: () => void;
+  onImportVariant: (variationId: number) => void;
+  importing: boolean;
+}) {
+  const hasVariations = product.variations && product.variations.length > 0;
+  
+  // Fetch variations when expanded
+  const { data: variationsData, isLoading: loadingVariations } = trpc.woocommerce.getProductVariations.useQuery(
+    { productId: product.id },
+    { enabled: expanded && hasVariations }
+  );
+
+  return (
+    <>
+      <TableRow>
+        <TableCell>
+          <Checkbox checked={selected} onCheckedChange={onSelect} />
+        </TableCell>
+        <TableCell>
+          {hasVariations && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 w-6 p-0"
+              onClick={onToggleExpand}
+            >
+              {expanded ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </Button>
           )}
-        </CardContent>
-      </Card>
-    </div>
+        </TableCell>
+        <TableCell>
+          {product.images?.[0]?.src ? (
+            <img
+              src={product.images[0].src}
+              alt={product.name}
+              className="w-12 h-12 object-cover rounded"
+            />
+          ) : (
+            <div className="w-12 h-12 bg-muted rounded flex items-center justify-center">
+              <Package className="w-6 h-6 text-muted-foreground" />
+            </div>
+          )}
+        </TableCell>
+        <TableCell className="font-mono text-sm">{product.sku || "N/A"}</TableCell>
+        <TableCell className="font-medium">{product.name}</TableCell>
+        <TableCell>${product.price}</TableCell>
+        <TableCell>
+          {hasVariations && (
+            <Badge variant="secondary">{product.variations.length} variants</Badge>
+          )}
+        </TableCell>
+        <TableCell>
+          <div className="flex items-center gap-2">
+            {product.imported ? (
+              <Badge variant="default" className="gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Imported
+              </Badge>
+            ) : (
+              <Badge variant="secondary" className="gap-1">
+                <AlertCircle className="w-3 h-3" />
+                Not Imported
+              </Badge>
+            )}
+            {product.hasChanges && (
+              <Badge variant="outline" className="text-blue-600">
+                Has Changes
+              </Badge>
+            )}
+          </div>
+        </TableCell>
+        <TableCell className="text-right">
+          {product.imported ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onUpdate}
+              disabled={importing}
+            >
+              {importing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Update"
+              )}
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              size="sm"
+              onClick={onImport}
+              disabled={importing}
+            >
+              {importing ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Import"
+              )}
+            </Button>
+          )}
+        </TableCell>
+      </TableRow>
+      
+      {/* Variant Rows */}
+      {expanded && hasVariations && (
+        <TableRow>
+          <TableCell colSpan={9} className="bg-muted/30 p-0">
+            {loadingVariations ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            ) : (
+              <div className="p-4">
+                <h4 className="font-semibold mb-3 text-sm">Product Variations</h4>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-20">Image</TableHead>
+                      <TableHead>Variant SKU</TableHead>
+                      <TableHead>Attributes</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Stock</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {variationsData?.variations.map((variation: any) => (
+                      <TableRow key={variation.id}>
+                        <TableCell>
+                          {variation.image?.src ? (
+                            <img
+                              src={variation.image.src}
+                              alt={variation.sku}
+                              className="w-10 h-10 object-cover rounded"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 bg-muted rounded flex items-center justify-center">
+                              <Package className="w-5 h-5 text-muted-foreground" />
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell className="font-mono text-sm">
+                          {variation.sku || `VAR-${variation.id}`}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {variation.attributes?.map((attr: any, idx: number) => (
+                              <Badge key={idx} variant="outline" className="text-xs">
+                                {attr.name}: {attr.option}
+                              </Badge>
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell>${variation.price}</TableCell>
+                        <TableCell>{variation.stock_quantity || 0}</TableCell>
+                        <TableCell>
+                          {variation.imported ? (
+                            <Badge variant="default" className="text-xs">
+                              <CheckCircle2 className="w-3 h-3 mr-1" />
+                              Imported
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="text-xs">
+                              Not Imported
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant={variation.imported ? "outline" : "default"}
+                            size="sm"
+                            onClick={() => onImportVariant(variation.id)}
+                          >
+                            {variation.imported ? "Update" : "Import"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </TableCell>
+        </TableRow>
+      )}
+    </>
   );
 }

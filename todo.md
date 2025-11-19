@@ -1396,3 +1396,40 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Test all integration connection tests
 - [x] Verify UI matches screenshot design
 - [x] Create checkpoint
+
+
+---
+
+## PRODUCT VARIANT MANAGEMENT
+
+### Phase 1: Database Schema
+- [ ] Create product_variants table with variant-specific fields
+- [ ] Add foreign key relationship to products table
+- [ ] Add fields: variantSku, parentProductId, attributes (JSON), price, compareAtPrice, stock, imageUrl
+- [ ] Run database migration
+
+### Phase 2: WooCommerce Variant Sync
+- [ ] Update WooCommerce client to fetch product variations
+- [ ] Create variant sync endpoint in WooCommerce router
+- [ ] Map WooCommerce variation data to product_variants schema
+- [ ] Handle variant-specific images and attributes
+- [ ] Add bulk variant import functionality
+
+### Phase 3: Variant Display UI
+- [ ] Update Products Management page to show variants
+- [ ] Add expandable rows for products with variants
+- [ ] Display variant attributes as badges (size, color, etc.)
+- [ ] Show variant-specific SKU, price, and stock
+- [ ] Add variant thumbnail images
+
+### Phase 4: Individual Variant Management
+- [ ] Add "Import Variant" button for each variation
+- [ ] Add "Update Variant" button to sync changes
+- [ ] Enable variant-level stock updates
+- [ ] Add variant filtering and search
+
+### Phase 5: Testing & Checkpoint
+- [ ] Test variant import from WooCommerce
+- [ ] Test variant display and expandable rows
+- [ ] Verify variant-specific data accuracy
+- [ ] Create checkpoint

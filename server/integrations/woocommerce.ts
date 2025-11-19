@@ -219,6 +219,13 @@ export class WooCommerceClient {
   }
 
   /**
+   * Get product variations for a specific product
+   */
+  async getProductVariations(productId: number): Promise<any[]> {
+    return this.request(`/products/${productId}/variations?per_page=100`);
+  }
+
+  /**
    * Get products from WooCommerce
    */
   async getProducts(params: {

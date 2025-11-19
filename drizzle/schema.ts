@@ -571,6 +571,32 @@ export const products = mysqlTable("products", {
   skuIdx: index("sku_idx").on(table.sku),
 }));
 
+export type Product = typeof products.$inferSelect;
+export type InsertProduct = typeof products.$inferInsert;
+
+export const productVariants = mysqlTable("product_variants", {
+  id: int("id").autoincrement().primaryKey(),
+  parentProductId: int("parentProductId").notNull(),
+  woocommerceVariationId: int("woocommerceVariationId"),
+  variantSku: varchar("variantSku", { length: 100 }).notNull(),
+  attributes: json("attributes").$type<Array<{ name: string; option: string }>>(),
+  price: decimal("price", { precision: 10, scale: 2 }),
+  compareAtPrice: decimal("compareAtPrice", { precision: 10, scale: 2 }),
+  cost: decimal("cost", { precision: 10, scale: 2 }),
+  stock: int("stock").default(0),
+  imageUrl: text("imageUrl"),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  parentProductIdx: index("parent_product_idx").on(table.parentProductId),
+  variantSkuIdx: index("variant_sku_idx").on(table.variantSku),
+  woocommerceVariationIdx: index("woocommerce_variation_idx").on(table.woocommerceVariationId),
+}));
+
+export type ProductVariant = typeof productVariants.$inferSelect;
+export type InsertProductVariant = typeof productVariants.$inferInsert;
+
 export const productDimensions = mysqlTable("product_dimensions", {
   id: int("id").autoincrement().primaryKey(),
   productId: int("productId").notNull(),

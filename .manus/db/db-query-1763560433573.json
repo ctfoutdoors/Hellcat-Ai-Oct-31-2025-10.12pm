@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS product_variants (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  parentProductId INT NOT NULL,\n  woocommerceVariationId INT,\n  variantSku VARCHAR(100) NOT NULL,\n  attributes JSON,\n  price DECIMAL(10, 2),\n  compareAtPrice DECIMAL(10, 2),\n  cost DECIMAL(10, 2),\n  stock INT DEFAULT 0,\n  imageUrl TEXT,\n  isActive BOOLEAN DEFAULT TRUE NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX parent_product_idx (parentProductId),\n  INDEX variant_sku_idx (variantSku),\n  INDEX woocommerce_variation_idx (woocommerceVariationId)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS product_variants (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  parentProductId INT NOT NULL,\n  woocommerceVariationId INT,\n  variantSku VARCHAR(100) NOT NULL,\n  attributes JSON,\n  price DECIMAL(10, 2),\n  compareAtPrice DECIMAL(10, 2),\n  cost DECIMAL(10, 2),\n  stock INT DEFAULT 0,\n  imageUrl TEXT,\n  isActive BOOLEAN DEFAULT TRUE NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX parent_product_idx (parentProductId),\n  INDEX variant_sku_idx (variantSku),\n  INDEX woocommerce_variation_idx (woocommerceVariationId)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 234
+}

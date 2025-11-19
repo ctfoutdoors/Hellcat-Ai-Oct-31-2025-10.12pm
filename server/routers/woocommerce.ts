@@ -2,7 +2,7 @@ import { router, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { createWooCommerceClient } from "../integrations/woocommerce";
 import { getDb } from "../db";
-import { products } from "../../drizzle/schema";
+import { products, productVariants } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { downloadAndUploadImage } from "../lib/imageSync";
 
@@ -200,6 +200,97 @@ export const woocommerceRouter = router({
       }
 
       return results;
+    }),
+
+  /**
+   * Get product variations from WooCommerce
+   */
+  getProductVariations: protectedProcedure
+    .input(z.object({ productId: z.number() }))
+    .query(async ({ input }) => {
+      const wooClient = createWooCommerceClient();
+      if (!wooClient) throw new Error("WooCommerce not configured");
+
+      const variations = await wooClient.getProductVariations(input.productId);
+      
+      // Get existing variants from database
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+      
+      const existingVariants = await db
+        .select()
+        .from(productVariants)
+        .where(eq(productVariants.parentProductId, input.productId));
+      
+      const existingByWooId = new Map(existingVariants.map(v => [v.woocommerceVariationId, v]));
+      
+      // Map variations with import status
+      const mappedVariations = variations.map((variation: any) => ({
+        ...variation,
+        imported: existingByWooId.has(variation.id),
+        dbVariant: existingByWooId.get(variation.id) || null,
+      }));
+      
+      return { variations: mappedVariations };
+    }),
+
+  /**
+   * Import product variant to database
+   */
+  importVariant: protectedProcedure
+    .input(z.object({ productId: z.number(), variationId: z.number() }))
+    .mutation(async ({ input }) => {
+      const wooClient = createWooCommerceClient();
+      if (!wooClient) throw new Error("WooCommerce not configured");
+
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      // Fetch the variation from WooCommerce
+      const variations = await wooClient.getProductVariations(input.productId);
+      const variation = variations.find((v: any) => v.id === input.variationId);
+
+      if (!variation) throw new Error("Variation not found");
+
+      // Download and upload variant image if available
+      let imageUrl: string | null = null;
+      if (variation.image?.src) {
+        imageUrl = await downloadAndUploadImage(
+          variation.image.src,
+          variation.sku || `variant-${variation.id}`
+        );
+      }
+
+      // Check if variant already exists
+      const existing = await db
+        .select()
+        .from(productVariants)
+        .where(eq(productVariants.woocommerceVariationId, variation.id))
+        .limit(1);
+
+      const variantData: any = {
+        parentProductId: input.productId,
+        woocommerceVariationId: variation.id,
+        variantSku: variation.sku || `VAR-${variation.id}`,
+        attributes: variation.attributes || [],
+        price: variation.price || "0",
+        compareAtPrice: variation.regular_price || null,
+        cost: null,
+        stock: variation.stock_quantity || 0,
+        imageUrl,
+        isActive: variation.status === "publish",
+      };
+
+      if (existing.length > 0) {
+        await db
+          .update(productVariants)
+          .set(variantData)
+          .where(eq(productVariants.id, existing[0].id));
+        return { success: true, variant: { ...existing[0], ...variantData } };
+      } else {
+        const result = await db.insert(productVariants).values(variantData);
+        return { success: true, variantId: result[0].insertId };
+      }
     }),
 
   /**

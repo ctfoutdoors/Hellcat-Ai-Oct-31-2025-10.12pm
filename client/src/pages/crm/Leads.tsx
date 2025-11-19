@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Search, Plus, DollarSign, Calendar, User, CheckSquare } from "lucide-react";
+import { Search, Plus, DollarSign, Calendar, User, CheckSquare, Edit, Mail, Phone, Trash2 } from "lucide-react";
 import { useLocation } from "wouter";
 import { ScheduleMeetingDialog } from "@/components/ScheduleMeetingDialog";
 import { CreateTaskDialog } from "@/components/CreateTaskDialog";
@@ -403,12 +403,57 @@ export default function Leads() {
       )}
       
       {/* Radial Context Menu */}
-      <RadialContextMenu
-        open={radialMenuOpen}
-        position={radialMenuPosition}
-        onClose={() => setRadialMenuOpen(false)}
-        onAction={handleRadialAction}
-      />
+      {radialMenuOpen && (
+        <RadialContextMenu
+          actions={[
+            {
+              id: 'edit',
+              label: 'Edit',
+              icon: Edit,
+              color: 'text-blue-500',
+              onClick: () => handleRadialAction('edit'),
+            },
+            {
+              id: 'email',
+              label: 'Email',
+              icon: Mail,
+              color: 'text-green-500',
+              onClick: () => handleRadialAction('email'),
+            },
+            {
+              id: 'call',
+              label: 'Call',
+              icon: Phone,
+              color: 'text-purple-500',
+              onClick: () => handleRadialAction('call'),
+            },
+            {
+              id: 'schedule',
+              label: 'Schedule',
+              icon: Calendar,
+              color: 'text-orange-500',
+              onClick: () => handleRadialAction('schedule'),
+            },
+            {
+              id: 'task',
+              label: 'Task',
+              icon: CheckSquare,
+              color: 'text-yellow-500',
+              onClick: () => handleRadialAction('task'),
+            },
+            {
+              id: 'delete',
+              label: 'Delete',
+              icon: Trash2,
+              color: 'text-red-500',
+              onClick: () => handleRadialAction('delete'),
+            },
+          ]}
+          x={radialMenuPosition.x}
+          y={radialMenuPosition.y}
+          onClose={() => setRadialMenuOpen(false)}
+        />
+      )}
     </div>
   );
 }

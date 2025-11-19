@@ -549,6 +549,10 @@ export const products = mysqlTable("products", {
   supplier: varchar("supplier", { length: 255 }),
   leadTimeDays: int("leadTimeDays"),
   imageUrl: text("imageUrl"),
+  parentProductIdentifier: varchar("parentProductIdentifier", { length: 100 }),
+  shipstationCost: decimal("shipstationCost", { precision: 10, scale: 2 }),
+  manualCost: decimal("manualCost", { precision: 10, scale: 2 }),
+  channelCosts: json("channelCosts").$type<Record<string, number>>(),
   isActive: boolean("isActive").default(true).notNull(),
   // Intelligence Suite fields
   lifecycleState: mysqlEnum("lifecycleState", ["concept", "development", "pre_launch", "active_launch", "post_launch", "cruise", "end_of_life"]).default("concept"),
@@ -585,6 +589,10 @@ export const productVariants = mysqlTable("product_variants", {
   cost: decimal("cost", { precision: 10, scale: 2 }),
   stock: int("stock").default(0),
   imageUrl: text("imageUrl"),
+  parentProductIdentifier: varchar("parentProductIdentifier", { length: 100 }),
+  shipstationCost: decimal("shipstationCost", { precision: 10, scale: 2 }),
+  manualCost: decimal("manualCost", { precision: 10, scale: 2 }),
+  channelCosts: json("channelCosts").$type<Record<string, number>>(),
   isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -596,6 +604,48 @@ export const productVariants = mysqlTable("product_variants", {
 
 export type ProductVariant = typeof productVariants.$inferSelect;
 export type InsertProductVariant = typeof productVariants.$inferInsert;
+
+export const productPricing = mysqlTable("product_pricing", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull(),
+  priceType: mysqlEnum("priceType", ["public", "wholesale", "distributor", "customer_specific"]).notNull(),
+  customerEmail: varchar("customerEmail", { length: 320 }),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  productIdx: index("product_idx").on(table.productId),
+  customerEmailIdx: index("customer_email_idx").on(table.customerEmail),
+  priceTypeIdx: index("price_type_idx").on(table.priceType),
+}));
+
+export type ProductPricing = typeof productPricing.$inferSelect;
+export type InsertProductPricing = typeof productPricing.$inferInsert;
+
+export const channelInventory = mysqlTable("channel_inventory", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull(),
+  sku: varchar("sku", { length: 100 }).notNull(),
+  channel: mysqlEnum("channel", ["shipstation", "woocommerce", "amazon", "tiktok", "ebay"]).notNull(),
+  warehouseId: varchar("warehouseId", { length: 100 }),
+  warehouseName: varchar("warehouseName", { length: 255 }),
+  availableQty: int("availableQty").default(0).notNull(),
+  buffer: int("buffer").default(0).notNull(),
+  zeroStockThreshold: int("zeroStockThreshold").default(0).notNull(),
+  manualOverride: int("manualOverride"),
+  lastSyncAt: timestamp("lastSyncAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  productIdx: index("product_idx").on(table.productId),
+  skuIdx: index("sku_idx").on(table.sku),
+  channelIdx: index("channel_idx").on(table.channel),
+  uniqueProductChannelWarehouse: index("unique_product_channel_warehouse").on(table.productId, table.channel, table.warehouseId),
+}));
+
+export type ChannelInventory = typeof channelInventory.$inferSelect;
+export type InsertChannelInventory = typeof channelInventory.$inferInsert;
 
 export const productDimensions = mysqlTable("product_dimensions", {
   id: int("id").autoincrement().primaryKey(),

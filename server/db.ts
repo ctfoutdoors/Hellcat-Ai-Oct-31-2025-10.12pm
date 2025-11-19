@@ -1469,6 +1469,11 @@ export async function getProducts(params: { page?: number; limit?: number; categ
       price: products.price,
       margin: products.margin,
       supplier: products.supplier,
+      imageUrl: products.imageUrl,
+      parentProductIdentifier: products.parentProductIdentifier,
+      manualCost: products.manualCost,
+      shipstationCost: products.shipstationCost,
+      channelCosts: products.channelCosts,
       isActive: products.isActive,
       // Return 0 for totalStock since inventory_stock table doesn't exist yet
       totalStock: sql<number>`0`,

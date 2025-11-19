@@ -1433,3 +1433,62 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Test variant display and expandable rows
 - [ ] Verify variant-specific data accuracy
 - [ ] Create checkpoint
+
+
+---
+
+## COMPREHENSIVE INVENTORY MANAGEMENT SYSTEM
+
+### Phase 1: Database Schema
+- [ ] Create product_pricing table (public, wholesale, distributor, customer-specific)
+- [ ] Create channel_inventory table (per-channel stock, buffers, thresholds)
+- [ ] Add parentProductIdentifier field to products table
+- [ ] Add cost tracking fields (shipstation_cost, manual_cost, channel_costs)
+- [ ] Run database migrations
+
+### Phase 2: Products Page Fixes
+- [ ] Fix bug: Category showing in cost column instead of actual cost
+- [ ] Fix SKU display to show actual SKU instead of WooCommerce ID
+- [ ] Import and display product thumbnails for all products
+- [ ] Add parent product identifier field to UI
+
+### Phase 3: Tiered Pricing System
+- [ ] Create pricing management UI
+- [ ] Implement public/wholesale/distributor price tiers
+- [ ] Add customer-specific pricing by email
+- [ ] Display appropriate price based on user role
+- [ ] Add price tier indicators in product list
+
+### Phase 4: Advanced Stock Management
+- [ ] Aggregate total stock from all ShipStation warehouses
+- [ ] Create per-channel inventory breakdown (WooCommerce, Amazon, TikTok, eBay)
+- [ ] Add hover tooltip showing channel-specific stock levels
+- [ ] Implement channel-specific buffers and zero-stock thresholds
+- [ ] Add manual quantity override per channel
+- [ ] Create bird's eye view dashboard
+
+### Phase 5: Cost Management
+- [ ] Sync product costs from ShipStation
+- [ ] Add manual cost entry interface
+- [ ] Implement per-channel cost tracking
+- [ ] Display cost in Products table correctly
+- [ ] Add cost history tracking
+
+### Phase 6: Testing & Checkpoint
+- [ ] Test all pricing tiers
+- [ ] Test stock aggregation and channel breakdown
+- [ ] Test cost sync and manual entry
+- [ ] Verify SKU and image display
+- [ ] Create checkpoint
+
+## COMPLETED IN THIS SESSION:
+- ✅ Created database schema for tiered pricing (product_pricing table)
+- ✅ Created database schema for channel inventory (channel_inventory table)
+- ✅ Added cost tracking fields to products (manualCost, shipstationCost, channelCosts)
+- ✅ Added parentProductIdentifier field to products
+- ✅ Fixed Products page to show actual SKU instead of WooCommerce ID
+- ✅ Fixed cost column to show actual cost instead of category
+- ✅ Added product image display to Products page
+- ✅ Added cost priority system (manual → shipstation → base)
+- ✅ Added stock tooltip with channel breakdown placeholder
+- ✅ Added visual indicators for margins and low stock

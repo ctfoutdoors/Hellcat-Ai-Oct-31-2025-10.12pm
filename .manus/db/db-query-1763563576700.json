@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS channel_inventory (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  productId INT NOT NULL,\n  sku VARCHAR(100) NOT NULL,\n  channel ENUM('shipstation', 'woocommerce', 'amazon', 'tiktok', 'ebay') NOT NULL,\n  warehouseId VARCHAR(100),\n  warehouseName VARCHAR(255),\n  availableQty INT DEFAULT 0 NOT NULL,\n  buffer INT DEFAULT 0 NOT NULL,\n  zeroStockThreshold INT DEFAULT 0 NOT NULL,\n  manualOverride INT,\n  lastSyncAt TIMESTAMP,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX product_idx (productId),\n  INDEX sku_idx (sku),\n  INDEX channel_idx (channel),\n  UNIQUE KEY unique_product_channel_warehouse (productId, channel, warehouseId)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS channel_inventory (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  productId INT NOT NULL,\n  sku VARCHAR(100) NOT NULL,\n  channel ENUM('shipstation', 'woocommerce', 'amazon', 'tiktok', 'ebay') NOT NULL,\n  warehouseId VARCHAR(100),\n  warehouseName VARCHAR(255),\n  availableQty INT DEFAULT 0 NOT NULL,\n  buffer INT DEFAULT 0 NOT NULL,\n  zeroStockThreshold INT DEFAULT 0 NOT NULL,\n  manualOverride INT,\n  lastSyncAt TIMESTAMP,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX product_idx (productId),\n  INDEX sku_idx (sku),\n  INDEX channel_idx (channel),\n  UNIQUE KEY unique_product_channel_warehouse (productId, channel, warehouseId)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 209
+}

@@ -1,0 +1,8 @@
+{
+  "query": "ALTER TABLE products \nADD COLUMN IF NOT EXISTS parentProductIdentifier VARCHAR(100),\nADD COLUMN IF NOT EXISTS shipstationCost DECIMAL(10, 2),\nADD COLUMN IF NOT EXISTS manualCost DECIMAL(10, 2),\nADD COLUMN IF NOT EXISTS channelCosts JSON,\nADD INDEX IF NOT EXISTS parent_identifier_idx (parentProductIdentifier)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute ALTER TABLE products \nADD COLUMN IF NOT EXISTS parentProductIdentifier VARCHAR(100),\nADD COLUMN IF NOT EXISTS shipstationCost DECIMAL(10, 2),\nADD COLUMN IF NOT EXISTS manualCost DECIMAL(10, 2),\nADD COLUMN IF NOT EXISTS channelCosts JSON,\nADD INDEX IF NOT EXISTS parent_identifier_idx (parentProductIdentifier)",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1072 (42000) at line 1: column does not exist: parentProductIdentifier"
+  ]
+}

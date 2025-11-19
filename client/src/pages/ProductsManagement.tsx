@@ -18,6 +18,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { trpc } from "@/lib/trpc";
 import {
   Package,
@@ -29,9 +35,11 @@ import {
   AlertTriangle,
   DollarSign,
   Barcode,
+  Info,
 } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
+import DashboardLayout from "@/components/DashboardLayout";
 
 export default function ProductsManagement() {
   const { user, loading: authLoading } = useAuth();
@@ -64,7 +72,25 @@ export default function ProductsManagement() {
     }
   };
 
+  // Calculate stats
+  const totalProducts = products.length;
+  const totalValue = products.reduce((sum: number, p: any) => {
+    const cost = Number(p.manualCost || p.shipstationCost || p.cost) || 0;
+    const stock = p.totalStock || 0;
+    return sum + (cost * stock);
+  }, 0);
+  const avgMargin = products.length > 0
+    ? products.reduce((sum: number, p: any) => {
+        const cost = Number(p.manualCost || p.shipstationCost || p.cost) || 0;
+        const price = Number(p.price) || 0;
+        const margin = price > 0 ? ((price - cost) / price * 100) : 0;
+        return sum + margin;
+      }, 0) / products.length
+    : 0;
+  const lowStockCount = products.filter((p: any) => (p.totalStock || 0) < 10).length;
+
   return (
+    <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -78,6 +104,54 @@ export default function ProductsManagement() {
               Add Product
             </Button>
           </Link>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <Package className="h-4 w-4 text-muted-foreground" />
+                Total Products
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalProducts}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                Total Value
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                Avg Margin
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{avgMargin.toFixed(1)}%</div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+                Low Stock
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-orange-600">{lowStockCount}</div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Search and Filters */}
@@ -110,11 +184,6 @@ export default function ProductsManagement() {
                   ))}
                 </SelectContent>
               </Select>
-
-              <Button type="submit" onClick={handleSearch}>
-                <Search className="mr-2 h-4 w-4" />
-                Search
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -122,225 +191,211 @@ export default function ProductsManagement() {
         {/* Products Table */}
         <Card>
           <CardHeader>
-            <CardTitle>Products</CardTitle>
+            <CardTitle>Product Inventory</CardTitle>
             <CardDescription>
-              {products.length} products found
+              View and manage all products with pricing, cost, and stock information
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {products.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <Package className="mx-auto h-12 w-12 mb-4 opacity-50" />
-                <p>No products found</p>
-                <Link href="/inventory/products/new">
-                  <Button variant="outline" className="mt-4">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add Your First Product
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>SKU</TableHead>
-                    <TableHead>Product Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead className="text-right">Cost</TableHead>
-                    <TableHead className="text-right">Price</TableHead>
-                    <TableHead className="text-right">Margin</TableHead>
-                    <TableHead className="text-right">Stock</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map((product: any) => {
-                    const cost = Number(product.cost) || 0;
-                    const price = Number(product.price) || 0;
-                    const margin = product.margin ? Number(product.margin) : 
-                      (price > 0 ? ((price - cost) / price * 100) : 0);
-                    const totalStock = product.totalStock || 0;
-                    const isLowStock = totalStock < (product.reorderPoint || 10);
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-20">Image</TableHead>
+                  <TableHead>SKU</TableHead>
+                  <TableHead>Product Name</TableHead>
+                  <TableHead>Category</TableHead>
+                  <TableHead className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      Cost
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="h-3 w-3 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Manual cost → ShipStation cost → Base cost</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </TableHead>
+                  <TableHead className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      Price
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="h-3 w-3 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Public price (role-based pricing available)</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </TableHead>
+                  <TableHead className="text-right">Margin</TableHead>
+                  <TableHead className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      Stock
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="h-3 w-3 text-muted-foreground" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Hover for channel breakdown</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {products.map((product: any) => {
+                  // Cost priority: manual → shipstation → base
+                  const cost = Number(product.manualCost || product.shipstationCost || product.cost) || 0;
+                  const price = Number(product.price) || 0;
+                  const margin = price > 0 ? ((price - cost) / price * 100) : 0;
+                  const totalStock = product.totalStock || 0;
+                  const isLowStock = totalStock < 10;
 
-                    return (
-                      <TableRow key={product.id}>
-                        <TableCell>
-                          {product.imageUrl ? (
-                            <img
-                              src={product.imageUrl}
-                              alt={product.name}
-                              className="w-12 h-12 object-cover rounded border"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
-                              <Package className="h-6 w-6 text-muted-foreground" />
-                            </div>
+                  return (
+                    <TableRow key={product.id}>
+                      <TableCell>
+                        {product.imageUrl ? (
+                          <img
+                            src={product.imageUrl}
+                            alt={product.name}
+                            className="w-12 h-12 object-cover rounded"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-muted rounded flex items-center justify-center">
+                            <Package className="w-6 h-6 text-muted-foreground" />
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Barcode className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-mono text-sm">{product.sku}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium max-w-xs truncate">
+                        {product.name}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {product.category || "Uncategorized"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        <div className="flex flex-col items-end">
+                          <span>${cost.toFixed(2)}</span>
+                          {product.manualCost && (
+                            <Badge variant="secondary" className="text-xs mt-1">Manual</Badge>
                           )}
-                        </TableCell>
-                        <TableCell className="font-mono text-sm">
-                          <div className="flex items-center gap-2">
-                            <Barcode className="h-4 w-4 text-muted-foreground" />
-                            {product.sku}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{product.name}</p>
-                            {product.barcode && (
-                              <p className="text-xs text-muted-foreground">
-                                Barcode: {product.barcode}
-                              </p>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {product.category || "Uncategorized"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right font-mono">
-                          ${product.cost ? Number(product.cost).toFixed(2) : "0.00"}
-                        </TableCell>
-                        <TableCell className="text-right font-mono">
-                          ${product.price ? Number(product.price).toFixed(2) : "0.00"}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span
-                            className={`inline-flex items-center gap-1 font-medium ${
-                              margin >= 30
-                                ? "text-green-600"
-                                : margin >= 15
-                                ? "text-yellow-600"
-                                : "text-red-600"
-                            }`}
-                          >
-                            {margin >= 30 ? (
-                              <TrendingUp className="h-3 w-3" />
-                            ) : (
-                              <TrendingDown className="h-3 w-3" />
-                            )}
+                          {!product.manualCost && product.shipstationCost && (
+                            <Badge variant="outline" className="text-xs mt-1">ShipStation</Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        ${price.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          {margin > 30 ? (
+                            <TrendingUp className="h-4 w-4 text-green-600" />
+                          ) : margin < 15 ? (
+                            <TrendingDown className="h-4 w-4 text-red-600" />
+                          ) : null}
+                          <span className={
+                            margin > 30 ? "text-green-600 font-semibold" :
+                            margin < 15 ? "text-red-600 font-semibold" :
+                            "font-semibold"
+                          }>
                             {margin.toFixed(1)}%
                           </span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span
-                            className={`font-medium ${
-                              isLowStock ? "text-orange-500" : ""
-                            }`}
-                          >
-                            {totalStock}
-                            {isLowStock && (
-                              <AlertTriangle className="inline ml-1 h-3 w-3" />
-                            )}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          {product.isActive ? (
-                            <Badge variant="default" className="bg-green-500">
-                              Active
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary">Inactive</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Link href={`/inventory/products/${product.id}`}>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div className={`inline-flex items-center gap-1 cursor-help ${
+                                isLowStock ? "text-orange-600 font-semibold" : ""
+                              }`}>
+                                {isLowStock && <AlertTriangle className="h-4 w-4" />}
+                                <span>{totalStock}</span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent className="max-w-xs">
+                              <div className="space-y-2">
+                                <p className="font-semibold">Channel Breakdown</p>
+                                <div className="space-y-1 text-sm">
+                                  <div className="flex justify-between gap-4">
+                                    <span>ShipStation:</span>
+                                    <span className="font-mono">{totalStock}</span>
+                                  </div>
+                                  <div className="flex justify-between gap-4 text-muted-foreground">
+                                    <span>WooCommerce:</span>
+                                    <span className="font-mono">-</span>
+                                  </div>
+                                  <div className="flex justify-between gap-4 text-muted-foreground">
+                                    <span>Amazon:</span>
+                                    <span className="font-mono">-</span>
+                                  </div>
+                                  <div className="flex justify-between gap-4 text-muted-foreground">
+                                    <span>TikTok:</span>
+                                    <span className="font-mono">-</span>
+                                  </div>
+                                  <div className="flex justify-between gap-4 text-muted-foreground">
+                                    <span>eBay:</span>
+                                    <span className="font-mono">-</span>
+                                  </div>
+                                </div>
+                                <p className="text-xs text-muted-foreground pt-2 border-t">
+                                  Configure channel-specific stock in Stock Levels
+                                </p>
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Link href={`/inventory/products/${product.id}`}>
+                          <Button variant="ghost" size="sm">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
 
-            {/* Pagination */}
-            {products.length > 0 && (
-              <div className="flex items-center justify-between mt-4">
-                <p className="text-sm text-muted-foreground">
-                  Showing {(page - 1) * limit + 1} to {Math.min(page * limit, products.length)} of{" "}
-                  {products.length} products
+            {products.length === 0 && (
+              <div className="text-center py-12">
+                <Package className="mx-auto h-12 w-12 text-muted-foreground" />
+                <h3 className="mt-4 text-lg font-semibold">No products found</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Get started by adding your first product
                 </p>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(p => Math.max(1, p - 1))}
-                    disabled={page === 1}
-                  >
-                    Previous
+                <Link href="/inventory/products/new">
+                  <Button className="mt-4">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Add Product
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setPage(p => p + 1)}
-                    disabled={products.length < limit}
-                  >
-                    Next
-                  </Button>
-                </div>
+                </Link>
               </div>
             )}
           </CardContent>
         </Card>
-
-        {/* Quick Stats */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{products.length}</div>
-              <p className="text-xs text-muted-foreground">
-                Across {categories.length - 1} categories
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Low Stock Items</CardTitle>
-              <AlertTriangle className="h-4 w-4 text-orange-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-500">
-                {products.filter((p: any) => 
-                  (p.totalStock || 0) < (p.reorderPoint || 10)
-                ).length}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Require reordering
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Avg Margin</CardTitle>
-              <DollarSign className="h-4 w-4 text-green-500" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-500">
-                {products.length > 0
-                  ? (
-                      products.reduce((sum: number, p: any) => 
-                        sum + (p.margin || ((p.price - p.cost) / p.price * 100)), 0
-                      ) / products.length
-                    ).toFixed(1)
-                  : "0"}%
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Across all products
-              </p>
-            </CardContent>
-          </Card>
-        </div>
       </div>
+    </DashboardLayout>
   );
 }

@@ -1769,3 +1769,90 @@ export const trackingScreenshots = mysqlTable("tracking_screenshots", {
 
 export type TrackingScreenshot = typeof trackingScreenshots.$inferSelect;
 export type InsertTrackingScreenshot = typeof trackingScreenshots.$inferInsert;
+
+
+// ============================================================================
+// ACTIVITY ATTACHMENTS & EMAIL TEMPLATES
+// ============================================================================
+
+/**
+ * Activities Attachments Table
+ * Stores file attachments linked to CRM activities (emails, meetings, notes)
+ */
+export const activitiesAttachments = mysqlTable("activities_attachments", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Entity linkage
+  entityType: mysqlEnum("entityType", ["customer", "vendor", "lead", "contact"]).notNull(),
+  entityId: int("entityId").notNull(),
+  
+  // File information
+  fileName: varchar("fileName", { length: 500 }).notNull(),
+  fileSize: int("fileSize").notNull(), // bytes
+  mimeType: varchar("mimeType", { length: 100 }).notNull(),
+  fileUrl: text("fileUrl").notNull(), // S3 URL
+  fileKey: varchar("fileKey", { length: 500 }).notNull(), // S3 key
+  
+  // Activity type detection
+  activityType: mysqlEnum("activityType", ["email", "meeting", "note", "document", "other"]).default("other").notNull(),
+  isEmailAttachment: boolean("isEmailAttachment").default(false).notNull(),
+  
+  // Email metadata (if recognized as email)
+  emailSubject: varchar("emailSubject", { length: 500 }),
+  emailDate: timestamp("emailDate"),
+  emailDirection: mysqlEnum("emailDirection", ["sent", "received"]),
+  
+  // User and timestamps
+  uploadedBy: int("uploadedBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  entityIdx: index("entity_idx").on(table.entityType, table.entityId),
+  uploadedByIdx: index("uploaded_by_idx").on(table.uploadedBy),
+  activityTypeIdx: index("activity_type_idx").on(table.activityType),
+}));
+
+export type ActivitiesAttachment = typeof activitiesAttachments.$inferSelect;
+export type InsertActivitiesAttachment = typeof activitiesAttachments.$inferInsert;
+
+/**
+ * Email Templates Table
+ * Stores reusable email templates for common CRM communications
+ */
+export const emailTemplates = mysqlTable("email_templates", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Template information
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  category: mysqlEnum("category", [
+    "follow_up", 
+    "quote", 
+    "order_confirmation", 
+    "shipping_update",
+    "payment_reminder",
+    "thank_you",
+    "general"
+  ]).default("general").notNull(),
+  
+  // Template content
+  subject: varchar("subject", { length: 500 }).notNull(),
+  body: text("body").notNull(),
+  
+  // Template variables (JSON array of variable names)
+  variables: json("variables").$type<string[]>().default([]),
+  
+  // Metadata
+  isActive: boolean("isActive").default(true).notNull(),
+  usageCount: int("usageCount").default(0).notNull(),
+  createdBy: int("createdBy").notNull(),
+  lastUsedAt: timestamp("lastUsedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  categoryIdx: index("category_idx").on(table.category),
+  createdByIdx: index("created_by_idx").on(table.createdBy),
+  isActiveIdx: index("is_active_idx").on(table.isActive),
+}));
+
+export type EmailTemplate = typeof emailTemplates.$inferSelect;
+export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;

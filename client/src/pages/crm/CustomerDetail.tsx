@@ -27,10 +27,18 @@ import { NextActions } from "@/components/crm/NextActions";
 import { AIRecommendations } from "@/components/crm/AIRecommendations";
 import { useState } from "react";
 import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
+import { FileUploadZone } from "@/components/FileUploadZone";
+import { AttachmentsTimeline } from "@/components/AttachmentsTimeline";
+import { ActivityFilters, ActivityFiltersState } from "@/components/ActivityFilters";
 
 export default function CustomerDetail() {
   const [, params] = useRoute("/crm/customers/:id");
   const [, setLocation] = useLocation();
+  const [activityFilters, setActivityFilters] = useState<ActivityFiltersState>({
+    dateFrom: undefined,
+    dateTo: undefined,
+    activityTypes: [],
+  });
   const customerId = params?.id ? parseInt(params.id) : 0;
 
 
@@ -472,7 +480,32 @@ export default function CustomerDetail() {
               <CardTitle>Activity Timeline</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* Activity Filters */}
+              <ActivityFilters
+                filters={activityFilters}
+                onChange={setActivityFilters}
+              />
 
+              {/* File Upload Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Upload Files</h3>
+                <FileUploadZone
+                  entityType="customer"
+                  entityId={customerId}
+                  onUploadComplete={() => {
+                    // Refresh attachments list
+                  }}
+                />
+              </div>
+
+              {/* Attachments Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Attachments & Documents</h3>
+                <AttachmentsTimeline
+                  entityType="customer"
+                  entityId={customerId}
+                />
+              </div>
 
               {/* Calendar Events Section */}
               <div>

@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS activities_attachments (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  entityType ENUM('customer', 'vendor', 'lead', 'contact') NOT NULL,\n  entityId INT NOT NULL,\n  fileName VARCHAR(500) NOT NULL,\n  fileSize INT NOT NULL,\n  mimeType VARCHAR(100) NOT NULL,\n  fileUrl TEXT NOT NULL,\n  fileKey VARCHAR(500) NOT NULL,\n  activityType ENUM('email', 'meeting', 'note', 'document', 'other') DEFAULT 'other' NOT NULL,\n  isEmailAttachment BOOLEAN DEFAULT FALSE NOT NULL,\n  emailSubject VARCHAR(500),\n  emailDate TIMESTAMP NULL,\n  emailDirection ENUM('sent', 'received'),\n  uploadedBy INT NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX entity_idx (entityType, entityId),\n  INDEX uploaded_by_idx (uploadedBy),\n  INDEX activity_type_idx (activityType)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS activities_attachments (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  entityType ENUM('customer', 'vendor', 'lead', 'contact') NOT NULL,\n  entityId INT NOT NULL,\n  fileName VARCHAR(500) NOT NULL,\n  fileSize INT NOT NULL,\n  mimeType VARCHAR(100) NOT NULL,\n  fileUrl TEXT NOT NULL,\n  fileKey VARCHAR(500) NOT NULL,\n  activityType ENUM('email', 'meeting', 'note', 'document', 'other') DEFAULT 'other' NOT NULL,\n  isEmailAttachment BOOLEAN DEFAULT FALSE NOT NULL,\n  emailSubject VARCHAR(500),\n  emailDate TIMESTAMP NULL,\n  emailDirection ENUM('sent', 'received'),\n  uploadedBy INT NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX entity_idx (entityType, entityId),\n  INDEX uploaded_by_idx (uploadedBy),\n  INDEX activity_type_idx (activityType)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 280
+}

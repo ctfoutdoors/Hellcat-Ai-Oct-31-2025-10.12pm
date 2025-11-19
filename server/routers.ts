@@ -34,6 +34,8 @@ import { poRouter } from './routers/po';
 import { trackingAgentRouter } from './routers/trackingAgent';
 import { crmComponentsRouter } from './routers/crmComponents';
 import { calendarRouter } from "./routers/calendar";
+import { attachmentsRouter } from "./routers/attachments";
+import { emailTemplatesRouter } from "./routers/emailTemplates";
 
 
 export const appRouter = router({
@@ -45,6 +47,8 @@ export const appRouter = router({
   po: poRouter,
   trackingAgent: trackingAgentRouter,
   calendar: calendarRouter,
+  attachments: attachmentsRouter,
+  emailTemplates: emailTemplatesRouter,
 
   orders: router({
     list: publicProcedure

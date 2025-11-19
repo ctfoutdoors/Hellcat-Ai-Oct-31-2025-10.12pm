@@ -47,6 +47,7 @@ import ActionItemsDashboard from "./pages/crm/ActionItemsDashboard";
 import PODetail from "./pages/po/PODetail";
 import Leads from "./pages/crm/Leads";
 import LeadDetail from "./pages/crm/LeadDetail";
+import EmailTemplates from "./pages/crm/EmailTemplates";
 import Calendar from "./pages/Calendar";
 import ProductCard from "./pages/inventory/ProductCard";
 import Settings from "./pages/Settings";
@@ -123,6 +124,7 @@ function Router() {
       <Route path="/crm/leads-old" component={LeadsList} />
       <Route path="/crm/leads" component={Leads} />
       <Route path="/crm/leads/:id" component={LeadDetail} />
+      <Route path="/crm/email-templates" component={EmailTemplates} />
       <Route path="/crm/vendors-old" component={VendorsList} />
       <Route path="/crm/vendors" component={Vendors} />
       <Route path="/crm/vendors/:id" component={VendorDetailNew} />

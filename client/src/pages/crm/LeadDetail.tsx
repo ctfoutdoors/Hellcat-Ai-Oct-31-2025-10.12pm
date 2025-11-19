@@ -17,6 +17,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
+import { FileUploadZone } from "@/components/FileUploadZone";
+import { AttachmentsTimeline } from "@/components/AttachmentsTimeline";
+import { ActivityFilters, ActivityFiltersState } from "@/components/ActivityFilters";
 import { RelationshipHealth } from "@/components/crm/RelationshipHealth";
 import { NextActions } from "@/components/crm/NextActions";
 import { AIRecommendations } from "@/components/crm/AIRecommendations";
@@ -244,6 +247,24 @@ export default function LeadDetail() {
               <CardTitle>Activity Timeline</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
+              {/* File Upload Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Upload Files</h3>
+                <FileUploadZone
+                  entityType="lead"
+                  entityId={leadId}
+                  onUploadComplete={() => {}}
+                />
+              </div>
+
+              {/* Attachments Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Attachments & Documents</h3>
+                <AttachmentsTimeline
+                  entityType="lead"
+                  entityId={leadId}
+                />
+              </div>
 
               {/* Calendar Events Section */}
               <div>

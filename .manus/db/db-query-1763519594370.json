@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS email_templates (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  category ENUM('follow_up', 'quote', 'order_confirmation', 'shipping_update', 'payment_reminder', 'thank_you', 'general') DEFAULT 'general' NOT NULL,\n  subject VARCHAR(500) NOT NULL,\n  body TEXT NOT NULL,\n  variables JSON,\n  isActive BOOLEAN DEFAULT TRUE NOT NULL,\n  usageCount INT DEFAULT 0 NOT NULL,\n  createdBy INT NOT NULL,\n  lastUsedAt TIMESTAMP NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX category_idx (category),\n  INDEX created_by_idx (createdBy),\n  INDEX is_active_idx (isActive)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS email_templates (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  name VARCHAR(255) NOT NULL,\n  description TEXT,\n  category ENUM('follow_up', 'quote', 'order_confirmation', 'shipping_update', 'payment_reminder', 'thank_you', 'general') DEFAULT 'general' NOT NULL,\n  subject VARCHAR(500) NOT NULL,\n  body TEXT NOT NULL,\n  variables JSON,\n  isActive BOOLEAN DEFAULT TRUE NOT NULL,\n  usageCount INT DEFAULT 0 NOT NULL,\n  createdBy INT NOT NULL,\n  lastUsedAt TIMESTAMP NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,\n  INDEX category_idx (category),\n  INDEX created_by_idx (createdBy),\n  INDEX is_active_idx (isActive)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 212
+}

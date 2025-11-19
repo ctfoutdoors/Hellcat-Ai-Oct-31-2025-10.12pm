@@ -32,6 +32,9 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
+import { FileUploadZone } from "@/components/FileUploadZone";
+import { AttachmentsTimeline } from "@/components/AttachmentsTimeline";
+import { ActivityFilters, ActivityFiltersState } from "@/components/ActivityFilters";
 
 export default function VendorDetail() {
   const params = useParams();
@@ -376,17 +379,23 @@ export default function VendorDetail() {
         <TabsContent value="activities">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Activity Timeline</CardTitle>
-                  <Mail className="mr-2 h-4 w-4" />
-                </Button>
-              </div>
+              <CardTitle>Activity Timeline</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Email Logs Section */}
+              {/* File Upload Section */}
               <div>
-                <h3 className="text-lg font-semibold mb-3">Email Communications</h3>
-                  emails={[]}
+                <h3 className="text-lg font-semibold mb-3">Upload Files</h3>
+                <FileUploadZone
+                  entityType="vendor"
+                  entityId={vendorId}
+                  onUploadComplete={() => {}}
+                />
+              </div>
+
+              {/* Attachments Section */}
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Attachments & Documents</h3>
+                <AttachmentsTimeline
                   entityType="vendor"
                   entityId={vendorId}
                 />

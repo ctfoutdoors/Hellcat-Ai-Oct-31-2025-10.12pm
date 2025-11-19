@@ -1132,3 +1132,35 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] S3 storage for email PDF attachments
 - [ ] Email PDF recognition and parsing
 - [ ] Automatic activity creation from uploaded files
+
+
+---
+
+## NEW FEATURES: File Upload, Email Templates & Activity Filtering
+
+### 1. File Upload System
+- [x] Create activities_attachments table in schema
+- [x] Build FileUploadZone component with drag-and-drop
+- [x] Add S3 storage integration for file uploads
+- [x] Implement email PDF recognition (filename/metadata parsing)
+- [x] Auto-create activity when email PDF is uploaded
+- [x] Display attachments in Activities timeline
+- [x] Add download/delete functionality for attachments
+
+### 2. Email Template Library
+- [x] Create email_templates table in schema
+- [x] Build EmailTemplateLibrary page
+- [x] Add CRUD operations for templates (create, edit, delete)
+- [x] Implement template categories (follow-up, quote, order confirmation, etc.)
+- [x] Add template variables (customer name, order number, etc.)
+- [x] Create "Use Template" button in CRM pages
+- [x] Add template preview functionality
+
+### 3. Activity Filtering
+- [x] Add date range picker to Activities tab
+- [x] Implement activity type toggles (emails, meetings, tasks, notes)
+- [x] Add search/filter functionality
+- [x] Create filter state management
+- [x] Update timeline queries to respect filters
+- [x] Add "Clear Filters" button
+- [ ] Persist filter preferences in localStorage (optional enhancement)

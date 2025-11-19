@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, sku, name, price FROM products LIMIT 10",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT id, sku, name, price FROM products LIMIT 10",
+  "rows": [
+    {
+      "id": "1",
+      "sku": "FISH-LINE-PRO-20LB",
+      "name": "ProCast Fishing Line - 20lb Test",
+      "price": "24.99"
+    },
+    {
+      "id": "2",
+      "sku": "TACKLE-BOX-ELITE",
+      "name": "Elite Tackle Storage System",
+      "price": "59.99"
+    },
+    {
+      "id": "3",
+      "sku": "LURE-COMBO-BASS",
+      "name": "Bass Master Lure Collection",
+      "price": "44.99"
+    },
+    {
+      "id": "30001",
+      "sku": "LURE-BASS-001",
+      "name": "Bass Master Lure Collection",
+      "price": "49.99"
+    },
+    {
+      "id": "60001",
+      "sku": "WOO-87144",
+      "name": "Blackout Hellcat Revenge Rod Series | Limited Release",
+      "price": "149.99"
+    },
+    {
+      "id": "60002",
+      "sku": "CTF-HC-WD-3x5",
+      "name": "White HellCat Decal 3x5",
+      "price": "5.99"
+    },
+    {
+      "id": "60003",
+      "sku": "CTF-HC-GD-3x5",
+      "name": "Green HellCat Decal 3x5",
+      "price": "5.99"
+    },
+    {
+      "id": "60004",
+      "sku": "WOO-85259",
+      "name": "RAVIX™ Rod Series | 7 ft 6 in Medium‑Heavy, Two‑Piece Composite",
+      "price": "64.99"
+    },
+    {
+      "id": "60005",
+      "sku": "WOO-81368",
+      "name": "Black Precision Crappie Short Sleeve T-shirt - Green Logo",
+      "price": "35.99"
+    },
+    {
+      "id": "60006",
+      "sku": "WOO-81367",
+      "name": "Black Hellcat Revenge Short Sleeve T-shirt - Green Logo",
+      "price": "35.99"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tsku\tname\tprice\n1\tFISH-LINE-PRO-20LB\tProCast Fishing Line - 20lb Test\t24.99\n2\tTACKLE-BOX-ELITE\tElite Tackle Storage System\t59.99\n3\tLURE-COMBO-BASS\tBass Master Lure Collection\t44.99\n30001\tLURE-BASS-001\tBass Master Lure Collection\t49.99\n60001\tWOO-87144\tBlackout Hellcat Revenge Rod Series | Limited Release\t149.99\n60002\tCTF-HC-WD-3x5\tWhite HellCat Decal 3x5\t5.99\n60003\tCTF-HC-GD-3x5\tGreen HellCat Decal 3x5\t5.99\n60004\tWOO-85259\tRAVIX™ Rod Series | 7 ft 6 in Medium‑Heavy, Two‑Piece Composite\t64.99\n60005\tWOO-81368\tBlack Precision Crappie Short Sleeve T-shirt - Green Logo\t35.99\n60006\tWOO-81367\tBlack Hellcat Revenge Short Sleeve T-shirt - Green Logo\t35.99\n",
+  "stderr": "",
+  "execution_time_ms": 90
+}

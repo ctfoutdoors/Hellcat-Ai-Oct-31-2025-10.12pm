@@ -219,6 +219,23 @@ export class WooCommerceClient {
   }
 
   /**
+   * Get products from WooCommerce
+   */
+  async getProducts(params: {
+    per_page?: number;
+    page?: number;
+    status?: string;
+  } = {}): Promise<any[]> {
+    const queryParams = new URLSearchParams();
+    
+    if (params.per_page) queryParams.append('per_page', params.per_page.toString());
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.status) queryParams.append('status', params.status);
+    
+    return this.request(`/products?${queryParams.toString()}`);
+  }
+
+  /**
    * Test connection to WooCommerce
    */
   async testConnection(): Promise<boolean> {

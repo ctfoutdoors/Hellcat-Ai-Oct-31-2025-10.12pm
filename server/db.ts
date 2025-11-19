@@ -1470,7 +1470,8 @@ export async function getProducts(params: { page?: number; limit?: number; categ
       margin: products.margin,
       supplier: products.supplier,
       isActive: products.isActive,
-      totalStock: sql<number>`(SELECT SUM(quantity) FROM inventory_stock WHERE productId = products.id)`,
+      // Return 0 for totalStock since inventory_stock table doesn't exist yet
+      totalStock: sql<number>`0`,
     })
     .from(products)
     .limit(limit)

@@ -1,5 +1,4 @@
 import { useAuth } from "@/_core/hooks/useAuth";
-import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -54,17 +53,8 @@ export default function ProductsManagement() {
     { enabled: false }
   );
 
-  if (authLoading || isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
-  const products = productsData?.products || [];
+  // getProducts returns array directly, not { products: [] }
+  const products = productsData || [];
   const categories = ["all", "electronics", "apparel", "accessories", "supplies", "other"];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -75,7 +65,6 @@ export default function ProductsManagement() {
   };
 
   return (
-    <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -167,8 +156,10 @@ export default function ProductsManagement() {
                 </TableHeader>
                 <TableBody>
                   {products.map((product: any) => {
-                    const margin = product.margin || 
-                      ((product.price - product.cost) / product.price * 100);
+                    const cost = Number(product.cost) || 0;
+                    const price = Number(product.price) || 0;
+                    const margin = product.margin ? Number(product.margin) : 
+                      (price > 0 ? ((price - cost) / price * 100) : 0);
                     const totalStock = product.totalStock || 0;
                     const isLowStock = totalStock < (product.reorderPoint || 10);
 
@@ -196,10 +187,10 @@ export default function ProductsManagement() {
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right font-mono">
-                          ${product.cost?.toFixed(2) || "0.00"}
+                          ${product.cost ? Number(product.cost).toFixed(2) : "0.00"}
                         </TableCell>
                         <TableCell className="text-right font-mono">
-                          ${product.price?.toFixed(2) || "0.00"}
+                          ${product.price ? Number(product.price).toFixed(2) : "0.00"}
                         </TableCell>
                         <TableCell className="text-right">
                           <span
@@ -338,6 +329,5 @@ export default function ProductsManagement() {
           </Card>
         </div>
       </div>
-    </DashboardLayout>
   );
 }

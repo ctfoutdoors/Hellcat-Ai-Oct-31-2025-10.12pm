@@ -39,6 +39,7 @@ import { emailTemplatesRouter } from "./routers/emailTemplates";
 import { woocommerceRouter } from "./routers/woocommerce";
 import { shipstationRouter } from "./routers/shipstation";
 import { ordersRouter } from "./routers/orders";
+import { productSyncRouter } from "./routers/productSync";
 
 
 export const appRouter = router({
@@ -55,6 +56,7 @@ export const appRouter = router({
   woocommerce: woocommerceRouter,
   shipstation: shipstationRouter,
   orders: ordersRouter,
+  productSync: productSyncRouter,
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

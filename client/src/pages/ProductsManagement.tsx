@@ -1,4 +1,3 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -25,6 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 import {
   Package,
   Plus,
@@ -40,6 +40,7 @@ import {
 import { useState } from "react";
 import { Link } from "wouter";
 import DashboardLayout from "@/components/DashboardLayout";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 export default function ProductsManagement() {
   const { user, loading: authLoading } = useAuth();
@@ -98,12 +99,29 @@ export default function ProductsManagement() {
             <h1 className="text-3xl font-bold">Products Management</h1>
             <p className="text-muted-foreground">Manage your inventory products and SKUs</p>
           </div>
-          <Link href="/inventory/products/new">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Product
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              onClick={async () => {
+                toast.info("Syncing product images from WooCommerce...");
+                try {
+                  const result = await trpc.productSync.syncAllImages.mutate();
+                  toast.success(`Images synced! Success: ${result.success}, Skipped: ${result.skipped}, Failed: ${result.failed}`);
+                  window.location.reload();
+                } catch (error) {
+                  toast.error("Failed to sync images: " + (error as Error).message);
+                }
+              }}
+            >
+              Sync All Images
             </Button>
-          </Link>
+            <Link href="/inventory/products/new">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Add Product
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Stats Cards */}

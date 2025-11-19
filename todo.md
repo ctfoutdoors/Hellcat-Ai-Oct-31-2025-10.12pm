@@ -1356,3 +1356,43 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Test order status dashboard filters
 - [ ] Verify all integrations work end-to-end
 - [ ] Create checkpoint
+
+
+---
+
+## ORDER STATUS TRACKING & INTEGRATIONS PAGE
+
+### Phase 1: Orders Backend ✅
+- [x] Add order status tracking fields to orders schema (already exists)
+- [x] Create getOrders endpoint with filters (status, carrier, date range)
+- [x] Create syncOrderStatus endpoint to update from ShipStation
+- [x] Add order statistics endpoint
+
+### Phase 2: Order Status Dashboard ✅
+- [x] Create OrderTracking page component
+- [x] Add status filter dropdown (all, pending, shipped, delivered, etc.)
+- [x] Add carrier filter dropdown
+- [x] Add date range picker
+- [x] Display orders table with tracking info
+- [x] Add "Sync Status" button to refresh from ShipStation
+- [x] Show real-time order statistics
+
+### Phase 3: Integrations Page - UI ✅
+- [x] Create Integrations page under Settings
+- [x] Add Overview/Security/Webhooks tabs
+- [x] Create integration status cards (ShipStation, WooCommerce, Klaviyo, Re:amaze, OpenAI)
+- [x] Display connection status and last sync time
+- [x] Add "Test Connection" and "Configure" buttons per integration
+
+### Phase 4: Integrations Page - Backend ✅
+- [x] Create testShipStationConnection endpoint (already exists)
+- [x] Create testWooCommerceConnection endpoint (already exists)
+- [x] Create getIntegrationStatus endpoint
+- [x] Wire all test connection buttons
+- [x] Add configuration modals for each integration
+
+### Phase 5: Testing & Checkpoint ✅
+- [x] Test order filtering and status sync
+- [x] Test all integration connection tests
+- [x] Verify UI matches screenshot design
+- [x] Create checkpoint

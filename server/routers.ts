@@ -38,6 +38,7 @@ import { attachmentsRouter } from "./routers/attachments";
 import { emailTemplatesRouter } from "./routers/emailTemplates";
 import { woocommerceRouter } from "./routers/woocommerce";
 import { shipstationRouter } from "./routers/shipstation";
+import { ordersRouter } from "./routers/orders";
 
 
 export const appRouter = router({
@@ -53,31 +54,7 @@ export const appRouter = router({
   emailTemplates: emailTemplatesRouter,
   woocommerce: woocommerceRouter,
   shipstation: shipstationRouter,
-
-  orders: router({
-    list: publicProcedure
-      .input(z.object({
-        source: z.string().optional(),
-        status: z.string().optional(),
-        searchTerm: z.string().optional(),
-      }).optional())
-      .query(({ input }) => db.listOrders(input || {})),
-    
-    get: publicProcedure
-      .input(z.object({ id: z.number() }))
-      .query(({ input }) => db.getOrderById(input.id)),
-    
-    syncFromShipStation: protectedProcedure
-      .input(z.array(z.any()))
-      .mutation(({ input }) => db.syncOrdersFromShipStation(input)),
-    
-    linkToCase: protectedProcedure
-      .input(z.object({
-        orderId: z.number(),
-        caseId: z.number(),
-      }))
-      .mutation(({ input }) => db.linkOrderToCase(input.orderId, input.caseId)),
-  }),
+  orders: ordersRouter,
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

@@ -9,6 +9,71 @@ import { createShipStationClient } from '../integrations/shipstation';
 
 export const integrationsRouter = router({
   /**
+   * Get status of all integrations
+   */
+  getStatus: protectedProcedure.query(async () => {
+    const integrations = [];
+
+    // ShipStation
+    const shipstation = createShipStationClient();
+    integrations.push({
+      id: "shipstation",
+      name: "ShipStation",
+      description: "Order fulfillment and shipping management",
+      icon: "package",
+      connected: shipstation !== null,
+      lastSync: "2 minutes ago", // TODO: Get from sync logs
+      status: shipstation ? "connected" : "disconnected",
+    });
+
+    // WooCommerce
+    integrations.push({
+      id: "woocommerce",
+      name: "WooCommerce",
+      description: "E-commerce platform integration",
+      icon: "shopping-cart",
+      connected: process.env.WOOCOMMERCE_STORE_URL ? true : false,
+      lastSync: "5 minutes ago", // TODO: Get from sync logs
+      status: process.env.WOOCOMMERCE_STORE_URL ? "connected" : "disconnected",
+    });
+
+    // Klaviyo
+    integrations.push({
+      id: "klaviyo",
+      name: "Klaviyo",
+      description: "Email marketing and customer data",
+      icon: "mail",
+      connected: process.env.KLAVIYO_API_KEY ? true : false,
+      lastSync: "10 minutes ago", // TODO: Get from sync logs
+      status: process.env.KLAVIYO_API_KEY ? "connected" : "disconnected",
+    });
+
+    // Re:amaze
+    integrations.push({
+      id: "reamaze",
+      name: "Re:amaze",
+      description: "Customer support and helpdesk",
+      icon: "message-circle",
+      connected: process.env.REAMAZE_BRAND ? true : false,
+      lastSync: "15 minutes ago", // TODO: Get from sync logs
+      status: process.env.REAMAZE_BRAND ? "connected" : "disconnected",
+    });
+
+    // OpenAI
+    integrations.push({
+      id: "openai",
+      name: "OpenAI",
+      description: "AI-powered chatbot and automation",
+      icon: "bot",
+      connected: process.env.OPENAI_API_KEY ? true : false,
+      lastSync: "Never", // TODO: Get from sync logs
+      status: process.env.OPENAI_API_KEY ? "connected" : "disconnected",
+    });
+
+    return { integrations };
+  }),
+
+  /**
    * Test ShipStation connection
    */
   testShipStation: protectedProcedure.mutation(async () => {

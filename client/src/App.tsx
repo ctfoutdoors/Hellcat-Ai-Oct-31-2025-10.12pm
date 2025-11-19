@@ -52,6 +52,8 @@ import Calendar from "./pages/Calendar";
 import ProductCard from "./pages/inventory/ProductCard";
 import WooCommerceProducts from "./pages/inventory/WooCommerceProducts";
 import ShipStationInventory from "./pages/inventory/ShipStationInventory";
+import OrderTracking from "./pages/OrderTracking";
+import Integrations from "./pages/settings/Integrations";
 import Settings from "./pages/Settings";
 import EmailAccountsSettings from "./pages/EmailAccountsSettings";
 import SettingsIntegrations from "./pages/SettingsIntegrations";
@@ -90,6 +92,7 @@ function Router() {
         
         {/* Orders Module */}
         <Route path="/orders" component={OrdersManagement} />
+        <Route path="/orders/tracking" component={OrderTracking} />
         <Route path="/orders/:channel" component={OrdersByChannel} />
         <Route path="/order/:id" component={OrderDetail} />
         
@@ -155,7 +158,8 @@ function Router() {
                {/* Settings */}
         <Route path="/settings" component={Settings} />
         <Route path="/settings/email-accounts" component={EmailAccountsSettings} />
-        <Route path="/settings/integrations" component={SettingsIntegrations} />
+        <Route path="/settings/integrations-old" component={SettingsIntegrations} />
+        <Route path="/settings/integrations" component={Integrations} />
         <Route path="/settings/email-templates" component={Settings} />
         <Route path="/settings/integrations" component={Settings} />
         

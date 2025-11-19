@@ -273,6 +273,7 @@ export default function WooCommerceProducts() {
                     />
                   </TableHead>
                   <TableHead>ID</TableHead>
+                  <TableHead className="w-16">Image</TableHead>
                   <TableHead>SKU</TableHead>
                   <TableHead>Product Title</TableHead>
                   <TableHead>Variations</TableHead>
@@ -292,6 +293,19 @@ export default function WooCommerceProducts() {
                     </TableCell>
                     <TableCell className="font-mono text-sm">
                       {product.id}
+                    </TableCell>
+                    <TableCell>
+                      {product.image ? (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-12 h-12 object-cover rounded border"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
+                          <Package className="h-6 w-6 text-muted-foreground" />
+                        </div>
+                      )}
                     </TableCell>
                     <TableCell className="font-mono text-sm">
                       {product.sku || <span className="text-muted-foreground">—</span>}

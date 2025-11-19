@@ -548,6 +548,7 @@ export const products = mysqlTable("products", {
   margin: decimal("margin", { precision: 10, scale: 2 }),
   supplier: varchar("supplier", { length: 255 }),
   leadTimeDays: int("leadTimeDays"),
+  imageUrl: text("imageUrl"),
   isActive: boolean("isActive").default(true).notNull(),
   // Intelligence Suite fields
   lifecycleState: mysqlEnum("lifecycleState", ["concept", "development", "pre_launch", "active_launch", "post_launch", "cruise", "end_of_life"]).default("concept"),

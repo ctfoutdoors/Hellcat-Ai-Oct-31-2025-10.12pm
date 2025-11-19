@@ -4,6 +4,7 @@ import { createWooCommerceClient } from "../integrations/woocommerce";
 import { getDb } from "../db";
 import { products } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+import { downloadAndUploadImage } from "../lib/imageSync";
 
 export const woocommerceRouter = router({
   /**
@@ -99,6 +100,16 @@ export const woocommerceRouter = router({
           // Fetch product from WooCommerce
           const wooProduct = await wooClient.request(`/products/${productId}`);
 
+          // Download and upload product image if available
+          let imageUrl: string | null = null;
+          if (wooProduct.images && wooProduct.images.length > 0) {
+            const firstImage = wooProduct.images[0];
+            imageUrl = await downloadAndUploadImage(
+              firstImage.src,
+              wooProduct.sku || `WOO-${wooProduct.id}`
+            );
+          }
+
           // Insert into database
           await db.insert(products).values({
             sku: wooProduct.sku || `WOO-${wooProduct.id}`,
@@ -109,6 +120,7 @@ export const woocommerceRouter = router({
             price: wooProduct.price || wooProduct.regular_price || "0",
             margin: "40.00",
             supplier: "WooCommerce",
+            imageUrl: imageUrl,
             isActive: wooProduct.status === "publish",
           });
 
@@ -147,17 +159,34 @@ export const woocommerceRouter = router({
           // Fetch product from WooCommerce
           const wooProduct = await wooClient.request(`/products/${productId}`);
 
+          // Download and upload product image if available
+          let imageUrl: string | null = null;
+          if (wooProduct.images && wooProduct.images.length > 0) {
+            const firstImage = wooProduct.images[0];
+            imageUrl = await downloadAndUploadImage(
+              firstImage.src,
+              wooProduct.sku || `WOO-${wooProduct.id}`
+            );
+          }
+
           // Update in database by SKU
           const sku = wooProduct.sku || `WOO-${wooProduct.id}`;
+          const updateData: any = {
+            name: wooProduct.name,
+            description: wooProduct.description,
+            category: wooProduct.categories?.[0]?.name || null,
+            price: wooProduct.price || wooProduct.regular_price || "0",
+            isActive: wooProduct.status === "publish",
+          };
+          
+          // Only update image if we successfully downloaded a new one
+          if (imageUrl) {
+            updateData.imageUrl = imageUrl;
+          }
+
           await db
             .update(products)
-            .set({
-              name: wooProduct.name,
-              description: wooProduct.description,
-              category: wooProduct.categories?.[0]?.name || null,
-              price: wooProduct.price || wooProduct.regular_price || "0",
-              isActive: wooProduct.status === "publish",
-            })
+            .set(updateData)
             .where(eq(products.sku, sku));
 
           results.updated++;

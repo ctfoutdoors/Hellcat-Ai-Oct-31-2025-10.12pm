@@ -1308,3 +1308,51 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Test bulk update functionality
 - [x] Verify ShipStation integration works end-to-end
 - [x] Create checkpoint
+
+
+---
+
+## PRODUCT IMAGE SYNC, AUTOMATION & ORDER TRACKING
+
+### Phase 1: Product Image Sync - Backend ✅
+- [x] Add imageUrl field to products schema
+- [x] Run database migration (pnpm db:push)
+- [x] Update WooCommerce import to download and upload images to S3
+- [x] Update WooCommerce bulk import to handle images
+- [x] Store S3 image URLs in products table
+
+### Phase 2: Product Image Sync - Frontend ✅
+- [x] Display product thumbnails in WooCommerce Products page
+- [x] Display product thumbnails in Products Management page
+- [x] Add image placeholder for products without images
+- [x] Ensure responsive image sizing
+
+### Phase 3: Inventory Sync Automation
+- [x] Install node-cron dependency
+- [ ] Create sync logs database table
+- [ ] Create scheduled sync service with configurable frequency
+- [ ] Add WooCommerce product sync job
+- [ ] Add ShipStation inventory sync job
+- [ ] Add ShipStation orders sync job
+- [ ] Create sync settings page in frontend
+- [ ] Display sync logs and history
+- [ ] Add manual trigger buttons for each sync type
+
+### Phase 4: Order Status Tracking Dashboard
+- [ ] Create order status sync endpoint
+- [ ] Add filters backend endpoint (status, carrier, date range)
+- [ ] Create Order Tracking Dashboard page
+- [ ] Add status filter dropdown
+- [ ] Add carrier filter dropdown
+- [ ] Add date range picker
+- [ ] Display orders table with real-time status
+- [ ] Add refresh button to sync latest from ShipStation
+- [ ] Add status badges with color coding
+- [ ] Show tracking numbers with carrier links
+
+### Phase 5: Testing & Checkpoint
+- [ ] Test image sync for WooCommerce products
+- [ ] Test automated sync jobs
+- [ ] Test order status dashboard filters
+- [ ] Verify all integrations work end-to-end
+- [ ] Create checkpoint

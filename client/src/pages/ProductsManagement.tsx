@@ -165,6 +165,19 @@ export default function ProductsManagement() {
 
                     return (
                       <TableRow key={product.id}>
+                        <TableCell>
+                          {product.imageUrl ? (
+                            <img
+                              src={product.imageUrl}
+                              alt={product.name}
+                              className="w-12 h-12 object-cover rounded border"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 bg-muted rounded border flex items-center justify-center">
+                              <Package className="h-6 w-6 text-muted-foreground" />
+                            </div>
+                          )}
+                        </TableCell>
                         <TableCell className="font-mono text-sm">
                           <div className="flex items-center gap-2">
                             <Barcode className="h-4 w-4 text-muted-foreground" />

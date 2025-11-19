@@ -1,0 +1,15 @@
+{
+  "query": "SELECT sku, name, imageUrl FROM products WHERE sku = 'WOO-87144'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT sku, name, imageUrl FROM products WHERE sku = 'WOO-87144'",
+  "rows": [
+    {
+      "sku": "WOO-87144",
+      "name": "Blackout Hellcat Revenge Rod Series | Limited Release",
+      "imageUrl": "https://catchthefever.com/cdn/shop/files/BlackoutHellcatRevengeRodSeries_LimitedRelease_CastingRod.png?v=1731952088"
+    }
+  ],
+  "messages": [],
+  "stdout": "sku\tname\timageUrl\nWOO-87144\tBlackout Hellcat Revenge Rod Series | Limited Release\thttps://catchthefever.com/cdn/shop/files/BlackoutHellcatRevengeRodSeries_LimitedRelease_CastingRod.png?v=1731952088\n",
+  "stderr": "",
+  "execution_time_ms": 61
+}

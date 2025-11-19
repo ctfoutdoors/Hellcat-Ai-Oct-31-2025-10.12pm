@@ -115,6 +115,21 @@ export default function ProductsManagement() {
             >
               Sync All Images
             </Button>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                toast.info("Syncing inventory from ShipStation...");
+                try {
+                  const result = await trpc.productSync.syncShipStationInventory.mutate();
+                  toast.success(`Inventory synced! ${result.success} products updated`);
+                  window.location.reload();
+                } catch (error) {
+                  toast.error("Failed to sync inventory: " + (error as Error).message);
+                }
+              }}
+            >
+              Sync Stock
+            </Button>
             <Link href="/inventory/products/new">
               <Button>
                 <Plus className="mr-2 h-4 w-4" />

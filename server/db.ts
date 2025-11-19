@@ -1475,7 +1475,7 @@ export async function getProducts(params: { page?: number; limit?: number; categ
       shipstationCost: products.shipstationCost,
       channelCosts: products.channelCosts,
       isActive: products.isActive,
-      // Return 0 for totalStock since inventory_stock table doesn't exist yet
+      // Return 0 for totalStock for now - will be calculated separately
       totalStock: sql<number>`0`,
     })
     .from(products)

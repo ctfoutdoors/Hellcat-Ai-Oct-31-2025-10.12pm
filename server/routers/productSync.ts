@@ -8,6 +8,93 @@ import { eq, sql } from "drizzle-orm";
 import { downloadAndUploadImage } from "../lib/imageSync";
 
 export const productSyncRouter = router({
+  // Sync inventory from ShipStation
+  syncShipStationInventory: protectedProcedure.mutation(async () => {
+    const shipstationClient = createShipStationClient();
+    if (!shipstationClient) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'ShipStation client not configured',
+      });
+    }
+
+    const db = await getDb();
+    if (!db) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Database not available',
+      });
+    }
+
+    let success = 0;
+    let failed = 0;
+
+    try {
+      // Get all warehouses
+      const warehousesResponse = await shipstationClient.getWarehouses();
+      const warehouses = warehousesResponse.warehouses || [];
+
+      // Get all products from ShipStation
+      const productsResponse = await shipstationClient.getProducts();
+      const shipstationProducts = productsResponse.products || [];
+
+      // For each product, get inventory per warehouse
+      for (const ssProduct of shipstationProducts) {
+        try {
+          // Find matching product in our database by SKU
+          const dbProducts = await db
+            .select()
+            .from(products)
+            .where(eq(products.sku, ssProduct.sku))
+            .limit(1);
+
+          if (dbProducts.length === 0) continue;
+
+          const dbProduct = dbProducts[0];
+
+          // For each warehouse, store inventory
+          for (const warehouse of warehouses) {
+            const warehouseId = warehouse.warehouseId;
+            const warehouseName = warehouse.warehouseName;
+            
+            // Get quantity for this warehouse (ShipStation API returns inventory per warehouse)
+            const quantity = ssProduct.warehouseLocation?.[warehouseId] || 0;
+
+            // Upsert channel inventory
+            await db
+              .insert(channelInventory)
+              .values({
+                productId: dbProduct.id,
+                channel: `shipstation-${warehouseName}`,
+                sku: ssProduct.sku,
+                quantity: quantity,
+                buffer: 0,
+                zeroStockThreshold: 0,
+                manualOverride: null,
+              })
+              .onDuplicateKeyUpdate({
+                set: {
+                  quantity: quantity,
+                  updatedAt: new Date(),
+                },
+              });
+          }
+
+          success++;
+        } catch (error) {
+          console.error(`Failed to sync inventory for ${ssProduct.sku}:`, error);
+          failed++;
+        }
+      }
+
+      return { success, failed, total: shipstationProducts.length };
+    } catch (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: `Failed to sync ShipStation inventory: ${(error as Error).message}`,
+      });
+    }
+  }),
   /**
    * Sync all product images from WooCommerce
    */

@@ -1,0 +1,9 @@
+{
+  "query": "UPDATE products SET imageUrl = 'https://catchthefever.com/cdn/shop/files/BlackoutHellcatRevengeRodSeries_LimitedRelease_CastingRod.png?v=1731952088' WHERE sku = 'WOO-87144'",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute UPDATE products SET imageUrl = 'https://catchthefever.com/cdn/shop/files/BlackoutHellcatRevengeRodSeries_LimitedRelease_CastingRod.png?v=1731952088' WHERE sku = 'WOO-87144'",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 95
+}

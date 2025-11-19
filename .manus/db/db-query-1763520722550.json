@@ -1,0 +1,27 @@
+{
+  "query": "SELECT * FROM activities_attachments ORDER BY createdAt DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT * FROM activities_attachments ORDER BY createdAt DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "1",
+      "entityType": "customer",
+      "entityId": "2",
+      "fileName": "test_email.pdf",
+      "fileSize": "1411",
+      "mimeType": "application/pdf",
+      "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/attachments/customer/2/1763520681971-fovdo-test_email.pdf",
+      "fileKey": "attachments/customer/2/1763520681971-fovdo-test_email.pdf",
+      "activityType": "email",
+      "isEmailAttachment": "1",
+      "emailSubject": "NULL",
+      "emailDate": "NULL",
+      "emailDirection": "NULL",
+      "uploadedBy": "1",
+      "createdAt": "2025-11-19 02:51:22"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tentityType\tentityId\tfileName\tfileSize\tmimeType\tfileUrl\tfileKey\tactivityType\tisEmailAttachment\temailSubject\temailDate\temailDirection\tuploadedBy\tcreatedAt\n1\tcustomer\t2\ttest_email.pdf\t1411\tapplication/pdf\thttps://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/attachments/customer/2/1763520681971-fovdo-test_email.pdf\tattachments/customer/2/1763520681971-fovdo-test_email.pdf\temail\t1\tNULL\tNULL\tNULL\t1\t2025-11-19 02:51:22\n",
+  "stderr": "",
+  "execution_time_ms": 85
+}

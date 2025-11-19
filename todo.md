@@ -1172,3 +1172,43 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Fix TypeError in Leads page (Cannot read properties of undefined 'length')
 - [x] Fix RadialContextMenu props mismatch in Leads page
 - [x] Test Leads page functionality
+
+
+---
+
+## TESTING: File Upload, Templates & Filters
+- [ ] Test file upload with drag-and-drop PDF
+- [ ] Verify S3 storage integration works
+- [ ] Test email PDF recognition
+- [ ] Create sample email templates
+- [ ] Test template CRUD operations
+- [ ] Test activity filters with date ranges
+- [ ] Test activity type toggles
+- [ ] Fix any issues found during testing
+
+
+---
+
+## TESTING: File Upload, Email Templates & Activity Filters ✅
+
+### Test Results:
+- [x] Test file upload with PDF drag-and-drop
+- [x] Verify S3 storage integration
+- [x] Test email PDF recognition
+- [x] Create sample email template ("Follow-up After Quote")
+- [x] Test template CRUD operations (create, edit, delete)
+- [x] Test activity filters with date ranges
+- [x] Test activity type toggles (Emails, Meetings, Notes, Documents)
+- [x] Verify filter state management
+
+**Known Issue:** AttachmentsTimeline component not displaying uploaded files in UI. Files are successfully saved to database and S3, but the timeline component needs debugging to fetch and render the attachments.
+
+**Features Confirmed Working:**
+✅ File upload zone with drag-and-drop interface
+✅ S3 storage integration via storagePut()
+✅ Email PDF detection (filename-based)
+✅ Email Templates page at /crm/email-templates
+✅ Template creation dialog with all fields
+✅ Activity filters expand/collapse
+✅ Date range inputs (From/To)
+✅ Activity type toggle buttons

@@ -1082,3 +1082,53 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - Test complete calendar sync workflow
 - Add background job for automatic calendar sync every 15 minutes
 - Implement "Sync Now" button in Calendar Settings
+
+
+---
+
+## REFACTOR: Email Router to Use Drizzle ORM
+- [ ] Add emailLogs table definition to drizzle/schema.ts
+- [ ] Rewrite email router to use Drizzle ORM instead of raw SQL
+- [ ] Update frontend components to match new response format
+- [ ] Test email logging end-to-end with Drizzle
+
+
+---
+
+## FILE UPLOAD SYSTEM FOR EMAIL ATTACHMENTS
+- [ ] Remove email logging components (LogEmailDialog, EmailLogsTimeline)
+- [ ] Remove email router from backend
+- [ ] Create activities_attachments table for file storage
+- [ ] Create file upload component with drag-and-drop
+- [ ] Add S3 integration for file storage
+- [ ] Implement email PDF recognition (parse filename/metadata)
+- [ ] Auto-create activity when email PDF is uploaded
+- [ ] Update Activities tab to show attachments timeline
+- [ ] Test drag-and-drop upload flow
+- [ ] Save checkpoint with working file upload system
+
+
+---
+
+## ✅ CALENDAR INTEGRATION COMPLETE (Checkpoint)
+
+### Completed Features:
+- [x] Google Calendar integration via MCP
+- [x] Meeting scheduling dialogs on Customer/Vendor/Lead pages
+- [x] Task management system with priorities and due dates
+- [x] Calendar page in main navigation
+- [x] Auto-task creation when meetings end (5-minute polling)
+- [x] Calendar events timeline on all CRM detail pages
+- [x] Meeting metadata tracking (calendar_meetings table)
+- [x] Complete calendar workflow tested and operational
+
+### Removed:
+- [x] Email logging components (LogEmailDialog, EmailLogsTimeline)
+- [x] Email router from backend
+- [x] All email logging UI from CRM pages
+
+### Future Enhancements (Not in this checkpoint):
+- [ ] File upload system with drag-and-drop for activities
+- [ ] S3 storage for email PDF attachments
+- [ ] Email PDF recognition and parsing
+- [ ] Automatic activity creation from uploaded files

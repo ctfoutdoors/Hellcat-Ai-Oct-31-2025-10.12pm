@@ -16,8 +16,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { LogEmailDialog } from "@/components/LogEmailDialog";
-import { EmailLogsTimeline } from "@/components/EmailLogsTimeline";
 import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
 import { RelationshipHealth } from "@/components/crm/RelationshipHealth";
 import { NextActions } from "@/components/crm/NextActions";
@@ -27,7 +25,6 @@ export default function LeadDetail() {
   const [, params] = useRoute("/crm/leads/:id");
   const [, setLocation] = useLocation();
   const leadId = params?.id ? parseInt(params.id) : 0;
-  const [showEmailDialog, setShowEmailDialog] = useState(false);
 
   const { data, isLoading, error } = trpc.crm.leads.get.useQuery(
     { id: leadId },
@@ -244,24 +241,9 @@ export default function LeadDetail() {
         <TabsContent value="activities">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Activity Timeline</CardTitle>
-                <Button onClick={() => setShowEmailDialog(true)}>
-                  <Mail className="mr-2 h-4 w-4" />
-                  Log Email
-                </Button>
-              </div>
+              <CardTitle>Activity Timeline</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Email Logs Section */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Email Communications</h3>
-                <EmailLogsTimeline
-                  emails={[]}
-                  entityType="lead"
-                  entityId={leadId}
-                />
-              </div>
 
               {/* Calendar Events Section */}
               <div>
@@ -301,15 +283,6 @@ export default function LeadDetail() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Log Email Dialog */}
-      <LogEmailDialog
-        open={showEmailDialog}
-        onOpenChange={setShowEmailDialog}
-        entityType="lead"
-        entityId={leadId}
-        entityName={displayName}
-      />
     </div>
   );
 }

@@ -1552,6 +1552,25 @@ export type CalendarMeeting = typeof calendarMeetings.$inferSelect;
 export type InsertCalendarMeeting = typeof calendarMeetings.$inferInsert;
 
 
+// Email logs table for tracking email communications
+export const emailLogs = mysqlTable("email_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // User who logged the email
+  entityType: mysqlEnum("entityType", ["customer", "vendor", "lead", "contact"]).notNull(),
+  entityId: int("entityId").notNull(),
+  subject: varchar("subject", { length: 500 }).notNull(),
+  body: text("body"),
+  direction: mysqlEnum("direction", ["sent", "received"]).notNull(),
+  visibility: mysqlEnum("visibility", ["private", "public", "shared"]).default("private").notNull(),
+  sharedWithUserIds: text("sharedWithUserIds"), // JSON array of user IDs
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EmailLog = typeof emailLogs.$inferSelect;
+export type InsertEmailLog = typeof emailLogs.$inferInsert;
+
+
 // ============================================================================
 // INTELLIGENCE SUITE TABLES
 // ============================================================================

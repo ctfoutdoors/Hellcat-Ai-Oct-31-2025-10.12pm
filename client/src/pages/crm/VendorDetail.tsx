@@ -31,15 +31,12 @@ import {
   XCircle,
 } from "lucide-react";
 import { useState } from "react";
-import { LogEmailDialog } from "@/components/LogEmailDialog";
-import { EmailLogsTimeline } from "@/components/EmailLogsTimeline";
 import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
 
 export default function VendorDetail() {
   const params = useParams();
   const [, setLocation] = useLocation();
   const vendorId = parseInt(params.id || "0");
-  const [showEmailDialog, setShowEmailDialog] = useState(false);
 
   const { data, isLoading } = trpc.crm.vendors.get.useQuery(
     { id: vendorId },
@@ -381,9 +378,7 @@ export default function VendorDetail() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>Activity Timeline</CardTitle>
-                <Button onClick={() => setShowEmailDialog(true)}>
                   <Mail className="mr-2 h-4 w-4" />
-                  Log Email
                 </Button>
               </div>
             </CardHeader>
@@ -391,7 +386,6 @@ export default function VendorDetail() {
               {/* Email Logs Section */}
               <div>
                 <h3 className="text-lg font-semibold mb-3">Email Communications</h3>
-                <EmailLogsTimeline
                   emails={[]}
                   entityType="vendor"
                   entityId={vendorId}
@@ -411,15 +405,6 @@ export default function VendorDetail() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Log Email Dialog */}
-      <LogEmailDialog
-        open={showEmailDialog}
-        onOpenChange={setShowEmailDialog}
-        entityType="vendor"
-        entityId={vendorId}
-        entityName={vendor.companyName}
-      />
     </div>
   );
 }

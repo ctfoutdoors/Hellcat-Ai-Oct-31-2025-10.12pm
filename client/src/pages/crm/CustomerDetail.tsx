@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useRoute, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
@@ -27,15 +26,13 @@ import { RelationshipHealth } from "@/components/crm/RelationshipHealth";
 import { NextActions } from "@/components/crm/NextActions";
 import { AIRecommendations } from "@/components/crm/AIRecommendations";
 import { useState } from "react";
-import { LogEmailDialog } from "@/components/LogEmailDialog";
-import { EmailLogsTimeline } from "@/components/EmailLogsTimeline";
 import { CalendarEventsTimeline } from "@/components/CalendarEventsTimeline";
 
 export default function CustomerDetail() {
   const [, params] = useRoute("/crm/customers/:id");
   const [, setLocation] = useLocation();
   const customerId = params?.id ? parseInt(params.id) : 0;
-  const [showEmailDialog, setShowEmailDialog] = useState(false);
+
 
   const { data, isLoading, error } = trpc.crm.customers.get.useQuery(
     { id: customerId },
@@ -472,24 +469,10 @@ export default function CustomerDetail() {
         <TabsContent value="activities">
           <Card>
             <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Activity Timeline</CardTitle>
-                <Button onClick={() => setShowEmailDialog(true)}>
-                  <Mail className="mr-2 h-4 w-4" />
-                  Log Email
-                </Button>
-              </div>
+              <CardTitle>Activity Timeline</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Email Logs Section */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Email Communications</h3>
-                <EmailLogsTimeline
-                  emails={[]} // Will be populated by tRPC query
-                  entityType="customer"
-                  entityId={customerId}
-                />
-              </div>
+
 
               {/* Calendar Events Section */}
               <div>
@@ -580,15 +563,6 @@ export default function CustomerDetail() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      {/* Log Email Dialog */}
-      <LogEmailDialog
-        open={showEmailDialog}
-        onOpenChange={setShowEmailDialog}
-        entityType="customer"
-        entityId={customerId}
-        entityName={displayName}
-      />
     </div>
   );
 }

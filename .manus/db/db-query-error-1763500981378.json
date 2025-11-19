@@ -1,0 +1,8 @@
+{
+  "query": "INSERT INTO email_logs (user_id, entity_type, entity_id, subject, body, direction, visibility) VALUES (1, 'customer', 2, 'Test Subject', 'Test body', 'sent', 'private')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute INSERT INTO email_logs (user_id, entity_type, entity_id, subject, body, direction, visibility) VALUES (1, 'customer', 2, 'Test Subject', 'Test body', 'sent', 'private')",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'body' in 'field list'"
+  ]
+}

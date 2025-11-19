@@ -1,0 +1,76 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'email_logs' AND TABLE_SCHEMA = DATABASE()",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'email_logs' AND TABLE_SCHEMA = DATABASE()",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "user_id"
+    },
+    {
+      "COLUMN_NAME": "entity_type"
+    },
+    {
+      "COLUMN_NAME": "entity_id"
+    },
+    {
+      "COLUMN_NAME": "subject"
+    },
+    {
+      "COLUMN_NAME": "body_preview"
+    },
+    {
+      "COLUMN_NAME": "full_body"
+    },
+    {
+      "COLUMN_NAME": "direction"
+    },
+    {
+      "COLUMN_NAME": "from_email"
+    },
+    {
+      "COLUMN_NAME": "to_emails"
+    },
+    {
+      "COLUMN_NAME": "cc_emails"
+    },
+    {
+      "COLUMN_NAME": "bcc_emails"
+    },
+    {
+      "COLUMN_NAME": "thread_id"
+    },
+    {
+      "COLUMN_NAME": "message_id"
+    },
+    {
+      "COLUMN_NAME": "in_reply_to"
+    },
+    {
+      "COLUMN_NAME": "sent_at"
+    },
+    {
+      "COLUMN_NAME": "visibility"
+    },
+    {
+      "COLUMN_NAME": "shared_with_users"
+    },
+    {
+      "COLUMN_NAME": "has_attachments"
+    },
+    {
+      "COLUMN_NAME": "attachment_count"
+    },
+    {
+      "COLUMN_NAME": "created_at"
+    },
+    {
+      "COLUMN_NAME": "updated_at"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\nuser_id\nentity_type\nentity_id\nsubject\nbody_preview\nfull_body\ndirection\nfrom_email\nto_emails\ncc_emails\nbcc_emails\nthread_id\nmessage_id\nin_reply_to\nsent_at\nvisibility\nshared_with_users\nhas_attachments\nattachment_count\ncreated_at\nupdated_at\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

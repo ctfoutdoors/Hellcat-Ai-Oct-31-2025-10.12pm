@@ -1,0 +1,9 @@
+{
+  "query": "DROP TABLE IF EXISTS email_logs;\nCREATE TABLE email_logs (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  user_id INT NOT NULL,\n  entity_type VARCHAR(50) NOT NULL,\n  entity_id INT NOT NULL,\n  subject VARCHAR(500),\n  full_body LONGTEXT,\n  direction VARCHAR(20) NOT NULL,\n  visibility VARCHAR(20) DEFAULT 'private',\n  shared_with_users JSON,\n  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_entity (entity_type, entity_id),\n  INDEX idx_user (user_id),\n  INDEX idx_sent_at (sent_at)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute DROP TABLE IF EXISTS email_logs;\nCREATE TABLE email_logs (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  user_id INT NOT NULL,\n  entity_type VARCHAR(50) NOT NULL,\n  entity_id INT NOT NULL,\n  subject VARCHAR(500),\n  full_body LONGTEXT,\n  direction VARCHAR(20) NOT NULL,\n  visibility VARCHAR(20) DEFAULT 'private',\n  shared_with_users JSON,\n  sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\n  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,\n  INDEX idx_entity (entity_type, entity_id),\n  INDEX idx_user (user_id),\n  INDEX idx_sent_at (sent_at)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 432
+}

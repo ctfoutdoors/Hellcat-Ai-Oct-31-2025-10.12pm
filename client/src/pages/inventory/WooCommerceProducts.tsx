@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
-import { Download, RefreshCw, Package, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Download, RefreshCw, Package, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function WooCommerceProducts() {
   const { user, loading: authLoading } = useAuth();
   const [importing, setImporting] = useState<number | null>(null);
+  const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
 
   // Fetch WooCommerce products
   const { data: wooProducts, isLoading, refetch } = trpc.woocommerce.listProducts.useQuery();
@@ -48,6 +50,30 @@ export default function WooCommerceProducts() {
     },
   });
 
+  // Bulk import mutation
+  const bulkImport = trpc.woocommerce.bulkImportProducts.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Imported ${data.imported} products, ${data.failed} failed`);
+      setSelectedProducts([]);
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(`Bulk import failed: ${error.message}`);
+    },
+  });
+
+  // Bulk update mutation
+  const bulkUpdate = trpc.woocommerce.bulkUpdateProducts.useMutation({
+    onSuccess: (data) => {
+      toast.success(`Updated ${data.updated} products, ${data.failed} failed`);
+      setSelectedProducts([]);
+      refetch();
+    },
+    onError: (error) => {
+      toast.error(`Bulk update failed: ${error.message}`);
+    },
+  });
+
   const handleImport = (productId: number) => {
     setImporting(productId);
     importProduct.mutate({ productId });
@@ -56,6 +82,56 @@ export default function WooCommerceProducts() {
   const handleUpdate = (productId: number) => {
     setImporting(productId);
     updateProduct.mutate({ productId });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedProducts.length === products.length) {
+      setSelectedProducts([]);
+    } else {
+      setSelectedProducts(products.map((p: any) => p.id));
+    }
+  };
+
+  const handleSelectProduct = (productId: number) => {
+    setSelectedProducts(prev =>
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const handleImportAll = () => {
+    const notImported = products.filter((p: any) => !p.imported).map((p: any) => p.id);
+    if (notImported.length === 0) {
+      toast.error("All products are already imported");
+      return;
+    }
+    bulkImport.mutate({ productIds: notImported });
+  };
+
+  const handleUpdateAll = () => {
+    const needsUpdate = products.filter((p: any) => p.hasChanges).map((p: any) => p.id);
+    if (needsUpdate.length === 0) {
+      toast.error("No products need updates");
+      return;
+    }
+    bulkUpdate.mutate({ productIds: needsUpdate });
+  };
+
+  const handleBulkImport = () => {
+    if (selectedProducts.length === 0) {
+      toast.error("Please select products to import");
+      return;
+    }
+    bulkImport.mutate({ productIds: selectedProducts });
+  };
+
+  const handleBulkUpdate = () => {
+    if (selectedProducts.length === 0) {
+      toast.error("Please select products to update");
+      return;
+    }
+    bulkUpdate.mutate({ productIds: selectedProducts });
   };
 
   if (authLoading || isLoading) {
@@ -78,10 +154,54 @@ export default function WooCommerceProducts() {
             Import and sync products from WooCommerce
           </p>
         </div>
-        <Button onClick={() => refetch()} variant="outline">
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleImportAll}
+            disabled={bulkImport.isPending || products.filter((p: any) => !p.imported).length === 0}
+          >
+            {bulkImport.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="mr-2 h-4 w-4" />
+            )}
+            Import All ({products.filter((p: any) => !p.imported).length})
+          </Button>
+          <Button
+            onClick={handleUpdateAll}
+            disabled={bulkUpdate.isPending || products.filter((p: any) => p.hasChanges).length === 0}
+          >
+            {bulkUpdate.isPending ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="mr-2 h-4 w-4" />
+            )}
+            Update All ({products.filter((p: any) => p.hasChanges).length})
+          </Button>
+          {selectedProducts.length > 0 && (
+            <>
+              <Button
+                variant="outline"
+                onClick={handleBulkImport}
+                disabled={bulkImport.isPending}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Import Selected ({selectedProducts.length})
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleBulkUpdate}
+                disabled={bulkUpdate.isPending}
+              >
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Update Selected ({selectedProducts.length})
+              </Button>
+            </>
+          )}
+          <Button onClick={() => refetch()} variant="outline">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -146,6 +266,12 @@ export default function WooCommerceProducts() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={selectedProducts.length === products.length && products.length > 0}
+                      onCheckedChange={handleSelectAll}
+                    />
+                  </TableHead>
                   <TableHead>ID</TableHead>
                   <TableHead>SKU</TableHead>
                   <TableHead>Product Title</TableHead>
@@ -158,6 +284,12 @@ export default function WooCommerceProducts() {
               <TableBody>
                 {products.map((product: any) => (
                   <TableRow key={product.id}>
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedProducts.includes(product.id)}
+                        onCheckedChange={() => handleSelectProduct(product.id)}
+                      />
+                    </TableCell>
                     <TableCell className="font-mono text-sm">
                       {product.id}
                     </TableCell>

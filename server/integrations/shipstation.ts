@@ -128,6 +128,33 @@ export class ShipStationClient {
   }
 
   /**
+   * Get all warehouses
+   */
+  async getWarehouses(): Promise<any[]> {
+    const response = await this.request<{ warehouses?: any[] }>('/warehouses');
+    return response.warehouses || response || [];
+  }
+
+  /**
+   * Get products with optional filters
+   */
+  async getProducts(params: {
+    sku?: string;
+    warehouseId?: number;
+    page?: number;
+    pageSize?: number;
+  } = {}): Promise<{ products: any[]; total: number; pages: number }> {
+    const queryParams = new URLSearchParams();
+    
+    if (params.sku) queryParams.append('sku', params.sku);
+    if (params.warehouseId) queryParams.append('warehouseId', params.warehouseId.toString());
+    if (params.page) queryParams.append('page', params.page.toString());
+    if (params.pageSize) queryParams.append('pageSize', params.pageSize.toString());
+
+    return this.request(`/products?${queryParams.toString()}`);
+  }
+
+  /**
    * Get tracking information for a shipment
    */
   async getTracking(carrierCode: string, trackingNumber: string): Promise<any> {

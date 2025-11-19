@@ -78,6 +78,102 @@ export const woocommerceRouter = router({
     }),
 
   /**
+   * Bulk import multiple products from WooCommerce
+   */
+  bulkImportProducts: protectedProcedure
+    .input(z.object({ productIds: z.array(z.number()) }))
+    .mutation(async ({ input }) => {
+      const wooClient = createWooCommerceClient();
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const results = {
+        total: input.productIds.length,
+        imported: 0,
+        failed: 0,
+        errors: [] as Array<{ productId: number; error: string }>,
+      };
+
+      for (const productId of input.productIds) {
+        try {
+          // Fetch product from WooCommerce
+          const wooProduct = await wooClient.request(`/products/${productId}`);
+
+          // Insert into database
+          await db.insert(products).values({
+            sku: wooProduct.sku || `WOO-${wooProduct.id}`,
+            name: wooProduct.name,
+            description: wooProduct.description,
+            category: wooProduct.categories?.[0]?.name || null,
+            cost: wooProduct.regular_price ? String(Number(wooProduct.regular_price) * 0.6) : "0",
+            price: wooProduct.price || wooProduct.regular_price || "0",
+            margin: "40.00",
+            supplier: "WooCommerce",
+            isActive: wooProduct.status === "publish",
+          });
+
+          results.imported++;
+        } catch (error) {
+          results.failed++;
+          results.errors.push({
+            productId,
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
+        }
+      }
+
+      return results;
+    }),
+
+  /**
+   * Bulk update multiple products with changes from WooCommerce
+   */
+  bulkUpdateProducts: protectedProcedure
+    .input(z.object({ productIds: z.array(z.number()) }))
+    .mutation(async ({ input }) => {
+      const wooClient = createWooCommerceClient();
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const results = {
+        total: input.productIds.length,
+        updated: 0,
+        failed: 0,
+        errors: [] as Array<{ productId: number; error: string }>,
+      };
+
+      for (const productId of input.productIds) {
+        try {
+          // Fetch product from WooCommerce
+          const wooProduct = await wooClient.request(`/products/${productId}`);
+
+          // Update in database by SKU
+          const sku = wooProduct.sku || `WOO-${wooProduct.id}`;
+          await db
+            .update(products)
+            .set({
+              name: wooProduct.name,
+              description: wooProduct.description,
+              category: wooProduct.categories?.[0]?.name || null,
+              price: wooProduct.price || wooProduct.regular_price || "0",
+              isActive: wooProduct.status === "publish",
+            })
+            .where(eq(products.sku, sku));
+
+          results.updated++;
+        } catch (error) {
+          results.failed++;
+          results.errors.push({
+            productId,
+            error: error instanceof Error ? error.message : "Unknown error",
+          });
+        }
+      }
+
+      return results;
+    }),
+
+  /**
    * Update an existing product with changes from WooCommerce
    */
   updateProduct: protectedProcedure

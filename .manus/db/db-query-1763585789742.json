@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE orders (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  orderNumber VARCHAR(100) NOT NULL UNIQUE,\n  source VARCHAR(100) NOT NULL,\n  channel VARCHAR(100),\n  externalId VARCHAR(255),\n  customerId INT,\n  customerName VARCHAR(255),\n  customerEmail VARCHAR(255),\n  status VARCHAR(50),\n  paymentStatus VARCHAR(50),\n  shippingStatus VARCHAR(50),\n  totalAmount DECIMAL(10,2),\n  currency VARCHAR(10) DEFAULT 'USD',\n  orderDate DATETIME,\n  shippedDate DATETIME,\n  carrierCode VARCHAR(100),\n  trackingNumber VARCHAR(255),\n  shippingMethod VARCHAR(255),\n  notes TEXT,\n  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,\n  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE orders (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  orderNumber VARCHAR(100) NOT NULL UNIQUE,\n  source VARCHAR(100) NOT NULL,\n  channel VARCHAR(100),\n  externalId VARCHAR(255),\n  customerId INT,\n  customerName VARCHAR(255),\n  customerEmail VARCHAR(255),\n  status VARCHAR(50),\n  paymentStatus VARCHAR(50),\n  shippingStatus VARCHAR(50),\n  totalAmount DECIMAL(10,2),\n  currency VARCHAR(10) DEFAULT 'USD',\n  orderDate DATETIME,\n  shippedDate DATETIME,\n  carrierCode VARCHAR(100),\n  trackingNumber VARCHAR(255),\n  shippingMethod VARCHAR(255),\n  notes TEXT,\n  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,\n  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 208
+}

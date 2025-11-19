@@ -77,52 +77,6 @@ function ImportTodaysOrdersButton() {
   );
 }
 
-// Mock data matching SellerCloud structure
-const mockOrders = [
-  {
-    id: 1,
-    orderNumber: "ORD-2024-001",
-    channelOrderNumber: "AMZ-123456789",
-    orderDate: new Date("2024-11-01"),
-    customerName: "John Smith",
-    customerEmail: "john.smith@email.com",
-    companyName: "Acme Corp",
-    channelName: "Amazon",
-    orderStatus: "processing",
-    paymentStatus: "paid",
-    shippingStatus: "not_shipped",
-    fulfillmentStatus: "unfulfilled",
-    totalAmount: 249.99,
-    itemCount: 3,
-    shippingMethod: "Standard",
-    warehouseName: "Main Warehouse",
-    isRushOrder: false,
-    hasFraudAlert: false,
-  },
-  {
-    id: 2,
-    orderNumber: "ORD-2024-002",
-    channelOrderNumber: "SHOP-987654321",
-    orderDate: new Date("2024-11-02"),
-    customerName: "Jane Doe",
-    customerEmail: "jane.doe@email.com",
-    companyName: "Tech Solutions",
-    channelName: "Shopify",
-    orderStatus: "shipped",
-    paymentStatus: "paid",
-    shippingStatus: "in_transit",
-    fulfillmentStatus: "fulfilled",
-    totalAmount: 599.50,
-    itemCount: 5,
-    shippingMethod: "Express",
-    warehouseName: "East Coast",
-    trackingNumber: "1Z999AA10123456784",
-    isRushOrder: true,
-    hasFraudAlert: false,
-  },
-  // Add more mock orders...
-];
-
 const defaultColumns: Column[] = [
   { id: "select", label: "", visible: true, sortable: false, width: 50 },
   { id: "orderNumber", label: "Order #", visible: true, sortable: true },
@@ -143,6 +97,13 @@ const defaultColumns: Column[] = [
 ];
 
 export default function OrdersManagement() {
+  // Fetch real orders from database
+  const { data: ordersData, isLoading } = trpc.orders.getOrders.useQuery({
+    page: 1,
+    limit: 50,
+  });
+  const orders = ordersData?.orders || [];
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
   const [showColumnCustomizer, setShowColumnCustomizer] = useState(false);
@@ -188,10 +149,10 @@ export default function OrdersManagement() {
   });
 
   const handleSelectAll = () => {
-    if (selectedOrders.length === mockOrders.length) {
+    if (selectedOrders.length === orders.length) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(mockOrders.map((o) => o.id));
+      setSelectedOrders(orders.map((o) => o.id));
     }
   };
 
@@ -248,7 +209,7 @@ export default function OrdersManagement() {
             Orders Management
           </h1>
           <p className="text-muted-foreground mt-1">
-            {mockOrders.length} orders • {selectedOrders.length} selected
+            {isLoading ? '...' : orders.length} orders • {selectedOrders.length} selected
           </p>
         </div>
         <div className="flex gap-2">
@@ -469,7 +430,7 @@ export default function OrdersManagement() {
                   >
                     {column.id === "select" ? (
                       <Checkbox
-                        checked={selectedOrders.length === mockOrders.length}
+                        checked={selectedOrders.length === orders.length && orders.length > 0}
                         onCheckedChange={handleSelectAll}
                       />
                     ) : (
@@ -480,7 +441,20 @@ export default function OrdersManagement() {
               </tr>
             </thead>
             <tbody className="divide-y">
-              {mockOrders.map((order) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={visibleColumns.length} className="px-4 py-8 text-center text-muted-foreground">
+                    <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2" />
+                    Loading orders...
+                  </td>
+                </tr>
+              ) : orders.length === 0 ? (
+                <tr>
+                  <td colSpan={visibleColumns.length} className="px-4 py-8 text-center text-muted-foreground">
+                    No orders found
+                  </td>
+                </tr>
+              ) : orders.map((order) => (
                 <tr key={order.id} className="hover:bg-muted/50">
                   {visibleColumns.map((column) => (
                     <td key={column.id} className="px-4 py-3 text-sm">
@@ -583,7 +557,7 @@ export default function OrdersManagement() {
       {/* Pagination */}
       <div className="flex justify-between items-center mt-4">
         <p className="text-sm text-muted-foreground">
-          Showing 1-{mockOrders.length} of {mockOrders.length} orders
+          Showing 1-{orders.length} of {ordersData?.total || 0} orders
         </p>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" disabled>

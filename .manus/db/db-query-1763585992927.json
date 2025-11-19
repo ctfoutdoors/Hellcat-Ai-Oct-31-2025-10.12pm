@@ -1,0 +1,33 @@
+{
+  "query": "SELECT * FROM orders LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT * FROM orders LIMIT 5",
+  "rows": [
+    {
+      "id": "1",
+      "orderNumber": "WOO-87694",
+      "source": "WooCommerce",
+      "channel": "Website CTF",
+      "externalId": "87694",
+      "customerId": "NULL",
+      "customerName": "Robert Torn",
+      "customerEmail": "Rwtorn@gmail.com",
+      "status": "processing",
+      "paymentStatus": "paid",
+      "shippingStatus": "not_shipped",
+      "totalAmount": "483.96",
+      "currency": "USD",
+      "orderDate": "2025-11-19 15:34:27",
+      "shippedDate": "NULL",
+      "carrierCode": "NULL",
+      "trackingNumber": "NULL",
+      "shippingMethod": "Premium Shipping (3-7 Business Days Domestic Service): FedEx &amp; UPS",
+      "notes": "NULL",
+      "createdAt": "2025-11-19 20:57:18",
+      "updatedAt": "2025-11-19 20:57:18"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\torderNumber\tsource\tchannel\texternalId\tcustomerId\tcustomerName\tcustomerEmail\tstatus\tpaymentStatus\tshippingStatus\ttotalAmount\tcurrency\torderDate\tshippedDate\tcarrierCode\ttrackingNumber\tshippingMethod\tnotes\tcreatedAt\tupdatedAt\n1\tWOO-87694\tWooCommerce\tWebsite CTF\t87694\tNULL\tRobert Torn\tRwtorn@gmail.com\tprocessing\tpaid\tnot_shipped\t483.96\tUSD\t2025-11-19 15:34:27\tNULL\tNULL\tNULL\tPremium Shipping (3-7 Business Days Domestic Service): FedEx &amp; UPS\tNULL\t2025-11-19 20:57:18\t2025-11-19 20:57:18\n",
+  "stderr": "",
+  "execution_time_ms": 143
+}

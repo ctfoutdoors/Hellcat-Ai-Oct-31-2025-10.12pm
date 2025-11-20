@@ -1,7 +1,12 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   ArrowLeft,
   Package,
@@ -240,12 +245,44 @@ export default function OrderDetail() {
   const params = useParams();
   const [, setLocation] = useLocation();
   const orderId = params.id;
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+  const [editForm, setEditForm] = React.useState({
+    status: "",
+    trackingNumber: "",
+    carrierCode: "",
+    serviceCode: ""
+  });
 
   // Fetch real order data from database
   const { data: order, isLoading, error } = trpc.orders.getOrderById.useQuery(
     { id: Number(orderId) },
     { enabled: !!orderId }
   );
+
+  // Update order mutation
+  const utils = trpc.useUtils();
+  const updateMutation = trpc.orders.updateOrder.useMutation({
+    onSuccess: () => {
+      toast.success("Order updated successfully");
+      setEditDialogOpen(false);
+      utils.orders.getOrderById.invalidate({ id: Number(orderId) });
+    },
+    onError: (error) => {
+      toast.error(`Failed to update order: ${error.message}`);
+    },
+  });
+
+  // Initialize edit form when order loads
+  React.useEffect(() => {
+    if (order) {
+      setEditForm({
+        status: order.status || "",
+        trackingNumber: order.trackingNumber || "",
+        carrierCode: order.carrierCode || "",
+        serviceCode: order.serviceCode || ""
+      });
+    }
+  }, [order]);
 
   if (isLoading) {
     return (
@@ -322,7 +359,7 @@ export default function OrderDetail() {
           </div>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setEditDialogOpen(true)}>
             <Edit className="h-4 w-4 mr-2" />
             Edit
           </Button>
@@ -562,6 +599,75 @@ export default function OrderDetail() {
           </Card>
         </div>
       </div>
+
+      {/* Edit Order Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Edit Order</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="status">Order Status</Label>
+              <Select
+                value={editForm.status}
+                onValueChange={(value) => setEditForm({ ...editForm, status: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="processing">Processing</SelectItem>
+                  <SelectItem value="on-hold">On Hold</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="refunded">Refunded</SelectItem>
+                  <SelectItem value="failed">Failed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="trackingNumber">Tracking Number</Label>
+              <Input
+                id="trackingNumber"
+                value={editForm.trackingNumber}
+                onChange={(e) => setEditForm({ ...editForm, trackingNumber: e.target.value })}
+                placeholder="Enter tracking number"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="carrierCode">Carrier Code</Label>
+              <Input
+                id="carrierCode"
+                value={editForm.carrierCode}
+                onChange={(e) => setEditForm({ ...editForm, carrierCode: e.target.value })}
+                placeholder="e.g., USPS, UPS, FedEx"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="serviceCode">Service Code</Label>
+              <Input
+                id="serviceCode"
+                value={editForm.serviceCode}
+                onChange={(e) => setEditForm({ ...editForm, serviceCode: e.target.value })}
+                placeholder="e.g., ground, priority, express"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => updateMutation.mutate({ id: Number(orderId), ...editForm })}
+              disabled={updateMutation.isPending}
+            >
+              {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -47,9 +47,12 @@ import { ColumnCustomizer, type Column } from "@/components/ColumnCustomizer";
 
 // Import Today's Orders Button Component
 function ImportTodaysOrdersButton() {
-  const importMutation = trpc.shipstation.importTodaysOrders.useMutation({
+  const utils = trpc.useUtils();
+  const importMutation = trpc.woocommerce.importTodaysOrders.useMutation({
     onSuccess: (data) => {
       toast.success(`Imported ${data.imported} orders, skipped ${data.skipped} duplicates`);
+      // Refresh the orders list
+      utils.orders.getOrders.invalidate();
     },
     onError: (error) => {
       toast.error(`Import failed: ${error.message}`);
@@ -65,7 +68,7 @@ function ImportTodaysOrdersButton() {
       {importMutation.isPending ? (
         <>
           <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-          Importing...
+          Importing from WooCommerce...
         </>
       ) : (
         <>
@@ -98,14 +101,6 @@ const defaultColumns: Column[] = [
 
 export default function OrdersManagement() {
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // Fetch real orders from database
-  const { data: ordersData, isLoading } = trpc.orders.getOrders.useQuery({
-    page: 1,
-    limit: 50,
-    ...(searchTerm.trim() && { searchTerm: searchTerm.trim() }),
-  });
-  const orders = ordersData?.orders || [];
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
   const [showColumnCustomizer, setShowColumnCustomizer] = useState(false);
   const [columns, setColumns] = useState<Column[]>(defaultColumns);
@@ -121,6 +116,16 @@ export default function OrdersManagement() {
     amountMin: "",
     amountMax: "",
   });
+
+  // Fetch real orders from database
+  const { data: ordersData, isLoading } = trpc.orders.getOrders.useQuery({
+    page: 1,
+    limit: 50,
+    ...(searchTerm.trim() && { searchTerm: searchTerm.trim() }),
+    ...(filters.orderStatus !== "all" && { status: filters.orderStatus }),
+    ...(filters.channelName !== "all" && { channel: filters.channelName }),
+  });
+  const orders = ordersData?.orders || [];
 
   // ShipStation sync mutations
   const syncMutation = trpc.shipstation.syncOrders.useMutation({

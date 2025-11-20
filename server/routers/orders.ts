@@ -7,6 +7,36 @@ import { createShipStationClient } from "../integrations/shipstation";
 
 export const ordersRouter = router({
   /**
+   * Update order details
+   */
+  updateOrder: protectedProcedure
+    .input(z.object({
+      id: z.number(),
+      status: z.string().optional(),
+      trackingNumber: z.string().optional(),
+      carrierCode: z.string().optional(),
+      serviceCode: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const updateData: any = {};
+      if (input.status !== undefined) updateData.status = input.status;
+      if (input.trackingNumber !== undefined) updateData.trackingNumber = input.trackingNumber;
+      if (input.carrierCode !== undefined) updateData.carrierCode = input.carrierCode;
+      if (input.serviceCode !== undefined) updateData.serviceCode = input.serviceCode;
+      updateData.updatedAt = new Date();
+
+      await db
+        .update(orders)
+        .set(updateData)
+        .where(eq(orders.id, input.id));
+
+      return { success: true };
+    }),
+
+  /**
    * Get orders with filters
    */
   getOrders: protectedProcedure
@@ -14,6 +44,7 @@ export const ordersRouter = router({
       z.object({
         status: z.string().optional(),
         carrier: z.string().optional(),
+        channel: z.string().optional(),
         startDate: z.string().optional(),
         endDate: z.string().optional(),
         searchTerm: z.string().optional(),
@@ -33,6 +64,10 @@ export const ordersRouter = router({
 
       if (input.carrier && input.carrier !== "all") {
         conditions.push(eq(orders.carrierCode, input.carrier));
+      }
+
+      if (input.channel && input.channel !== "all") {
+        conditions.push(eq(orders.channel, input.channel));
       }
 
       if (input.startDate) {

@@ -2,11 +2,93 @@ import { router, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { createWooCommerceClient } from "../integrations/woocommerce";
 import { getDb } from "../db";
-import { products, productVariants } from "../../drizzle/schema";
+import { products, productVariants, orders } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { downloadAndUploadImage } from "../lib/imageSync";
 
 export const woocommerceRouter = router({
+  /**
+   * Import today's orders from WooCommerce
+   */
+  importTodaysOrders: protectedProcedure.mutation(async () => {
+    const wooClient = createWooCommerceClient();
+    const db = await getDb();
+    if (!db) throw new Error("Database not available");
+
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStr = today.toISOString().split('T')[0];
+
+    // Fetch orders created today from WooCommerce
+    const wooOrders = await wooClient.getOrders({
+      after: todayStr + 'T00:00:00',
+      per_page: 100
+    });
+
+    let imported = 0;
+    let skipped = 0;
+
+    for (const wooOrder of wooOrders) {
+      // Check if order already exists
+      const existing = await db
+        .select()
+        .from(orders)
+        .where(eq(orders.externalId, String(wooOrder.id)))
+        .limit(1);
+
+      if (existing.length > 0) {
+        skipped++;
+        continue;
+      }
+
+      // Map WooCommerce order to our schema
+      const orderData: any = {
+        orderNumber: `WOO-${wooOrder.id}`,
+        source: "WooCommerce",
+        channel: wooOrder.meta_data?.find((m: any) => m.key === '_channel')?.value || 'Website',
+        externalId: String(wooOrder.id),
+        customerName: `${wooOrder.billing.first_name} ${wooOrder.billing.last_name}`.trim(),
+        customerEmail: wooOrder.billing.email,
+        customerPhone: wooOrder.billing.phone || null,
+        shippingAddress: JSON.stringify({
+          name: `${wooOrder.shipping.first_name} ${wooOrder.shipping.last_name}`.trim(),
+          company: wooOrder.shipping.company || null,
+          address1: wooOrder.shipping.address_1,
+          address2: wooOrder.shipping.address_2 || null,
+          city: wooOrder.shipping.city,
+          state: wooOrder.shipping.state,
+          zip: wooOrder.shipping.postcode,
+          country: wooOrder.shipping.country,
+          phone: wooOrder.shipping.phone || wooOrder.billing.phone || null
+        }),
+        orderDate: new Date(wooOrder.date_created),
+        shipDate: wooOrder.date_completed ? new Date(wooOrder.date_completed) : null,
+        totalAmount: wooOrder.total,
+        shippingCost: wooOrder.shipping_total,
+        taxAmount: wooOrder.total_tax,
+        status: wooOrder.status,
+        orderItems: JSON.stringify(wooOrder.line_items.map((item: any) => ({
+          name: item.name,
+          sku: item.sku,
+          quantity: item.quantity,
+          price: item.price,
+          total: item.total
+        }))),
+        trackingNumber: wooOrder.meta_data?.find((m: any) => m.key === '_tracking_number')?.value || null,
+        carrierCode: wooOrder.meta_data?.find((m: any) => m.key === '_carrier_code')?.value || null,
+        serviceCode: wooOrder.meta_data?.find((m: any) => m.key === '_service_code')?.value || null,
+        orderData: JSON.stringify(wooOrder)
+      };
+
+      // Insert into database
+      await db.insert(orders).values(orderData);
+      imported++;
+    }
+
+    return { imported, skipped, total: wooOrders.length };
+  }),
+
   /**
    * List all products from WooCommerce with import status
    */

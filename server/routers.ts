@@ -41,6 +41,7 @@ import { shipstationRouter } from "./routers/shipstation";
 import { ordersRouter } from "./routers/orders";
 import { productSyncRouter } from "./routers/productSync";
 import { dashboardRouter } from "./routers/dashboard";
+import { casesRouter } from "./routers/cases";
 
 
 export const appRouter = router({
@@ -59,6 +60,7 @@ export const appRouter = router({
   orders: ordersRouter,
   productSync: productSyncRouter,
   dashboard: dashboardRouter,
+  cases: casesRouter,
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
@@ -255,211 +257,7 @@ export const appRouter = router({
       }),
   }),
   
-  // Phase 3: Cases Module
-  cases: router({
-    list: protectedProcedure
-      .input(z.object({
-        status: z.string().optional(),
-        caseType: z.string().optional(),
-        carrier: z.string().optional(),
-        searchTerm: z.string().optional(),
-      }).optional())
-      .query(async ({ ctx, input }) => {
-        return await db.listCases({
-          ...input,
-          userId: ctx.user.id,
-        });
-      }),
-
-    get: protectedProcedure
-      .input(z.object({ id: z.number() }))
-      .query(async ({ input }) => {
-        return await db.getCaseById(input.id);
-      }),
-
-    create: protectedProcedure
-      .input(z.object({
-        title: z.string(),
-        description: z.string().optional(),
-        caseType: z.string(),
-        carrier: z.string().optional(),
-        trackingNumber: z.string().optional(),
-        claimAmount: z.string().optional(),
-        priority: z.enum(["low", "medium", "high", "urgent"]).optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const caseNumber = `CASE-${Date.now()}`;
-        return await db.createCase({
-          ...input,
-          caseNumber,
-          createdBy: ctx.user.id,
-        });
-      }),
-
-    update: protectedProcedure
-      .input(z.object({
-        id: z.number(),
-        title: z.string().optional(),
-        description: z.string().optional(),
-        carrier: z.string().optional(),
-        trackingNumber: z.string().optional(),
-        claimAmount: z.number().optional(),
-        priority: z.string().optional(),
-        caseType: z.string().optional(),
-      }))
-      .mutation(async ({ input }) => {
-        const { id, ...updates } = input;
-        const dbUpdates: any = { ...updates };
-        if (updates.claimAmount !== undefined) {
-          dbUpdates.claimAmount = updates.claimAmount.toString();
-        }
-        return await db.updateCase(id, dbUpdates);
-      }),
-
-    flag: protectedProcedure
-      .input(z.object({
-        id: z.number(),
-        reason: z.string(),
-      }))
-      .mutation(async ({ input }) => {
-        return await db.flagCase(input.id, input.reason);
-      }),
-
-    unflag: protectedProcedure
-      .input(z.object({
-        id: z.number(),
-      }))
-      .mutation(async ({ input }) => {
-        return await db.unflagCase(input.id);
-      }),
-
-    getFlagged: protectedProcedure
-      .query(async () => {
-        return await db.getFlaggedCases();
-      }),
-
-    updateStatus: protectedProcedure
-      .input(z.object({
-        id: z.number(),
-        status: z.string(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        await db.addCaseActivity({
-          caseId: input.id,
-          activityType: "status_change",
-          description: `Status changed to ${input.status}`,
-          performedBy: ctx.user.id,
-        });
-        return await db.updateCase(input.id, { status: input.status as any });
-      }),
-
-    addNote: protectedProcedure
-      .input(z.object({
-        caseId: z.number(),
-        content: z.string(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        return await db.addCaseNote({
-          ...input,
-          createdBy: ctx.user.id,
-        });
-      }),
-
-    getNotes: protectedProcedure
-      .input(z.object({ caseId: z.number() }))
-      .query(async ({ input }) => {
-        return await db.getCaseNotes(input.caseId);
-      }),
-
-
-
-    getActivities: protectedProcedure
-      .input(z.object({ caseId: z.number() }))
-      .query(async ({ input }) => {
-        return await db.getCaseActivities(input.caseId);
-      }),
-
-    // Phase 4: AI Document Extraction
-    extractFromDocument: protectedProcedure
-      .input(z.object({
-        fileName: z.string(),
-        fileType: z.string(),
-        fileData: z.string(), // base64 encoded
-      }))
-      .mutation(async ({ input, ctx }) => {
-        return await db.extractCaseDataFromDocument(input, ctx.user.id);
-      }),
-
-    // Complaint Management
-    generateComplaint: protectedProcedure
-      .input(z.object({ caseId: z.number() }))
-      .mutation(async ({ input }) => {
-        const caseData = await db.getCaseById(input.caseId);
-        if (!caseData) throw new Error("Case not found");
-
-        const { generateShipStationComplaint } = await import("./services/complaintGenerator");
-        const complaint = await generateShipStationComplaint({
-          caseNumber: caseData.caseNumber,
-          title: caseData.title,
-          description: caseData.description || "",
-          carrier: caseData.carrier || "USPS",
-          trackingNumber: caseData.trackingNumber,
-          claimAmount: caseData.claimAmount ? parseFloat(caseData.claimAmount) : undefined,
-          priority: caseData.priority,
-        });
-
-        return complaint;
-      }),
-
-    sendComplaint: protectedProcedure
-      .input(z.object({
-        caseId: z.number(),
-        recipient: z.string(),
-        subject: z.string(),
-        body: z.string(),
-      }))
-      .mutation(async ({ input }) => {
-        // Create complaint record
-        const complaint = await db.createComplaintEmail({
-          caseId: input.caseId,
-          recipient: input.recipient,
-          subject: input.subject,
-          body: input.body,
-          status: "sending",
-        });
-
-        try {
-          // Get primary email account
-          const primaryAccount = await db.getPrimaryEmailAccount();
-          if (!primaryAccount) {
-            throw new Error("No primary email account configured");
-          }
-
-          // Send email via Gmail MCP
-          const { sendEmailViaGmail } = await import("./integrations/gmail");
-          await sendEmailViaGmail({
-            to: [input.recipient],
-            subject: input.subject,
-            content: input.body,
-          });
-
-          // Update status to sent
-          await db.updateComplaintStatus(complaint.id, "sent", new Date());
-
-          return { success: true, complaintId: complaint.id };
-        } catch (error) {
-          // Update status to failed
-          await db.updateComplaintStatus(complaint.id, "failed");
-          throw error;
-        }
-      }),
-
-    getComplaints: protectedProcedure
-      .input(z.object({ caseId: z.number() }))
-      .query(async ({ input }) => {
-        return await db.getCaseComplaints(input.caseId);
-      }),
-  }),
+  // Phase 3: Cases Module - moved to server/routers/cases.ts
 
   // ==================== INVENTORY MANAGEMENT ====================
   inventory: router({

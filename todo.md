@@ -1765,41 +1765,43 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Display "(Demo Data)" badge on metrics when in demo mode
 
 ### Phase 3: Cases Import from ShipStation
-- [ ] Add "Import from ShipStation" button to Cases page
-- [ ] Create importCasesFromShipStation endpoint
-- [ ] Fetch orders with carrier disputes from ShipStation
-- [ ] Map ShipStation order data to cases schema
-- [ ] Handle duplicate detection by tracking number
-- [ ] Show import progress and results
+- [x] Add "Import from ShipStation" button to Cases page
+- [x] Create importCasesFromShipStation endpoint
+- [x] Fetch orders with carrier disputes from ShipStation
+- [x] Map ShipStation order data to cases schema
+- [x] Handle duplicate detection by tracking number
+- [x] Show import progress and results
 
 ### Phase 4: Cases Drag-and-Drop Screenshot Upload
-- [ ] Add drag-and-drop zone to Cases page
-- [ ] Implement file upload handling (images only)
-- [ ] Use OCR or manual form to extract case details from screenshot
-- [ ] Upload screenshot to S3 storage
-- [ ] Create case with screenshot attachment
-- [ ] Support multiple file upload
+- [x] Add drag-and-drop zone to Cases page
+- [x] Implement file upload handling (images, PDFs, documents)
+- [x] Manual form to extract case details from files
+- [x] Upload files to S3 storage
+- [x] Create case with file attachments
+- [x] Support multiple file upload
 
 ### Phase 5: Cases CSV Bulk Import
-- [ ] Add "Import CSV" button to Cases page
-- [ ] Create CSV upload dialog with template download
-- [ ] Parse CSV file with case data
-- [ ] Validate CSV format and required fields
-- [ ] Bulk insert cases into database
-- [ ] Show import results (success/failed rows)
-- [ ] Allow complementary document upload after CSV import
+- [x] Add "Import CSV" button to Cases page
+- [x] Create CSV upload dialog with template download
+- [x] Parse CSV file with case data
+- [x] Validate CSV format and required fields
+- [x] Bulk insert cases into database
+- [x] Show import results (success/failed rows)
+- [x] Allow complementary document upload after CSV import
 
-### Phase 6: Document Generation System Verification
-- [ ] Verify dispute letter template exists and is functional
-- [ ] Test document generation with sample case data
-- [ ] Ensure PDF generation works correctly
-- [ ] Add email integration for sending dispute letters
-- [ ] Test email sending with generated documents
-- [ ] Add follow-up email tracking
+### Phase 6: Document Generation System
+- [x] Create AI-powered dispute letter generator
+- [x] Implement PDF generation with pdf-lib
+- [x] Upload generated PDFs to S3 storage
+- [x] Link generated documents to cases
+- [x] Add document generation endpoint
+- [x] Create follow-up email template generator
+- [x] Implement email sending via Gmail integration
+- [x] Add email activity logging to cases
 
 ### Phase 7: Testing & Checkpoint
-- [ ] Test ShipStation balance sync and auto-refresh
-- [ ] Test dashboard true data vs demo mode toggle
-- [ ] Test all three cases import methods
-- [ ] Test document generation and email sending
-- [ ] Create comprehensive checkpoint
+- [x] Test ShipStation balance sync and auto-refresh
+- [x] Test dashboard true data vs demo mode toggle
+- [x] Test all three cases import methods (ShipStation, File Upload, CSV)
+- [x] Test document generation and email sending
+- [x] Create comprehensive checkpoint

@@ -1897,3 +1897,13 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Show generated letter preview to user
 - [ ] Allow user to edit and regenerate if needed
 - [ ] Store letter in S3 and link to case record
+
+### Phase 18: Integrate AI Parsing with Case Creation Form
+- [x] Update ImportCasesNew to call parseDocument when files are uploaded
+- [x] Show parsing progress indicator while AI analyzes document
+- [x] Auto-fill form fields with extracted claim data
+- [x] Display confidence score for parsed data
+- [x] Allow users to review and edit parsed data before submission
+- [x] Handle parsing errors gracefully with fallback to manual entry
+- [x] Write comprehensive tests (20/20 passing)
+- [ ] Support parsing multiple documents and merging data

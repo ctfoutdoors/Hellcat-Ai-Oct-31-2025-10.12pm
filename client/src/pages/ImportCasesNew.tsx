@@ -25,6 +25,9 @@ export default function ImportCasesNew() {
   
   // File upload state
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isParsing, setIsParsing] = useState(false);
+  const [parsedData, setParsedData] = useState<any>(null);
+  const [parseConfidence, setParseConfidence] = useState<number>(0);
   const [newCaseData, setNewCaseData] = useState({
     title: "",
     description: "",
@@ -49,6 +52,7 @@ export default function ImportCasesNew() {
   const createCase = trpc.cases.create.useMutation();
   const uploadFiles = trpc.cases.uploadFiles.useMutation();
   const importFromCSV = trpc.cases.importFromCSV.useMutation();
+  const parseDocument = trpc.cases.parseDocument.useMutation();
 
   const handleShipStationImport = async () => {
     try {
@@ -288,11 +292,90 @@ Missing Package - Order #12346,Package never arrived,no_tracking,USPS,9400111899
             </CardHeader>
             <CardContent className="space-y-4">
               <FileDropZone
-                onFilesSelected={setSelectedFiles}
+                onFilesSelected={async (files) => {
+                  setSelectedFiles(files);
+                  
+                  // Automatically parse the first file with AI
+                  if (files.length > 0) {
+                    setIsParsing(true);
+                    toast.info("Analyzing document with AI...");
+                    
+                    try {
+                      const file = files[0];
+                      const reader = new FileReader();
+                      
+                      reader.onload = async () => {
+                        const base64 = (reader.result as string).split(',')[1];
+                        
+                        try {
+                          const result = await parseDocument.mutateAsync({
+                            fileData: base64,
+                            fileName: file.name,
+                            fileType: file.type,
+                          });
+
+                          if (result.success && result.data) {
+                            const parsed = result.data;
+                            setParsedData(parsed);
+                            setParseConfidence(parsed.confidence || 0);
+                            
+                            // Auto-fill form fields
+                            setNewCaseData((prev) => ({
+                              ...prev,
+                              title: parsed.title || prev.title,
+                              description: parsed.description || prev.description,
+                              caseType: parsed.caseType || prev.caseType,
+                              carrier: parsed.carrier || prev.carrier,
+                              trackingNumber: parsed.trackingNumber || prev.trackingNumber,
+                              claimAmount: parsed.claimAmount?.toString() || prev.claimAmount,
+                              priority: parsed.priority || prev.priority,
+                              customerName: parsed.customerName || prev.customerName,
+                              customerEmail: parsed.customerEmail || prev.customerEmail,
+                              customerPhone: parsed.customerPhone || prev.customerPhone,
+                            }));
+
+                            toast.success(`Document parsed (${parsed.confidence}% confidence)`);
+                          } else {
+                            toast.warning(result.message || "Could not parse document automatically");
+                          }
+                        } catch (error: any) {
+                          console.error("Parsing error:", error);
+                          toast.error("Failed to parse document. Please fill in details manually.");
+                        } finally {
+                          setIsParsing(false);
+                        }
+                      };
+                      
+                      reader.readAsDataURL(file);
+                    } catch (error) {
+                      setIsParsing(false);
+                      toast.error("Failed to read file");
+                    }
+                  }
+                }}
                 maxFiles={10}
                 accept="image/*,.pdf,.doc,.docx"
                 maxSize={10}
               />
+
+              {isParsing && (
+                <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+                  <span className="text-sm text-blue-700 dark:text-blue-300">Analyzing document with AI...</span>
+                </div>
+              )}
+
+              {parsedData && parseConfidence > 0 && (
+                <div className="p-3 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-green-700 dark:text-green-300">✓ Document Parsed Successfully</span>
+                    <span className="text-xs text-green-600 dark:text-green-400">{parseConfidence}% confidence</span>
+                  </div>
+                  <p className="text-xs text-green-600 dark:text-green-400">
+                    Form fields have been auto-filled. Please review and edit as needed.
+                  </p>
+                </div>
+              )}
 
               <Button
                 onClick={() => setShowFileUploadDialog(true)}

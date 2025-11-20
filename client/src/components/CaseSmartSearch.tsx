@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { trpc } from "@/lib/trpc";
-import { useNavigate } from "wouter";
+import { useLocation } from "wouter";
 import { toast } from "sonner";
 
 interface CaseSmartSearchProps {
@@ -25,7 +25,7 @@ export default function CaseSmartSearch({ onCaseSelect, onCreateNew }: CaseSmart
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const navigate = useNavigate();
+  const [, setLocation] = useLocation();
 
   // Search cases with fuzzy matching
   const { data: searchResults, isLoading } = trpc.cases.search.useQuery(
@@ -71,7 +71,7 @@ export default function CaseSmartSearch({ onCaseSelect, onCreateNew }: CaseSmart
     if (onCaseSelect) {
       onCaseSelect(caseId);
     } else {
-      navigate(`/cases/${caseId}`);
+      setLocation(`/cases/${caseId}`);
     }
   };
 
@@ -81,7 +81,7 @@ export default function CaseSmartSearch({ onCaseSelect, onCreateNew }: CaseSmart
       onCreateNew(uploadedFiles, searchQuery);
     } else {
       // Navigate to import cases page with files
-      navigate("/cases/import");
+      setLocation("/cases/import");
       if (uploadedFiles.length > 0) {
         toast.info(`${uploadedFiles.length} file(s) ready for upload`);
       }

@@ -35,6 +35,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { EditableField } from "@/components/EditableField";
 import { toast } from "sonner";
+import DocumentBuilder from "@/components/DocumentBuilder";
 
 export default function CaseDetail() {
   const { id } = useParams();
@@ -552,6 +553,29 @@ export default function CaseDetail() {
                   ))
                 )}
               </div>
+            </CardContent>
+          </Card>
+
+          {/* Document Builder */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Generate Dispute Letter</CardTitle>
+              <CardDescription>
+                Create a professional dispute letter with legal references and evidence
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <DocumentBuilder
+                caseId={caseId}
+                caseData={{
+                  trackingNumber: caseData.trackingNumber,
+                  carrier: caseData.carrier,
+                  caseType: caseData.caseType,
+                  customerName: caseData.customerName,
+                  customerEmail: caseData.customerEmail,
+                  claimAmount: caseData.claimAmount,
+                }}
+              />
             </CardContent>
           </Card>
         </div>

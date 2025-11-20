@@ -2216,3 +2216,52 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Fix "Invalid Case ID" error on Templates page (moved /cases/templates route before /cases/:id)
 - [x] Templates page should not require case ID parameter
 - [x] Update routing to handle templates as standalone feature
+
+
+---
+
+## Next Steps Implementation
+
+### Phase 1: Integrate Smart Search into Cases Page ✅
+- [x] Add CaseSmartSearch component to All Cases page header
+- [x] Position search bar prominently for easy access
+- [x] Wire up search results to navigate to case detail pages
+- [x] Add keyboard shortcuts for quick search access
+
+### Phase 2: Populate Legal References Database ✅
+- [x] Create seed data script for legal references (legalReferences.ts)
+- [x] Add UCC Article 2 (Sales) references (§ 2-314, § 2-509)
+- [x] Add UCC Article 7 (Documents of Title) references (§ 7-309)
+- [x] Add 49 CFR Part 370 (Freight Loss and Damage Claims) (§ 370.3, § 370.5, § 370.9)
+- [x] Add state-specific shipping laws (California, New York)
+- [x] Add Carmack Amendment (49 U.S.C. § 14706)
+- [ ] Run database migration to create tables (pending interactive confirmation)
+- [ ] Execute seed data script (pending migration)
+
+### Phase 3: Populate Carrier Terms Database ✅
+- [x] Add UPS Terms and Conditions (liability, claims, packaging, guarantee)
+- [x] Add FedEx Service Guide terms (liability, claims, packaging, guarantee)
+- [x] Add USPS Domestic Mail Manual sections (insurance, claims, packaging, standards)
+- [x] Add DHL Express terms (liability, claims, packaging, guarantee)
+- [x] Add Amazon Logistics terms (protection, claims, guarantee)
+- [x] Link terms to applicable claim types (damage, lost, delay, SLA violation)
+
+### Phase 4: Build Document Builder UI ✅
+- [x] Create DocumentBuilder component for case detail pages
+- [x] Add template selector dropdown (4 templates)
+- [x] Add evidence attachment uploader with file preview
+- [x] Add legal reference selector with relevance scoring
+- [x] Add carrier terms selector with type badges
+- [x] Add certification/attestation toggles
+- [x] Add summary panel showing selected elements
+- [x] Add download/save functionality
+- [x] Integrate with case detail pages
+- [ ] Connect to actual tRPC endpoints (pending backend implementation)
+
+### Phase 5: Create Management Endpoints
+- [ ] Create template CRUD endpoints (list, create, update, delete)
+- [ ] Create legal reference CRUD endpoints (list, search, get by relevance)
+- [ ] Create carrier terms CRUD endpoints (list by carrier, get by type)
+- [ ] Create document generation endpoint with all elements
+- [ ] Add document history tracking
+- [ ] Connect DocumentBuilder component to live data

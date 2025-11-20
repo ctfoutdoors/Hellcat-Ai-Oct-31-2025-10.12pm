@@ -50,8 +50,9 @@ import {
   Eye
 } from "lucide-react";
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
+import CaseSmartSearch from "@/components/CaseSmartSearch";
 
 export default function AllCases() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -417,17 +418,13 @@ export default function AllCases() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              {/* Smart Search */}
+              <div className="mb-4">
+                <CaseSmartSearch />
+              </div>
+
               {/* Basic Filters */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search cases..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger>

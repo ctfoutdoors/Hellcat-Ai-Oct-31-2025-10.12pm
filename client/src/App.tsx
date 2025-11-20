@@ -11,7 +11,7 @@ import InventoryLive from "./pages/InventoryLive";
 import ProductsManagement from "./pages/ProductsManagement";
 import Cases from "./pages/Cases";
 import AllCases from "./pages/AllCases";
-import ImportCases from "./pages/ImportCases";
+import ImportCasesNew from "./pages/ImportCasesNew";
 import Templates from "./pages/Templates";
 import CasesSettings from "./pages/CasesSettings";
 import CaseTemplates from "./pages/CaseTemplates";
@@ -87,7 +87,7 @@ function Router() {
         <Route path="/cases" component={AllCases} />
         <Route path="/cases/new" component={NewCase} />
         <Route path="/cases/:id" component={CaseDetail} />
-        <Route path="/import-cases" component={ImportCases} />
+        <Route path="/import-cases" component={ImportCasesNew} />
       <Route path="/templates" component={Templates} />   <Route path="/cases/templates" component={CaseTemplates} />
         <Route path="/cases/settings" component={CasesSettings} />
         

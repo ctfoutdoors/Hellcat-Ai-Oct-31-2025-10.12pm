@@ -170,7 +170,7 @@ const defaultColumns: Column[] = [
   { id: "itemCount", label: "Items", visible: true, sortable: true },
   { id: "shippingMethod", label: "Ship Method", visible: false, sortable: true },
   { id: "warehouseName", label: "Warehouse", visible: false, sortable: true },
-  { id: "trackingNumber", label: "Tracking #", visible: false, sortable: true },
+  { id: "trackingNumber", label: "Tracking #", visible: true, sortable: true },
   { id: "actions", label: "Actions", visible: true, sortable: false, width: 100 },
 ];
 

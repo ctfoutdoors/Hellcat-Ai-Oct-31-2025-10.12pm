@@ -3,6 +3,7 @@ import { z } from "zod";
 import * as db from "../db";
 import { createShipStationClient } from "../integrations/shipstation";
 import { storagePut } from "../storage";
+import { parseClaimDocument, extractTextFromDocument } from "../services/documentParser";
 import { generateDisputeLetter, generateFollowUpEmail } from "../services/documentGenerator";
 import { scheduleFollowUps, cancelFollowUps, getScheduledFollowups } from "../services/followupScheduler";
 import { calculateSuccessProbability } from "../services/successProbabilityCalculator";
@@ -291,6 +292,51 @@ export const casesRouter = router({
         files: uploadedFiles,
         errors,
       };
+    }),
+
+  /**
+   * Parse document with AI to extract claim details
+   * Analyzes uploaded document and returns structured claim data
+   */
+  parseDocument: protectedProcedure
+    .input(z.object({
+      fileData: z.string(), // base64
+      fileName: z.string(),
+      fileType: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      try {
+        // Extract text from document
+        const extractedText = await extractTextFromDocument(
+          input.fileData,
+          input.fileType,
+          input.fileName
+        );
+
+        // If extraction failed or not supported, return empty result
+        if (extractedText.startsWith("[")) {
+          return {
+            success: false,
+            message: extractedText,
+            data: null,
+          };
+        }
+
+        // Parse with AI
+        const parsedData = await parseClaimDocument(extractedText, input.fileName);
+
+        return {
+          success: true,
+          data: parsedData,
+        };
+      } catch (error: any) {
+        console.error("[Cases] Document parsing failed:", error);
+        return {
+          success: false,
+          message: error.message || "Failed to parse document",
+          data: null,
+        };
+      }
     }),
 
   /**

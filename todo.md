@@ -1871,3 +1871,29 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Try /account endpoint first, fallback to summing carrier balances
 - [x] Test balance logic with negative/positive/zero values
 - [x] All tests passing (22/22)
+
+### Phase 15: Wire Tracking Refresh UI to Orders Page
+- [ ] Verify Orders Management page loads correctly
+- [ ] Ensure ShipStation balance is visible at top of page
+- [ ] Verify "Auto-Refresh Tracking" button is visible and functional
+- [ ] Verify "Refresh Tracking" appears in order actions dropdown
+- [ ] Test single order tracking refresh
+- [ ] Test bulk auto-refresh functionality
+- [ ] Verify tracking numbers update in UI after refresh
+- [ ] Add loading states and success/error toasts
+
+### Phase 16: Cases Multi-Document Upload & AI Parsing
+- [ ] Update FileDropZone to support multiple file uploads
+- [ ] Add file list display showing all uploaded documents
+- [ ] Implement AI document parsing to extract claim details
+- [ ] Auto-fill case form fields from parsed document data
+- [ ] Support PDF, images, and document file types
+- [ ] Show parsing progress and results to user
+
+### Phase 17: Auto-Generate Dispute Letter on Case Creation
+- [ ] Automatically trigger dispute letter generation when case is created
+- [ ] Use AI to analyze case details and generate professional letter
+- [ ] Attach generated PDF to case automatically
+- [ ] Show generated letter preview to user
+- [ ] Allow user to edit and regenerate if needed
+- [ ] Store letter in S3 and link to case record

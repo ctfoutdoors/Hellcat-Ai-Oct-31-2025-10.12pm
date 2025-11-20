@@ -15,6 +15,13 @@
       "when": 1761967685046,
       "tag": "0001_wet_forgotten_one",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1763666451316,
+      "tag": "0002_modern_lockjaw",
+      "breakpoints": true
     }
   ]
 }

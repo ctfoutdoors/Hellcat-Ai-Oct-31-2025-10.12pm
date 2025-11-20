@@ -4,6 +4,8 @@ import * as db from "../db";
 import { createShipStationClient } from "../integrations/shipstation";
 import { storagePut } from "../storage";
 import { generateDisputeLetter, generateFollowUpEmail } from "../services/documentGenerator";
+import { scheduleFollowUps, cancelFollowUps, getScheduledFollowups } from "../services/followupScheduler";
+import { calculateSuccessProbability } from "../services/successProbabilityCalculator";
 
 export const casesRouter = router({
   list: protectedProcedure
@@ -516,7 +518,7 @@ export const casesRouter = router({
     .mutation(async ({ ctx, input }) => {
       try {
         // Send email via Gmail MCP
-        const { sendEmailViaGmail } = await import('../integrations/gmail');
+        const { sendEmailViaGmail } = await import('../integrations/gmail-send');
         await sendEmailViaGmail({
           to: [input.to],
           subject: input.subject,
@@ -539,7 +541,109 @@ export const casesRouter = router({
         throw new Error(`Failed to send email: ${error.message}`);
       }
     }),
+
+  /**
+   * Schedule automatic follow-up emails for a case
+   * Creates 3, 7, and 14-day follow-ups
+   */
+  scheduleFollowUps: protectedProcedure
+    .input(z.object({
+      caseId: z.number(),
+      recipientEmail: z.string().email(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const caseData = await db.getCaseById(input.caseId);
+      if (!caseData) {
+        throw new Error('Case not found');
+      }
+
+      const scheduled = await scheduleFollowUps({
+        caseId: input.caseId,
+        recipientEmail: input.recipientEmail,
+        caseNumber: caseData.caseNumber,
+        title: caseData.title,
+        carrier: caseData.carrier || 'Unknown',
+        trackingNumber: caseData.trackingNumber || undefined,
+        createdBy: ctx.user.id,
+      });
+
+      // Add activity log
+      await db.addCaseActivity({
+        caseId: input.caseId,
+        activityType: 'followup_scheduled',
+        description: `Scheduled ${scheduled.length} automatic follow-up emails`,
+        performedBy: ctx.user.id,
+      });
+
+      return {
+        success: true,
+        scheduled,
+      };
+    }),
+
+  /**
+   * Get scheduled follow-ups for a case
+   */
+  getScheduledFollowUps: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .query(async ({ input }) => {
+      return await getScheduledFollowups(input.caseId);
+    }),
+
+  /**
+   * Cancel scheduled follow-ups for a case
+   */
+  cancelFollowUps: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await cancelFollowUps(input.caseId);
+
+      // Add activity log
+      await db.addCaseActivity({
+        caseId: input.caseId,
+        activityType: 'followup_cancelled',
+        description: 'Cancelled scheduled follow-up emails',
+        performedBy: ctx.user.id,
+      });
+
+      return { success: true };
+    }),
+
+  /**
+   * Calculate AI success probability for a case
+   */
+  calculateSuccessProbability: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .mutation(async ({ input }) => {
+      const caseData = await db.getCaseById(input.caseId);
+      if (!caseData) {
+        throw new Error('Case not found');
+      }
+
+      const result = await calculateSuccessProbability({
+        title: caseData.title,
+        description: caseData.description || undefined,
+        caseType: caseData.caseType,
+        carrier: caseData.carrier || 'Unknown',
+        trackingNumber: caseData.trackingNumber || undefined,
+        claimAmount: caseData.claimAmount || undefined,
+        priority: caseData.priority || undefined,
+        customerName: caseData.customerName || undefined,
+      });
+
+      // Update case with calculated probability
+      await db.updateCase(input.caseId, {
+        aiSuccessProbability: result.probability,
+        aiRecommendation: result.recommendations.join('\n'),
+      });
+
+      return {
+        success: true,
+        ...result,
+      };
+    }),
 });
+
 
 
 

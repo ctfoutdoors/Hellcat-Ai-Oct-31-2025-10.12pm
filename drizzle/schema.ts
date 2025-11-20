@@ -257,6 +257,49 @@ export const disputeLetters = mysqlTable("dispute_letters", {
   caseIdx: index("case_idx").on(table.caseId),
 }));
 
+export const scheduledFollowups = mysqlTable("scheduled_followups", {
+  id: int("id").autoincrement().primaryKey(),
+  caseId: int("caseId").notNull(),
+  scheduledFor: timestamp("scheduledFor").notNull(),
+  followupType: mysqlEnum("followupType", ["3_day", "7_day", "14_day", "custom"]).notNull(),
+  emailSubject: text("emailSubject").notNull(),
+  emailBody: text("emailBody").notNull(),
+  recipientEmail: varchar("recipientEmail", { length: 320 }).notNull(),
+  status: mysqlEnum("status", ["pending", "sent", "failed", "cancelled"]).default("pending").notNull(),
+  sentAt: timestamp("sentAt"),
+  errorMessage: text("errorMessage"),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  caseIdx: index("case_idx").on(table.caseId),
+  scheduledForIdx: index("scheduled_for_idx").on(table.scheduledFor),
+  statusIdx: index("status_idx").on(table.status),
+}));
+
+export type ScheduledFollowup = typeof scheduledFollowups.$inferSelect;
+export type InsertScheduledFollowup = typeof scheduledFollowups.$inferInsert;
+
+export const disputeLetterTemplates = mysqlTable("dispute_letter_templates", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  caseType: varchar("caseType", { length: 100 }).notNull(),
+  carrier: varchar("carrier", { length: 100 }),
+  templateContent: text("templateContent").notNull(),
+  variables: json("variables").$type<string[]>(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  caseTypeIdx: index("case_type_idx").on(table.caseType),
+  carrierIdx: index("carrier_idx").on(table.carrier),
+}));
+
+export type DisputeLetterTemplate = typeof disputeLetterTemplates.$inferSelect;
+export type InsertDisputeLetterTemplate = typeof disputeLetterTemplates.$inferInsert;
+
 // ============================================================================
 // SHIPMENT & ORDER TABLES
 // ============================================================================

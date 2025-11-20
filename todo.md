@@ -1805,3 +1805,47 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Test all three cases import methods (ShipStation, File Upload, CSV)
 - [x] Test document generation and email sending
 - [x] Create comprehensive checkpoint
+
+### Phase 8: Automated Follow-up Scheduler
+- [x] Create scheduled_followups table in database schema
+- [x] Implement scheduler service that runs periodically
+- [x] Add endpoint to schedule follow-ups (3, 7, 14 days)
+- [x] Auto-generate and send follow-up emails at scheduled times
+- [ ] Add UI to view and manage scheduled follow-ups
+- [ ] Allow users to cancel or reschedule follow-ups
+
+### Phase 9: Case Analytics Dashboard
+- [x] Create analytics queries for recovery rates by carrier
+- [x] Calculate average resolution time metrics
+- [x] Compute success probability trends
+- [x] Build ROI calculation (recovered amount vs claim amount)
+- [x] Create analytics dashboard page with charts
+- [ ] Add filters for date range and carrier
+- [x] Display top performing carriers and case types
+
+### Phase 10: Template Library Enhancement
+- [ ] Create dispute_letter_templates table in schema
+- [ ] Design templates for late delivery cases
+- [ ] Design templates for damaged goods cases
+- [ ] Design templates for lost package cases
+- [ ] Add carrier-specific template variations (USPS, UPS, FedEx)
+- [ ] Create template selection UI
+- [ ] Allow template customization before generation
+
+### Phase 11: AI Success Probability Calculation
+- [x] Design AI prompt for success probability analysis
+- [x] Implement calculateSuccessProbability function
+- [x] Add endpoint to calculate probability on demand
+- [ ] Display probability score on case detail page
+- [ ] Add visual indicator (high/medium/low confidence)
+- [ ] Auto-calculate probability when case is created
+- [x] Store probability in aiSuccessProbability field
+
+### Phase 12: Case Timeline Tracking
+- [ ] Enhance case_activities table for timeline events
+- [ ] Create timeline component with visual indicators
+- [ ] Display all status changes chronologically
+- [ ] Show file uploads, emails sent, notes added
+- [ ] Add timestamps and user attribution
+- [ ] Implement timeline filtering (show all/status only)
+- [ ] Add timeline export functionality

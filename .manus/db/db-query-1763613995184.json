@@ -1,0 +1,13 @@
+{
+  "query": "\nSELECT COUNT(*) as count\nFROM INFORMATION_SCHEMA.COLUMNS \nWHERE TABLE_NAME = 'orders' \nAND COLUMN_NAME IN ('id', 'orderNumber', 'source', 'channel', 'externalId', 'customerName', 'customerEmail', 'customerPhone', 'shippingAddress', 'orderDate', 'shipDate', 'totalAmount', 'shippingCost', 'taxAmount', 'status', 'orderItems', 'trackingNumber', 'carrierCode', 'serviceCode', 'shipmentId', 'orderData', 'createdAt', 'updatedAt')\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute \nSELECT COUNT(*) as count\nFROM INFORMATION_SCHEMA.COLUMNS \nWHERE TABLE_NAME = 'orders' \nAND COLUMN_NAME IN ('id', 'orderNumber', 'source', 'channel', 'externalId', 'customerName', 'customerEmail', 'customerPhone', 'shippingAddress', 'orderDate', 'shipDate', 'totalAmount', 'shippingCost', 'taxAmount', 'status', 'orderItems', 'trackingNumber', 'carrierCode', 'serviceCode', 'shipmentId', 'orderData', 'createdAt', 'updatedAt')\n",
+  "rows": [
+    {
+      "count": "22"
+    }
+  ],
+  "messages": [],
+  "stdout": "count\n22\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

@@ -1,0 +1,115 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'orders' ORDER BY COLUMN_NAME",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'orders' ORDER BY COLUMN_NAME",
+  "rows": [
+    {
+      "COLUMN_NAME": "carrierCode"
+    },
+    {
+      "COLUMN_NAME": "channel"
+    },
+    {
+      "COLUMN_NAME": "channelName"
+    },
+    {
+      "COLUMN_NAME": "channelOrderNumber"
+    },
+    {
+      "COLUMN_NAME": "companyName"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "currency"
+    },
+    {
+      "COLUMN_NAME": "customerEmail"
+    },
+    {
+      "COLUMN_NAME": "customerId"
+    },
+    {
+      "COLUMN_NAME": "customerName"
+    },
+    {
+      "COLUMN_NAME": "customerPhone"
+    },
+    {
+      "COLUMN_NAME": "externalId"
+    },
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "itemCount"
+    },
+    {
+      "COLUMN_NAME": "notes"
+    },
+    {
+      "COLUMN_NAME": "orderDate"
+    },
+    {
+      "COLUMN_NAME": "orderItems"
+    },
+    {
+      "COLUMN_NAME": "orderNumber"
+    },
+    {
+      "COLUMN_NAME": "orderStatus"
+    },
+    {
+      "COLUMN_NAME": "paymentStatus"
+    },
+    {
+      "COLUMN_NAME": "serviceCode"
+    },
+    {
+      "COLUMN_NAME": "shipDate"
+    },
+    {
+      "COLUMN_NAME": "shipmentId"
+    },
+    {
+      "COLUMN_NAME": "shippedDate"
+    },
+    {
+      "COLUMN_NAME": "shippingAddress"
+    },
+    {
+      "COLUMN_NAME": "shippingCost"
+    },
+    {
+      "COLUMN_NAME": "shippingMethod"
+    },
+    {
+      "COLUMN_NAME": "shippingStatus"
+    },
+    {
+      "COLUMN_NAME": "source"
+    },
+    {
+      "COLUMN_NAME": "status"
+    },
+    {
+      "COLUMN_NAME": "taxAmount"
+    },
+    {
+      "COLUMN_NAME": "totalAmount"
+    },
+    {
+      "COLUMN_NAME": "trackingNumber"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    },
+    {
+      "COLUMN_NAME": "warehouseName"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\ncarrierCode\nchannel\nchannelName\nchannelOrderNumber\ncompanyName\ncreatedAt\ncurrency\ncustomerEmail\ncustomerId\ncustomerName\ncustomerPhone\nexternalId\nid\nitemCount\nnotes\norderDate\norderItems\norderNumber\norderStatus\npaymentStatus\nserviceCode\nshipDate\nshipmentId\nshippedDate\nshippingAddress\nshippingCost\nshippingMethod\nshippingStatus\nsource\nstatus\ntaxAmount\ntotalAmount\ntrackingNumber\nupdatedAt\nwarehouseName\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

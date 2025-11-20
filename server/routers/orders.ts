@@ -2,7 +2,7 @@ import { router, protectedProcedure } from "../_core/trpc";
 import { z } from "zod";
 import { getDb } from "../db";
 import { orders } from "../../drizzle/schema";
-import { and, eq, gte, lte, sql, desc } from "drizzle-orm";
+import { and, eq, gte, lte, sql, desc, or, like } from "drizzle-orm";
 import { createShipStationClient } from "../integrations/shipstation";
 
 export const ordersRouter = router({
@@ -16,6 +16,7 @@ export const ordersRouter = router({
         carrier: z.string().optional(),
         startDate: z.string().optional(),
         endDate: z.string().optional(),
+        searchTerm: z.string().optional(),
         page: z.number().default(1),
         limit: z.number().default(50),
       })
@@ -40,6 +41,20 @@ export const ordersRouter = router({
 
       if (input.endDate) {
         conditions.push(lte(orders.orderDate, new Date(input.endDate)));
+      }
+
+      // Multi-field search across order number, customer name, email, tracking, and channel order number
+      if (input.searchTerm && input.searchTerm.trim()) {
+        const searchPattern = `%${input.searchTerm.trim()}%`;
+        conditions.push(
+          or(
+            sql`COALESCE(${orders.orderNumber}, '') LIKE ${searchPattern}`,
+            sql`COALESCE(${orders.customerName}, '') LIKE ${searchPattern}`,
+            sql`COALESCE(${orders.customerEmail}, '') LIKE ${searchPattern}`,
+            sql`COALESCE(${orders.trackingNumber}, '') LIKE ${searchPattern}`,
+            sql`COALESCE(${orders.channelOrderNumber}, '') LIKE ${searchPattern}`
+          )!
+        );
       }
 
       const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
@@ -68,6 +83,24 @@ export const ordersRouter = router({
         limit: input.limit,
         pages: Math.ceil(total / input.limit),
       };
+    }),
+
+  /**
+   * Get a single order by ID
+   */
+  getOrderById: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      const result = await db
+        .select()
+        .from(orders)
+        .where(eq(orders.id, input.id))
+        .limit(1);
+
+      return result[0] || null;
     }),
 
   /**

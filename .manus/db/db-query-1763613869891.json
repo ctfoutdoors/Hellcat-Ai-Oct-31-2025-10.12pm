@@ -1,0 +1,52 @@
+{
+  "query": "\nSELECT COLUMN_NAME \nFROM INFORMATION_SCHEMA.COLUMNS \nWHERE TABLE_NAME = 'orders' \nAND COLUMN_NAME IN ('id', 'orderNumber', 'source', 'channel', 'externalId', 'customerName', 'customerEmail', 'customerPhone', 'shippingAddress', 'orderDate', 'shipDate', 'totalAmount', 'shippingCost', 'taxAmount', 'status', 'orderItems', 'trackingNumber', 'carrierCode', 'serviceCode', 'shipmentId', 'orderData', 'createdAt', 'updatedAt')\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute \nSELECT COLUMN_NAME \nFROM INFORMATION_SCHEMA.COLUMNS \nWHERE TABLE_NAME = 'orders' \nAND COLUMN_NAME IN ('id', 'orderNumber', 'source', 'channel', 'externalId', 'customerName', 'customerEmail', 'customerPhone', 'shippingAddress', 'orderDate', 'shipDate', 'totalAmount', 'shippingCost', 'taxAmount', 'status', 'orderItems', 'trackingNumber', 'carrierCode', 'serviceCode', 'shipmentId', 'orderData', 'createdAt', 'updatedAt')\n",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "orderNumber"
+    },
+    {
+      "COLUMN_NAME": "source"
+    },
+    {
+      "COLUMN_NAME": "channel"
+    },
+    {
+      "COLUMN_NAME": "externalId"
+    },
+    {
+      "COLUMN_NAME": "customerName"
+    },
+    {
+      "COLUMN_NAME": "customerEmail"
+    },
+    {
+      "COLUMN_NAME": "status"
+    },
+    {
+      "COLUMN_NAME": "totalAmount"
+    },
+    {
+      "COLUMN_NAME": "orderDate"
+    },
+    {
+      "COLUMN_NAME": "carrierCode"
+    },
+    {
+      "COLUMN_NAME": "trackingNumber"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\norderNumber\nsource\nchannel\nexternalId\ncustomerName\ncustomerEmail\nstatus\ntotalAmount\norderDate\ncarrierCode\ntrackingNumber\ncreatedAt\nupdatedAt\n",
+  "stderr": "",
+  "execution_time_ms": 57
+}

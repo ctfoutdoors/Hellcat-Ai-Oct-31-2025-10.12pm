@@ -1,0 +1,37 @@
+{
+  "query": "\nSELECT 'id' AS col UNION SELECT 'orderNumber' UNION SELECT 'source' UNION SELECT 'channel' UNION SELECT 'externalId' UNION SELECT 'customerName' UNION SELECT 'customerEmail' UNION SELECT 'customerPhone' UNION SELECT 'shippingAddress' UNION SELECT 'orderDate' UNION SELECT 'shipDate' UNION SELECT 'totalAmount' UNION SELECT 'shippingCost' UNION SELECT 'taxAmount' UNION SELECT 'status' UNION SELECT 'orderItems' UNION SELECT 'trackingNumber' UNION SELECT 'carrierCode' UNION SELECT 'serviceCode' UNION SELECT 'shipmentId' UNION SELECT 'orderData' UNION SELECT 'createdAt' UNION SELECT 'updatedAt'\nEXCEPT\nSELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'orders'\n",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute \nSELECT 'id' AS col UNION SELECT 'orderNumber' UNION SELECT 'source' UNION SELECT 'channel' UNION SELECT 'externalId' UNION SELECT 'customerName' UNION SELECT 'customerEmail' UNION SELECT 'customerPhone' UNION SELECT 'shippingAddress' UNION SELECT 'orderDate' UNION SELECT 'shipDate' UNION SELECT 'totalAmount' UNION SELECT 'shippingCost' UNION SELECT 'taxAmount' UNION SELECT 'status' UNION SELECT 'orderItems' UNION SELECT 'trackingNumber' UNION SELECT 'carrierCode' UNION SELECT 'serviceCode' UNION SELECT 'shipmentId' UNION SELECT 'orderData' UNION SELECT 'createdAt' UNION SELECT 'updatedAt'\nEXCEPT\nSELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'orders'\n",
+  "rows": [
+    {
+      "col": "customerPhone"
+    },
+    {
+      "col": "serviceCode"
+    },
+    {
+      "col": "shippingAddress"
+    },
+    {
+      "col": "shipDate"
+    },
+    {
+      "col": "orderItems"
+    },
+    {
+      "col": "shipmentId"
+    },
+    {
+      "col": "taxAmount"
+    },
+    {
+      "col": "orderData"
+    },
+    {
+      "col": "shippingCost"
+    }
+  ],
+  "messages": [],
+  "stdout": "col\ncustomerPhone\nserviceCode\nshippingAddress\nshipDate\norderItems\nshipmentId\ntaxAmount\norderData\nshippingCost\n",
+  "stderr": "",
+  "execution_time_ms": 59
+}

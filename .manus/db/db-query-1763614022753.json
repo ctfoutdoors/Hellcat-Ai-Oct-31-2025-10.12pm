@@ -1,0 +1,64 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'orders' AND LOWER(COLUMN_NAME) IN ('orderdata', 'ordernumber', 'externalid', 'customername', 'customeremail', 'customerphone', 'shippingaddress', 'orderdate', 'shipdate', 'totalamount', 'shippingcost', 'taxamount', 'orderitems', 'trackingnumber', 'carriercode', 'servicecode', 'shipmentid', 'createdat', 'updatedat')",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'orders' AND LOWER(COLUMN_NAME) IN ('orderdata', 'ordernumber', 'externalid', 'customername', 'customeremail', 'customerphone', 'shippingaddress', 'orderdate', 'shipdate', 'totalamount', 'shippingcost', 'taxamount', 'orderitems', 'trackingnumber', 'carriercode', 'servicecode', 'shipmentid', 'createdat', 'updatedat')",
+  "rows": [
+    {
+      "COLUMN_NAME": "orderNumber"
+    },
+    {
+      "COLUMN_NAME": "externalId"
+    },
+    {
+      "COLUMN_NAME": "customerName"
+    },
+    {
+      "COLUMN_NAME": "customerEmail"
+    },
+    {
+      "COLUMN_NAME": "totalAmount"
+    },
+    {
+      "COLUMN_NAME": "orderDate"
+    },
+    {
+      "COLUMN_NAME": "carrierCode"
+    },
+    {
+      "COLUMN_NAME": "trackingNumber"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    },
+    {
+      "COLUMN_NAME": "customerPhone"
+    },
+    {
+      "COLUMN_NAME": "shippingAddress"
+    },
+    {
+      "COLUMN_NAME": "shipDate"
+    },
+    {
+      "COLUMN_NAME": "shippingCost"
+    },
+    {
+      "COLUMN_NAME": "taxAmount"
+    },
+    {
+      "COLUMN_NAME": "orderItems"
+    },
+    {
+      "COLUMN_NAME": "serviceCode"
+    },
+    {
+      "COLUMN_NAME": "shipmentId"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\norderNumber\nexternalId\ncustomerName\ncustomerEmail\ntotalAmount\norderDate\ncarrierCode\ntrackingNumber\ncreatedAt\nupdatedAt\ncustomerPhone\nshippingAddress\nshipDate\nshippingCost\ntaxAmount\norderItems\nserviceCode\nshipmentId\n",
+  "stderr": "",
+  "execution_time_ms": 54
+}

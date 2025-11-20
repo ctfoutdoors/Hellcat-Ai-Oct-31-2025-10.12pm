@@ -97,14 +97,15 @@ const defaultColumns: Column[] = [
 ];
 
 export default function OrdersManagement() {
+  const [searchTerm, setSearchTerm] = useState("");
+  
   // Fetch real orders from database
   const { data: ordersData, isLoading } = trpc.orders.getOrders.useQuery({
     page: 1,
     limit: 50,
+    ...(searchTerm.trim() && { searchTerm: searchTerm.trim() }),
   });
   const orders = ordersData?.orders || [];
-
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrders, setSelectedOrders] = useState<number[]>([]);
   const [showColumnCustomizer, setShowColumnCustomizer] = useState(false);
   const [columns, setColumns] = useState<Column[]>(defaultColumns);
@@ -190,6 +191,10 @@ export default function OrdersManagement() {
       },
     };
 
+    if (!status) {
+      return <Badge variant="secondary">—</Badge>;
+    }
+    
     return (
       <Badge variant={variants[type][status] || "secondary"}>
         {status.replace("_", " ")}
@@ -465,7 +470,7 @@ export default function OrdersManagement() {
                         />
                       )}
                       {column.id === "orderNumber" && (
-                        <Link href={`/orders/${order.id}`} className="text-primary hover:underline font-medium">
+                        <Link href={`/order/${order.id}`} className="text-primary hover:underline font-medium">
                           {order.orderNumber}
                         </Link>
                       )}
@@ -491,7 +496,9 @@ export default function OrdersManagement() {
                       {column.id === "paymentStatus" && getStatusBadge(order.paymentStatus, "payment")}
                       {column.id === "shippingStatus" && getStatusBadge(order.shippingStatus, "shipping")}
                       {column.id === "totalAmount" && (
-                        <span className="font-medium">${order.totalAmount.toFixed(2)}</span>
+                        <span className="font-medium">
+                          ${order.totalAmount ? Number(order.totalAmount).toFixed(2) : '0.00'}
+                        </span>
                       )}
                       {column.id === "itemCount" && (
                         <span className="text-muted-foreground">{order.itemCount}</span>
@@ -500,7 +507,7 @@ export default function OrdersManagement() {
                       {column.id === "warehouseName" && order.warehouseName}
                       {column.id === "trackingNumber" && (
                         order.trackingNumber ? (
-                          <span className="font-mono text-xs">{order.trackingNumber}</span>
+                          <span className="font-mono">{order.trackingNumber}</span>
                         ) : (
                           <span className="text-muted-foreground">—</span>
                         )

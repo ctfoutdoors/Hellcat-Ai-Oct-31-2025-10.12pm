@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useParams, useLocation } from "wouter";
 import { toast } from "sonner";
+import { trpc } from "@/lib/trpc";
 
 // Mock order data - in production this would come from tRPC
 const mockOrderData = {
@@ -240,8 +241,45 @@ export default function OrderDetail() {
   const [, setLocation] = useLocation();
   const orderId = params.id;
 
-  // Get order data
-  const order = mockOrderData[orderId as keyof typeof mockOrderData];
+  // Fetch real order data from database
+  const { data: order, isLoading, error } = trpc.orders.getOrderById.useQuery(
+    { id: Number(orderId) },
+    { enabled: !!orderId }
+  );
+
+  if (isLoading) {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardContent className="p-12 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
+              <p className="text-muted-foreground">Loading order details...</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <Card>
+          <CardContent className="p-12 text-center">
+            <div className="flex flex-col items-center gap-4">
+              <AlertCircle className="h-8 w-8 text-destructive" />
+              <p className="text-destructive">Error loading order: {error.message}</p>
+              <Button onClick={() => setLocation("/orders")}>
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Orders
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (!order) {
     return (
@@ -305,30 +343,17 @@ export default function OrderDetail() {
 
       {/* Status Badges */}
       <div className="flex gap-2 flex-wrap">
-        {order.isRushOrder && (
-          <Badge variant="destructive" className="gap-1">
-            <AlertCircle className="h-3 w-3" />
-            Rush Order
+        {order.status && (
+          <Badge className={getStatusColor(order.status)}>
+            Status: {order.status.replace("_", " ")}
           </Badge>
         )}
-        {order.hasFraudAlert && (
-          <Badge variant="destructive" className="gap-1">
-            <AlertCircle className="h-3 w-3" />
-            Fraud Alert
+        {order.trackingNumber && (
+          <Badge variant="outline" className="gap-1">
+            <Truck className="h-3 w-3" />
+            Tracking: {order.trackingNumber}
           </Badge>
         )}
-        <Badge className={getStatusColor(order.orderStatus)}>
-          Order: {order.orderStatus}
-        </Badge>
-        <Badge className={getStatusColor(order.paymentStatus)}>
-          Payment: {order.paymentStatus}
-        </Badge>
-        <Badge className={getStatusColor(order.shippingStatus)}>
-          Shipping: {order.shippingStatus}
-        </Badge>
-        <Badge className={getStatusColor(order.fulfillmentStatus)}>
-          Fulfillment: {order.fulfillmentStatus}
-        </Badge>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -347,23 +372,33 @@ export default function OrderDetail() {
                 <div>
                   <p className="text-sm text-muted-foreground">Order Date</p>
                   <p className="font-medium">
-                    {order.orderDate.toLocaleDateString()}
+                    {order.orderDate ? new Date(order.orderDate).toLocaleDateString() : '—'}
                   </p>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Channel</p>
-                  <p className="font-medium">{order.channelName}</p>
+                  <p className="font-medium">{order.channel || '—'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Warehouse</p>
-                  <p className="font-medium">{order.warehouseName}</p>
+                  <p className="text-sm text-muted-foreground">Source</p>
+                  <p className="font-medium">{order.source || '—'}</p>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">
-                    Shipping Method
-                  </p>
-                  <p className="font-medium">{order.shippingMethod}</p>
-                </div>
+                {order.serviceCode && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Service Code
+                    </p>
+                    <p className="font-medium">{order.serviceCode}</p>
+                  </div>
+                )}
+                {order.carrierCode && (
+                  <div>
+                    <p className="text-sm text-muted-foreground">
+                      Carrier
+                    </p>
+                    <p className="font-medium">{order.carrierCode}</p>
+                  </div>
+                )}
                 {order.trackingNumber && (
                   <div className="col-span-2">
                     <p className="text-sm text-muted-foreground">
@@ -379,82 +414,51 @@ export default function OrderDetail() {
           </Card>
 
           {/* Line Items */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Order Items ({order.itemCount})</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {order.lineItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex-1">
-                      <p className="font-medium">{item.productName}</p>
-                      <p className="text-sm text-muted-foreground">
-                        SKU: {item.sku}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {item.weight} lbs • {item.dimensions}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium">
-                        ${item.totalPrice.toFixed(2)}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {item.quantity} × ${item.unitPrice.toFixed(2)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Status History */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Status History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {order.statusHistory.map((history, index) => (
-                  <div key={history.id} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={`w-3 h-3 rounded-full ${
-                          index === order.statusHistory.length - 1
-                            ? "bg-primary"
-                            : "bg-muted"
-                        }`}
-                      />
-                      {index < order.statusHistory.length - 1 && (
-                        <div className="w-0.5 h-full bg-border mt-1" />
-                      )}
-                    </div>
-                    <div className="flex-1 pb-4">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="font-medium capitalize">
-                          {history.status.replace(/_/g, " ")}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {history.timestamp.toLocaleString()}
-                        </p>
+          {order.orderItems && (() => {
+            try {
+              const items = typeof order.orderItems === 'string' ? JSON.parse(order.orderItems) : order.orderItems;
+              if (Array.isArray(items) && items.length > 0) {
+                return (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Order Items ({items.length})</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {items.map((item: any, index: number) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-4 border rounded-lg"
+                          >
+                            <div className="flex-1">
+                              <p className="font-medium">{item.name || item.productName || 'Item'}</p>
+                              {item.sku && (
+                                <p className="text-sm text-muted-foreground">
+                                  SKU: {item.sku}
+                                </p>
+                              )}
+                            </div>
+                            <div className="text-right">
+                              {item.quantity && (
+                                <p className="text-sm text-muted-foreground">
+                                  Qty: {item.quantity}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {history.note}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        by {history.user}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                    </CardContent>
+                  </Card>
+                );
+              }
+            } catch (e) {
+              console.error('Error parsing orderItems:', e);
+            }
+            return null;
+          })()}
+
+          {/* Status History - Hidden for now since we don't have this data */}
         </div>
 
         {/* Right Column - Customer & Addresses */}
@@ -469,92 +473,64 @@ export default function OrderDetail() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="font-medium">{order.customerName}</p>
-                {order.companyName && (
-                  <p className="text-sm text-muted-foreground">
-                    {order.companyName}
-                  </p>
-                )}
+                <p className="font-medium">{order.customerName || '—'}</p>
               </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <a
-                  href={`mailto:${order.customerEmail}`}
-                  className="text-primary hover:underline"
-                >
-                  {order.customerEmail}
-                </a>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span>{order.customerPhone}</span>
-              </div>
+              {order.customerEmail && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  <a
+                    href={`mailto:${order.customerEmail}`}
+                    className="text-primary hover:underline"
+                  >
+                    {order.customerEmail}
+                  </a>
+                </div>
+              )}
+              {order.customerPhone && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  <span>{order.customerPhone}</span>
+                </div>
+              )}
             </CardContent>
           </Card>
 
           {/* Shipping Address */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Truck className="h-5 w-5" />
-                Shipping Address
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm space-y-1">
-                <p className="font-medium">{order.shippingAddress.name}</p>
-                {order.shippingAddress.company && (
-                  <p className="text-muted-foreground">
-                    {order.shippingAddress.company}
-                  </p>
-                )}
-                <p>{order.shippingAddress.address1}</p>
-                {order.shippingAddress.address2 && (
-                  <p>{order.shippingAddress.address2}</p>
-                )}
-                <p>
-                  {order.shippingAddress.city}, {order.shippingAddress.state}{" "}
-                  {order.shippingAddress.zip}
-                </p>
-                <p>{order.shippingAddress.country}</p>
-                <p className="text-muted-foreground pt-2">
-                  {order.shippingAddress.phone}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          {order.shippingAddress && (() => {
+            try {
+              const addr = typeof order.shippingAddress === 'string' ? JSON.parse(order.shippingAddress) : order.shippingAddress;
+              return (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Truck className="h-5 w-5" />
+                      Shipping Address
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-sm space-y-1">
+                      {addr.name && <p className="font-medium">{addr.name}</p>}
+                      {addr.company && <p className="text-muted-foreground">{addr.company}</p>}
+                      {addr.address1 && <p>{addr.address1}</p>}
+                      {addr.address2 && <p>{addr.address2}</p>}
+                      {(addr.city || addr.state || addr.zip) && (
+                        <p>
+                          {[addr.city, addr.state, addr.zip].filter(Boolean).join(', ')}
+                        </p>
+                      )}
+                      {addr.country && <p>{addr.country}</p>}
+                      {addr.phone && <p className="text-muted-foreground pt-2">{addr.phone}</p>}
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            } catch (e) {
+              console.error('Error parsing shippingAddress:', e);
+              return null;
+            }
+          })()}
 
-          {/* Billing Address */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Building className="h-5 w-5" />
-                Billing Address
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm space-y-1">
-                <p className="font-medium">{order.billingAddress.name}</p>
-                {order.billingAddress.company && (
-                  <p className="text-muted-foreground">
-                    {order.billingAddress.company}
-                  </p>
-                )}
-                <p>{order.billingAddress.address1}</p>
-                {order.billingAddress.address2 && (
-                  <p>{order.billingAddress.address2}</p>
-                )}
-                <p>
-                  {order.billingAddress.city}, {order.billingAddress.state}{" "}
-                  {order.billingAddress.zip}
-                </p>
-                <p>{order.billingAddress.country}</p>
-                <p className="text-muted-foreground pt-2">
-                  {order.billingAddress.phone}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Billing Address - Hidden for now since we don't have this data */}
 
           {/* Order Totals */}
           <Card>
@@ -565,28 +541,22 @@ export default function OrderDetail() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Subtotal</span>
-                <span>${order.subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Shipping</span>
-                <span>${order.shipping.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Tax</span>
-                <span>${order.tax.toFixed(2)}</span>
-              </div>
-              {order.discount > 0 && (
-                <div className="flex justify-between text-sm text-green-600">
-                  <span>Discount</span>
-                  <span>-${order.discount.toFixed(2)}</span>
+              {order.shippingCost && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Shipping</span>
+                  <span>${(typeof order.shippingCost === 'string' ? parseFloat(order.shippingCost) : order.shippingCost).toFixed(2)}</span>
+                </div>
+              )}
+              {order.taxAmount && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Tax</span>
+                  <span>${(typeof order.taxAmount === 'string' ? parseFloat(order.taxAmount) : order.taxAmount).toFixed(2)}</span>
                 </div>
               )}
               <Separator />
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>${order.totalAmount.toFixed(2)}</span>
+                <span>${(typeof order.totalAmount === 'string' ? parseFloat(order.totalAmount) : order.totalAmount).toFixed(2)}</span>
               </div>
             </CardContent>
           </Card>

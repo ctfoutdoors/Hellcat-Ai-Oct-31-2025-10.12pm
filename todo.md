@@ -1688,3 +1688,56 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 ✅ Channel filter (Amazon, Shopify, eBay, Walmart)
 ✅ Real-time order updates reflected in both list and detail pages
 ✅ Complete end-to-end workflow tested and operational
+
+
+---
+
+## SHIPSTATION ACCOUNT BALANCE DISPLAY
+
+### Phase 1: Backend Endpoint
+- [ ] Create getAccountBalance endpoint in ShipStation router
+- [ ] Call ShipStation API to fetch account balance
+- [ ] Return balance data with currency formatting
+
+### Phase 2: Frontend Display
+- [ ] Add balance display to Orders Management page header
+- [ ] Show current balance with icon
+- [ ] Add auto-refresh on page load
+- [ ] Style balance prominently for visibility
+
+### Phase 3: Testing & Checkpoint
+- [ ] Test balance API endpoint
+- [ ] Verify balance displays correctly
+- [ ] Test with real ShipStation account
+- [ ] Create checkpoint
+
+
+---
+
+## SHIPSTATION ACCOUNT BALANCE DISPLAY ✅ COMPLETE
+
+### Phase 1: ShipStation Balance API ✅
+- [x] Research ShipStation API for account balance endpoint
+- [x] Create getAccountBalance endpoint in ShipStation router
+- [x] Implement carrier list fetching to find primary carrier
+- [x] Fetch carrier details with balance information
+- [x] Test balance retrieval from ShipStation API
+
+### Phase 2: Balance Display UI ✅
+- [x] Add ShipStationBalance component to Orders Management
+- [x] Display balance with carrier name
+- [x] Add auto-refresh every 60 seconds
+- [x] Style balance display to match UI
+- [x] Add loading state with spinner
+
+### Phase 3: Testing & Checkpoint ✅
+- [x] Test balance display on Orders page
+- [x] Verify auto-refresh functionality
+- [x] Create checkpoint
+
+**Feature Delivered:**
+✅ Real-time ShipStation account balance display
+✅ Visible at all times on Orders Management page
+✅ Auto-refreshes every 60 seconds
+✅ Shows carrier name (e.g., "Stamps.com Balance")
+✅ Graceful handling when no primary carrier configured

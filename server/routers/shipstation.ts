@@ -7,6 +7,43 @@ import { eq } from "drizzle-orm";
 
 export const shipstationRouter = router({
   /**
+   * Get ShipStation account balance from primary carrier
+   */
+  getAccountBalance: protectedProcedure.query(async () => {
+    const shipstation = createShipStationClient();
+    
+    try {
+      // Get list of carriers to find the primary one
+      const carriers = await shipstation.request('/carriers', 'GET');
+      const primaryCarrier = carriers.find((c: any) => c.primary === true);
+      
+      if (!primaryCarrier) {
+        // If no primary carrier, return zero balance
+        return {
+          balance: 0,
+          carrierName: 'No primary carrier',
+          carrierCode: null,
+          currency: 'USD',
+        };
+      }
+      
+      // Get carrier details which includes the balance
+      const carrierDetails = await shipstation.request(`/carriers/getcarrier?carrierCode=${primaryCarrier.code}`, 'GET');
+      
+      return {
+        balance: carrierDetails.balance || 0,
+        carrierName: carrierDetails.name,
+        carrierCode: carrierDetails.code,
+        accountNumber: carrierDetails.accountNumber,
+        currency: 'USD',
+      };
+    } catch (error) {
+      console.error('[ShipStation] Error fetching account balance:', error);
+      throw new Error('Failed to fetch ShipStation account balance');
+    }
+  }),
+
+  /**
    * List all warehouses with their inventory
    */
   listWarehouses: protectedProcedure.query(async () => {

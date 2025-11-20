@@ -45,6 +45,36 @@ import { trpc } from "@/lib/trpc";
 import { Loader2 } from "lucide-react";
 import { ColumnCustomizer, type Column } from "@/components/ColumnCustomizer";
 
+// ShipStation Balance Display Component
+function ShipStationBalance() {
+  const { data: balance, isLoading } = trpc.shipstation.getAccountBalance.useQuery(undefined, {
+    refetchInterval: 60000, // Refresh every minute
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-2 px-4 py-2 bg-muted rounded-md">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span className="text-sm text-muted-foreground">Loading balance...</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 px-4 py-2 bg-muted rounded-md">
+      <DollarSign className="h-4 w-4 text-green-600" />
+      <div className="flex flex-col">
+        <span className="text-sm font-medium">
+          ${balance?.balance?.toFixed(2) || '0.00'}
+        </span>
+        <span className="text-xs text-muted-foreground">
+          {balance?.carrierName || 'ShipStation'} Balance
+        </span>
+      </div>
+    </div>
+  );
+}
+
 // Import Today's Orders Button Component
 function ImportTodaysOrdersButton() {
   const utils = trpc.useUtils();
@@ -223,6 +253,7 @@ export default function OrdersManagement() {
           </p>
         </div>
         <div className="flex gap-2">
+          <ShipStationBalance />
           <ImportTodaysOrdersButton />
           <Button
             variant="outline"

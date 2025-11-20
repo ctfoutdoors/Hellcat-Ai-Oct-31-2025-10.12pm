@@ -8,6 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { trpc } from "@/lib/trpc";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { AlertTriangle } from "lucide-react";
 
 // Animated counter component
 function AnimatedCounter({ end, duration = 2000, prefix = "", suffix = "" }: { end: number; duration?: number; prefix?: string; suffix?: string }) {
@@ -61,6 +65,33 @@ function Sparkline({ data, color = "rgb(59, 130, 246)" }: { data: number[]; colo
 }
 
 export default function Dashboard() {
+  // Demo mode state (persisted in localStorage)
+  const [isDemoMode, setIsDemoMode] = useState(() => {
+    const stored = localStorage.getItem('dashboard-demo-mode');
+    return stored === 'true';
+  });
+
+  // Fetch real metrics from database
+  const { data: realMetrics, isLoading: metricsLoading } = trpc.dashboard.getMetrics.useQuery(undefined, {
+    enabled: !isDemoMode,
+  });
+
+  // Toggle demo mode and persist to localStorage
+  const toggleDemoMode = (checked: boolean) => {
+    setIsDemoMode(checked);
+    localStorage.setItem('dashboard-demo-mode', String(checked));
+  };
+
+  // Demo data (fallback)
+  const demoData = {
+    totalRevenue: 1200000,
+    activeCases: 89,
+    inventoryValue: 284000,
+    ordersToday: 127,
+  };
+
+  // Use real data if available and not in demo mode, otherwise use demo data
+  const metrics = isDemoMode ? demoData : (realMetrics || demoData);
   const modules = [
     {
       title: "Cases",
@@ -196,11 +227,14 @@ export default function Dashboard() {
     },
   ];
 
-  // System-wide metrics
+  // System-wide metrics (using real or demo data)
   const systemMetrics = [
     {
       label: "Total Revenue",
-      value: "$1.2M",
+      value: metrics.totalRevenue >= 1000000 
+        ? `$${(metrics.totalRevenue / 1000000).toFixed(1)}M`
+        : `$${(metrics.totalRevenue / 1000).toFixed(0)}K`,
+      rawValue: metrics.totalRevenue,
       change: "+18.2%",
       changeUp: true,
       icon: DollarSign,
@@ -208,7 +242,8 @@ export default function Dashboard() {
     },
     {
       label: "Active Cases",
-      value: "89",
+      value: String(metrics.activeCases),
+      rawValue: metrics.activeCases,
       change: "+12",
       changeUp: true,
       icon: Activity,
@@ -216,7 +251,8 @@ export default function Dashboard() {
     },
     {
       label: "Inventory Value",
-      value: "$284K",
+      value: `$${(metrics.inventoryValue / 1000).toFixed(0)}K`,
+      rawValue: metrics.inventoryValue,
       change: "-5.3%",
       changeUp: false,
       icon: Box,
@@ -224,7 +260,8 @@ export default function Dashboard() {
     },
     {
       label: "Orders Today",
-      value: "127",
+      value: String(metrics.ordersToday),
+      rawValue: metrics.ordersToday,
       change: "+23%",
       changeUp: true,
       icon: ShoppingBag,
@@ -234,15 +271,44 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-          Hellcat AI V4
-        </h1>
-        <p className="text-muted-foreground mt-2 text-lg">
-          Carrier Dispute Claims Management System
-        </p>
+      {/* Header with Demo Mode Toggle */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+            Hellcat AI V4
+          </h1>
+          <p className="text-muted-foreground mt-2 text-lg">
+            Carrier Dispute Claims Management System
+          </p>
+        </div>
+        <div className="flex items-center gap-3 px-4 py-2 bg-muted rounded-lg">
+          <Label htmlFor="demo-mode" className="text-sm font-medium cursor-pointer">
+            Demo Mode
+          </Label>
+          <Switch
+            id="demo-mode"
+            checked={isDemoMode}
+            onCheckedChange={toggleDemoMode}
+          />
+        </div>
       </div>
+
+      {/* Demo Mode Warning Banner */}
+      {isDemoMode && (
+        <Card className="border-l-4 border-orange-500 bg-gradient-to-r from-orange-500/10 to-transparent">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="text-orange-500" size={20} />
+              <div>
+                <p className="font-medium text-sm">Demo Mode Active</p>
+                <p className="text-xs text-muted-foreground">
+                  You are viewing sample data. Toggle off Demo Mode to see real metrics from your database.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* System Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -260,9 +326,8 @@ export default function Dashboard() {
               </div>
               <p className="text-sm text-muted-foreground">{metric.label}</p>
               <p className="text-3xl font-bold mt-1">
-                <AnimatedCounter end={parseInt(metric.value.replace(/[^0-9]/g, ""))} prefix={metric.value.match(/[^0-9]/)?.[0] || ""} />
-                {metric.value.includes("K") && "K"}
-                {metric.value.includes("M") && "M"}
+                {metric.value}
+                {isDemoMode && <Badge variant="outline" className="ml-2 text-xs">Demo</Badge>}
               </p>
             </CardContent>
             <div className="absolute inset-0 bg-gradient-to-br from-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />

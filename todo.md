@@ -1741,3 +1741,65 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 ✅ Auto-refreshes every 60 seconds
 ✅ Shows carrier name (e.g., "Stamps.com Balance")
 ✅ Graceful handling when no primary carrier configured
+
+
+---
+
+## SYSTEM ENHANCEMENTS - Multi-Feature Update
+
+### Phase 1: ShipStation Balance Auto-Refresh Enhancement
+- [x] Add manual "Sync" button next to balance display
+- [x] Change auto-refresh interval from 60 seconds to 1 hour
+- [x] Add "Last synced: X minutes ago" timestamp display
+- [x] Update balance immediately when sync button clicked
+- [x] Show syncing state with spinner
+
+### Phase 2: Dashboard True Data Integration
+- [x] Wire Total Revenue metric to real orders data
+- [x] Wire Active Cases metric to real cases count (placeholder for now)
+- [x] Wire Inventory Value to real products data (placeholder for now)
+- [x] Wire Orders Today to real orders filtered by today
+- [x] Add "Demo Mode" toggle in dashboard header
+- [x] Show warning banner when demo mode is enabled
+- [x] Store demo mode preference in localStorage
+- [x] Display "(Demo Data)" badge on metrics when in demo mode
+
+### Phase 3: Cases Import from ShipStation
+- [ ] Add "Import from ShipStation" button to Cases page
+- [ ] Create importCasesFromShipStation endpoint
+- [ ] Fetch orders with carrier disputes from ShipStation
+- [ ] Map ShipStation order data to cases schema
+- [ ] Handle duplicate detection by tracking number
+- [ ] Show import progress and results
+
+### Phase 4: Cases Drag-and-Drop Screenshot Upload
+- [ ] Add drag-and-drop zone to Cases page
+- [ ] Implement file upload handling (images only)
+- [ ] Use OCR or manual form to extract case details from screenshot
+- [ ] Upload screenshot to S3 storage
+- [ ] Create case with screenshot attachment
+- [ ] Support multiple file upload
+
+### Phase 5: Cases CSV Bulk Import
+- [ ] Add "Import CSV" button to Cases page
+- [ ] Create CSV upload dialog with template download
+- [ ] Parse CSV file with case data
+- [ ] Validate CSV format and required fields
+- [ ] Bulk insert cases into database
+- [ ] Show import results (success/failed rows)
+- [ ] Allow complementary document upload after CSV import
+
+### Phase 6: Document Generation System Verification
+- [ ] Verify dispute letter template exists and is functional
+- [ ] Test document generation with sample case data
+- [ ] Ensure PDF generation works correctly
+- [ ] Add email integration for sending dispute letters
+- [ ] Test email sending with generated documents
+- [ ] Add follow-up email tracking
+
+### Phase 7: Testing & Checkpoint
+- [ ] Test ShipStation balance sync and auto-refresh
+- [ ] Test dashboard true data vs demo mode toggle
+- [ ] Test all three cases import methods
+- [ ] Test document generation and email sending
+- [ ] Create comprehensive checkpoint

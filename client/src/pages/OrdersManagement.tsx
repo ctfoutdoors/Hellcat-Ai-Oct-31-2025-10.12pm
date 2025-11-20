@@ -47,11 +47,38 @@ import { ColumnCustomizer, type Column } from "@/components/ColumnCustomizer";
 
 // ShipStation Balance Display Component
 function ShipStationBalance() {
-  const { data: balance, isLoading } = trpc.shipstation.getAccountBalance.useQuery(undefined, {
-    refetchInterval: 60000, // Refresh every minute
+  const [lastSyncTime, setLastSyncTime] = useState<Date>(new Date());
+  const [isSyncing, setIsSyncing] = useState(false);
+  
+  const { data: balance, isLoading, refetch } = trpc.shipstation.getAccountBalance.useQuery(undefined, {
+    refetchInterval: 3600000, // Refresh every hour (60 * 60 * 1000)
+    onSuccess: () => {
+      setLastSyncTime(new Date());
+    },
   });
 
-  if (isLoading) {
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    await refetch();
+    setIsSyncing(false);
+    toast.success('Balance synced successfully');
+  };
+
+  const getTimeSinceSync = () => {
+    const now = new Date();
+    const diffMs = now.getTime() - lastSyncTime.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins === 1) return '1 minute ago';
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours === 1) return '1 hour ago';
+    return `${diffHours} hours ago`;
+  };
+
+  if (isLoading && !balance) {
     return (
       <div className="flex items-center gap-2 px-4 py-2 bg-muted rounded-md">
         <Loader2 className="h-4 w-4 animate-spin" />
@@ -61,7 +88,7 @@ function ShipStationBalance() {
   }
 
   return (
-    <div className="flex items-center gap-2 px-4 py-2 bg-muted rounded-md">
+    <div className="flex items-center gap-3 px-4 py-2 bg-muted rounded-md">
       <DollarSign className="h-4 w-4 text-green-600" />
       <div className="flex flex-col">
         <span className="text-sm font-medium">
@@ -69,6 +96,20 @@ function ShipStationBalance() {
         </span>
         <span className="text-xs text-muted-foreground">
           {balance?.carrierName || 'ShipStation'} Balance
+        </span>
+      </div>
+      <div className="flex flex-col items-end border-l pl-3 ml-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleManualSync}
+          disabled={isSyncing}
+          className="h-6 px-2"
+        >
+          <RefreshCw className={`h-3 w-3 ${isSyncing ? 'animate-spin' : ''}`} />
+        </Button>
+        <span className="text-xs text-muted-foreground whitespace-nowrap">
+          {getTimeSinceSync()}
         </span>
       </div>
     </div>

@@ -40,6 +40,7 @@ import { woocommerceRouter } from "./routers/woocommerce";
 import { shipstationRouter } from "./routers/shipstation";
 import { ordersRouter } from "./routers/orders";
 import { productSyncRouter } from "./routers/productSync";
+import { dashboardRouter } from "./routers/dashboard";
 
 
 export const appRouter = router({
@@ -57,6 +58,7 @@ export const appRouter = router({
   shipstation: shipstationRouter,
   orders: ordersRouter,
   productSync: productSyncRouter,
+  dashboard: dashboardRouter,
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

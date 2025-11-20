@@ -690,6 +690,91 @@ export const casesRouter = router({
     }),
 
   /**
+   * Send test email to demonstrate tracking system
+   * For demonstration purposes only
+   */
+  sendTestEmail: protectedProcedure
+    .input(z.object({
+      recipientEmail: z.string().email(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const { sendEmailViaGmail } = await import('../integrations/gmail-send');
+        const { logSentEmail } = await import('../services/emailActivityLogger');
+        const { backupEmailToGoogleDrive } = await import('../services/googleDriveBackup');
+        
+        const testCaseId = 999; // Dummy case ID for testing
+        
+        const emailData = {
+          to: [input.recipientEmail],
+          subject: 'TEST: Carrier Dispute Follow-up - UPS Late Delivery',
+          content: `
+Dear UPS Claims Department,
+
+This is a TEST EMAIL to demonstrate the email tracking, activity logging, and evidence storage system.
+
+Case Details:
+- Case ID: TEST-${testCaseId}
+- Tracking Number: 1Z999AA10123456784
+- Issue: Package delivered 5 days late
+- Claim Amount: $150.00
+
+This email demonstrates:
+✅ Automatic email activity logging
+✅ Evidence storage in S3
+✅ Google Drive backup
+✅ Case-specific tracking
+
+All email communications are automatically tracked and stored as evidence for dispute documentation.
+
+Best regards,
+Hellcat Intelligence Platform
+(Automated Test Email)
+          `.trim(),
+        };
+
+        // Send email
+        await sendEmailViaGmail(emailData);
+        
+        // Generate message ID for tracking
+        const messageId = `test-msg-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+        
+        // Log email activity with evidence storage
+        const logResult = await logSentEmail({
+          caseId: testCaseId,
+          messageId,
+          to: [input.recipientEmail],
+          subject: emailData.subject,
+          body: emailData.content,
+          performedBy: ctx.user.id,
+        });
+        
+        // Backup to Google Drive
+        const backupResult = await backupEmailToGoogleDrive({
+          caseId: testCaseId,
+          messageId,
+          emailData: {
+            to: [input.recipientEmail],
+            subject: emailData.subject,
+            body: emailData.content,
+            sentAt: new Date().toISOString(),
+          },
+        });
+        
+        return {
+          success: true,
+          messageId,
+          message: `Test email sent successfully to ${input.recipientEmail}. Check your inbox!`,
+          evidenceUrl: logResult.evidenceUrl,
+          googleDriveBackup: backupResult.success,
+        };
+      } catch (error: any) {
+        console.error('[sendTestEmail] Error:', error);
+        throw new Error(`Failed to send test email: ${error.message}`);
+      }
+    }),
+
+  /**
    * Calculate AI success probability for a case
    */
   calculateSuccessProbability: protectedProcedure

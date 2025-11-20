@@ -75,6 +75,7 @@ import ImportExport from "./pages/ImportExport";
 import ShipStationAutoImport from "./pages/ShipStationAutoImport";
 import Analytics from "./pages/Analytics";
 import CaseAnalytics from "./pages/CaseAnalytics";
+import TestEmail from "./pages/TestEmail";
 import SmartPredictions from "./pages/SmartPredictions";
 import AuditTrail from "./pages/AuditTrail";
 
@@ -111,6 +112,7 @@ function Router() {
         <Route path="/shipstation-auto-import" component={ShipStationAutoImport} />
         <Route path="/analytics" component={Analytics} />
         <Route path="/case-analytics" component={CaseAnalytics} />
+        <Route path="/test-email" component={TestEmail} />
         <Route path="/smart-predictions" component={SmartPredictions} />
       <Route path="/audit-trail" component={AuditTrail} />
         <Route path="/inventory/receiving" component={Receiving} />

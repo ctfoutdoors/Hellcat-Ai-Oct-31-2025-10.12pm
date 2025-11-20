@@ -1849,3 +1849,25 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Add timestamps and user attribution
 - [ ] Implement timeline filtering (show all/status only)
 - [ ] Add timeline export functionality
+
+### Phase 13: Tracking Number Refresh System
+- [x] Create trackingRefresh service with multiple matching strategies
+- [x] Implement JSON evidence storage for all API responses
+- [x] Add refreshTracking endpoint for single orders
+- [x] Add batchRefreshTracking for multiple orders
+- [x] Add autoRefreshMissingTracking for bulk processing
+- [x] Add setTrackingManually endpoint for manual override
+- [x] Add "Refresh Tracking" button to Orders Management UI
+- [x] Add "Auto-Refresh All" button for bulk processing
+- [x] Write comprehensive tests (22 tests passing)
+- [ ] Add manual tracking input dialog
+- [ ] Display evidence URLs in order details
+- [ ] Create scheduled job to auto-refresh daily
+
+### Phase 14: ShipStation Balance Fix
+- [x] Investigate ShipStation balance API endpoints
+- [x] Check if balance is account balance vs carrier balance
+- [x] Fix negative balance display formatting (red for negative, shows "Owed")
+- [x] Try /account endpoint first, fallback to summing carrier balances
+- [x] Test balance logic with negative/positive/zero values
+- [x] All tests passing (22/22)

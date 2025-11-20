@@ -87,15 +87,19 @@ function ShipStationBalance() {
     );
   }
 
+  const balanceValue = balance?.balance || 0;
+  const isNegative = balanceValue < 0;
+  const absBalance = Math.abs(balanceValue);
+
   return (
     <div className="flex items-center gap-3 px-4 py-2 bg-muted rounded-md">
-      <DollarSign className="h-4 w-4 text-green-600" />
+      <DollarSign className={`h-4 w-4 ${isNegative ? 'text-red-600' : 'text-green-600'}`} />
       <div className="flex flex-col">
-        <span className="text-sm font-medium">
-          ${balance?.balance?.toFixed(2) || '0.00'}
+        <span className={`text-sm font-medium ${isNegative ? 'text-red-600' : ''}`}>
+          {isNegative ? '-' : ''}${absBalance.toFixed(2)}
         </span>
         <span className="text-xs text-muted-foreground">
-          {balance?.carrierName || 'ShipStation'} Balance
+          {balance?.carrierName || 'ShipStation'} Balance {isNegative ? '(Owed)' : ''}
         </span>
       </div>
       <div className="flex flex-col items-end border-l pl-3 ml-1">
@@ -225,6 +229,48 @@ export default function OrdersManagement() {
     },
   });
 
+  // Tracking refresh mutation
+  const refreshTrackingMutation = trpc.orders.refreshTracking.useMutation({
+    onSuccess: (result) => {
+      if (result.success && result.trackingNumber) {
+        toast.success("Tracking Updated", {
+          description: `Tracking: ${result.trackingNumber} via ${result.carrierCode}`,
+        });
+        window.location.reload();
+      } else {
+        toast.warning("No Tracking Found", {
+          description: result.error || "ShipStation has no tracking info for this order yet",
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error(`Refresh failed: ${error.message}`);
+    },
+  });
+
+  // Auto-refresh missing tracking mutation
+  const autoRefreshMutation = trpc.orders.autoRefreshMissingTracking.useMutation({
+    onSuccess: (result) => {
+      toast.success("Bulk Refresh Complete", {
+        description: `Updated: ${result.updated}, Failed: ${result.failed}, Total: ${result.processed}`,
+      });
+      window.location.reload();
+    },
+    onError: (error) => {
+      toast.error(`Auto-refresh failed: ${error.message}`);
+    },
+  });
+
+  const handleRefreshTracking = (orderId: number) => {
+    refreshTrackingMutation.mutate({ orderId });
+  };
+
+  const handleAutoRefreshAll = () => {
+    if (confirm('This will attempt to refresh tracking for up to 50 orders with missing tracking. Continue?')) {
+      autoRefreshMutation.mutate({ limit: 50 });
+    }
+  };
+
   const handleSelectAll = () => {
     if (selectedOrders.length === orders.length) {
       setSelectedOrders([]);
@@ -327,6 +373,23 @@ export default function OrdersManagement() {
               <>
                 <Truck className="h-4 w-4 mr-2" />
                 Match Shipments
+              </>
+            )}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={handleAutoRefreshAll}
+            disabled={autoRefreshMutation.isPending}
+          >
+            {autoRefreshMutation.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Refreshing...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Auto-Refresh Tracking
               </>
             )}
           </Button>
@@ -620,6 +683,11 @@ export default function OrdersManagement() {
                             <DropdownMenuItem>
                               <Copy className="h-4 w-4 mr-2" />
                               Duplicate
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleRefreshTracking(order.id)}>
+                              <RefreshCw className="h-4 w-4 mr-2" />
+                              Refresh Tracking
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem className="text-destructive">

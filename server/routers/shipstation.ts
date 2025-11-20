@@ -7,35 +7,57 @@ import { eq } from "drizzle-orm";
 
 export const shipstationRouter = router({
   /**
-   * Get ShipStation account balance from primary carrier
+   * Get ShipStation account balance
+   * This fetches the overall ShipStation wallet balance, not carrier-specific balances
    */
   getAccountBalance: protectedProcedure.query(async () => {
     const shipstation = createShipStationClient();
     
     try {
-      // Get list of carriers to find the primary one
-      const carriers = await shipstation.request('/carriers', 'GET');
-      const primaryCarrier = carriers.find((c: any) => c.primary === true);
+      // Try multiple endpoints to get the account balance
+      let balance = 0;
+      let carrierName = 'ShipStation';
+      let accountNumber = null;
       
-      if (!primaryCarrier) {
-        // If no primary carrier, return zero balance
-        return {
-          balance: 0,
-          carrierName: 'No primary carrier',
-          carrierCode: null,
-          currency: 'USD',
-        };
+      try {
+        // Method 1: Try to get account info from /account endpoint
+        const accountInfo = await shipstation.request('/account', 'GET');
+        if (accountInfo && typeof accountInfo.balance !== 'undefined') {
+          balance = parseFloat(accountInfo.balance) || 0;
+          carrierName = accountInfo.companyName || 'ShipStation';
+          accountNumber = accountInfo.accountNumber || null;
+        }
+      } catch (accountError) {
+        console.log('[ShipStation] /account endpoint not available, trying carriers');
+        
+        // Method 2: Get list of carriers and sum their balances
+        try {
+          const carriers = await shipstation.request('/carriers', 'GET');
+          
+          // Try to get balance from each carrier
+          for (const carrier of carriers) {
+            try {
+              const carrierDetails = await shipstation.request(`/carriers/getcarrier?carrierCode=${carrier.code}`, 'GET');
+              if (carrierDetails && typeof carrierDetails.balance !== 'undefined') {
+                const carrierBalance = parseFloat(carrierDetails.balance) || 0;
+                balance += carrierBalance;
+                console.log(`[ShipStation] ${carrier.name}: $${carrierBalance}`);
+              }
+            } catch (carrierError) {
+              console.log(`[ShipStation] Could not get balance for ${carrier.code}`);
+            }
+          }
+        } catch (carriersError) {
+          console.error('[ShipStation] Could not fetch carriers:', carriersError);
+        }
       }
       
-      // Get carrier details which includes the balance
-      const carrierDetails = await shipstation.request(`/carriers/getcarrier?carrierCode=${primaryCarrier.code}`, 'GET');
-      
       return {
-        balance: carrierDetails.balance || 0,
-        carrierName: carrierDetails.name,
-        carrierCode: carrierDetails.code,
-        accountNumber: carrierDetails.accountNumber,
+        balance,
+        carrierName,
+        accountNumber,
         currency: 'USD',
+        isNegative: balance < 0,
       };
     } catch (error) {
       console.error('[ShipStation] Error fetching account balance:', error);

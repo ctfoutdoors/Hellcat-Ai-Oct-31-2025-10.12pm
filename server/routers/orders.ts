@@ -1,4 +1,5 @@
 import { router, protectedProcedure } from "../_core/trpc";
+import { refreshOrderTracking, batchRefreshTracking, autoRefreshMissingTracking } from '../services/trackingRefresh';
 import { z } from "zod";
 import { getDb } from "../db";
 import { orders } from "../../drizzle/schema";
@@ -284,5 +285,56 @@ export const ordersRouter = router({
       }
 
       return results;
+    }),
+
+  /**
+   * Refresh tracking information for a single order
+   */
+  refreshTracking: protectedProcedure
+    .input(z.object({ orderId: z.number() }))
+    .mutation(async ({ input }) => {
+      return await refreshOrderTracking(input.orderId);
+    }),
+
+  /**
+   * Batch refresh tracking for multiple orders
+   */
+  batchRefreshTracking: protectedProcedure
+    .input(z.object({ orderIds: z.array(z.number()) }))
+    .mutation(async ({ input }) => {
+      return await batchRefreshTracking(input.orderIds);
+    }),
+
+  /**
+   * Auto-refresh all orders with missing tracking
+   */
+  autoRefreshMissingTracking: protectedProcedure
+    .input(z.object({ limit: z.number().optional().default(50) }))
+    .mutation(async ({ input }) => {
+      return await autoRefreshMissingTracking(input.limit);
+    }),
+
+  /**
+   * Manually set tracking number for an order
+   */
+  setTrackingManually: protectedProcedure
+    .input(z.object({
+      orderId: z.number(),
+      trackingNumber: z.string(),
+      carrierCode: z.string(),
+      serviceCode: z.string().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+
+      await db.update(orders).set({
+        trackingNumber: input.trackingNumber,
+        carrierCode: input.carrierCode,
+        serviceCode: input.serviceCode || null,
+        updatedAt: new Date(),
+      }).where(eq(orders.id, input.orderId));
+
+      return { success: true };
     }),
 });

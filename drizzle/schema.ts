@@ -1976,3 +1976,89 @@ export const emailTemplates = mysqlTable("email_templates", {
 
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
 export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
+
+
+// ============================================================================
+// LEGAL REFERENCES & DOCUMENT BUILDER TABLES
+// ============================================================================
+
+/**
+ * Legal References Table
+ * Stores legal citations, statutes, and regulations for dispute letters
+ */
+export const legalReferences = mysqlTable("legal_references", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Reference type and classification
+  referenceType: mysqlEnum("referenceType", [
+    "ucc",                    // Uniform Commercial Code
+    "state_law",              // State-specific laws
+    "federal_regulation",     // Federal regulations (49 CFR, etc.)
+    "carrier_terms",          // Carrier terms and conditions
+    "contract_terms",         // Contract clauses
+    "case_law",              // Legal precedents
+    "industry_standard"       // Industry standards and best practices
+  ]).notNull(),
+  
+  // Citation information
+  citation: varchar("citation", { length: 500 }).notNull(),
+  title: varchar("title", { length: 500 }).notNull(),
+  jurisdiction: varchar("jurisdiction", { length: 100 }), // e.g., "Federal", "California", "New York"
+  
+  // Content
+  fullText: text("fullText").notNull(),
+  summary: text("summary"),
+  
+  // Application context
+  applicableCarriers: json("applicableCarriers").$type<string[]>(), // ["UPS", "FedEx", "USPS"]
+  applicableClaimTypes: json("applicableClaimTypes").$type<string[]>(), // ["late_delivery", "lost_package", etc.]
+  relevanceScore: int("relevanceScore").default(50), // 0-100, for ranking
+  
+  // Source information
+  sourceUrl: varchar("sourceUrl", { length: 1000 }),
+  sourceDocument: varchar("sourceDocument", { length: 500 }),
+  effectiveDate: timestamp("effectiveDate"),
+  expiryDate: timestamp("expiryDate"),
+  
+  // Usage tracking
+  usageCount: int("usageCount").default(0).notNull(),
+  lastUsedAt: timestamp("lastUsedAt"),
+  
+  // Metadata
+  tags: json("tags").$type<string[]>(),
+  isActive: boolean("isActive").default(true).notNull(),
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  referenceTypeIdx: index("reference_type_idx").on(table.referenceType),
+  jurisdictionIdx: index("jurisdiction_idx").on(table.jurisdiction),
+  isActiveIdx: index("is_active_idx").on(table.isActive),
+}));
+
+export type LegalReference = typeof legalReferences.$inferSelect;
+export type InsertLegalReference = typeof legalReferences.$inferInsert;
+
+/**
+ * Case Legal References Junction Table
+ * Links legal references to specific cases
+ */
+export const caseLegalReferences = mysqlTable("case_legal_references", {
+  id: int("id").autoincrement().primaryKey(),
+  caseId: int("caseId").notNull(),
+  legalReferenceId: int("legalReferenceId").notNull(),
+  
+  // Context of use
+  relevanceNote: text("relevanceNote"), // Why this reference applies to this case
+  includeInLetter: boolean("includeInLetter").default(true).notNull(),
+  
+  // Metadata
+  addedBy: int("addedBy").notNull(),
+  addedAt: timestamp("addedAt").defaultNow().notNull(),
+}, (table) => ({
+  caseIdx: index("case_idx").on(table.caseId),
+  legalRefIdx: index("legal_ref_idx").on(table.legalReferenceId),
+}));
+
+export type CaseLegalReference = typeof caseLegalReferences.$inferSelect;
+export type InsertCaseLegalReference = typeof caseLegalReferences.$inferInsert;

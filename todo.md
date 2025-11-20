@@ -2047,3 +2047,162 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Test channel analytics shows accurate data
 - [ ] Verify all channels properly identified
 - [ ] Save checkpoint
+
+
+---
+
+## Dashboard Analytics Time Period Filters
+
+### Phase 1: Time Period Selector UI ✅
+- [x] Create TimePeriodSelector component with dropdown
+- [x] Add time period options: Today, Yesterday, Last 7 Days, Last 30 Days, This Month, Last Month, This Quarter, Year to Date
+- [x] Add to Dashboard header next to Demo Mode toggle
+- [x] Store selected period in state
+- [x] Add date range calculation utility functions
+
+### Phase 2: Backend Date Range Support ✅
+- [x] Update dashboard.getMetrics endpoint to accept date range parameters
+- [x] Update dashboard.getChannelAnalytics endpoint to accept date range parameters
+- [x] Add date filtering to SQL queries (WHERE orderDate BETWEEN start AND end)
+- [x] Calculate proper date ranges for each period type
+- [x] Handle timezone conversions properly
+
+### Phase 3: Frontend Integration ✅
+- [x] Pass selected date range to getMetrics query
+- [x] Pass selected date range to getChannelAnalytics query
+- [x] Update metric cards to show period label (e.g., "Today", "Last 7 Days")
+- [x] Add loading states during period changes
+- [x] Persist selected period to localStorage
+- [x] Auto-refresh when period changes
+
+### Phase 4: Testing & Checkpoint
+- [ ] Test all time periods with real data
+- [ ] Verify date calculations are correct
+- [ ] Test timezone handling
+- [ ] Verify metrics update correctly
+- [ ] Save checkpoint
+
+
+---
+
+## Smart Case Search & Quick Create
+
+### Phase 1: Smart Search UI Component ✅
+- [x] Create CaseSmartSearch component
+- [x] Add search input with fuzzy matching
+- [x] Add drag-and-drop file upload zone
+- [x] Display search results in dropdown
+- [x] Show matching fields (tracking number, customer name, order number, etc.)
+- [x] Add "Create New Case" option when no matches found
+
+### Phase 2: Case Search Backend ✅
+- [x] Create cases.search endpoint with fuzzy matching
+- [x] Search across all case fields (tracking, customer, order, carrier, etc.)
+- [x] Support partial matches and typos
+- [x] Return ranked results by relevance
+- [x] Limit results to top 10 matches
+
+### Phase 3: Drag-and-Drop File Integration
+- [ ] Add file drop zone to search component
+- [ ] Support multiple file uploads
+- [ ] Show file preview thumbnails
+- [ ] Integrate with AI document parser
+- [ ] Extract case details from uploaded files
+- [ ] Show extracted data in search results
+
+### Phase 4: Quick Case Creation
+- [ ] Add "Quick Create" button in search results
+- [ ] Pre-fill form with AI-extracted data
+- [ ] Show confidence scores for extracted fields
+- [ ] Allow editing before submission
+- [ ] Auto-attach uploaded files to new case
+- [ ] Redirect to case detail after creation
+
+### Phase 5: Cases Page Integration
+- [ ] Add CaseSmartSearch to top of All Cases page
+- [ ] Replace or enhance existing search bar
+- [ ] Add keyboard shortcuts (Ctrl+K to focus search)
+- [ ] Add recent searches dropdown
+- [ ] Show case count in search results
+
+### Phase 6: Testing & Checkpoint
+- [ ] Test search with various queries
+- [ ] Test file upload and AI parsing
+- [ ] Test case creation workflow
+- [ ] Verify all fields are searchable
+- [ ] Test fuzzy matching accuracy
+- [ ] Save checkpoint
+
+
+---
+
+## Advanced Document Builder with Google Docs Integration
+
+### Phase 1: Google Docs Template Integration ✅
+- [x] Create Google Docs service for template management (placeholder for API setup)
+- [x] Implement template fetching from Google Docs (requires OAuth setup)
+- [x] Add template caching for performance
+- [x] Create template library database table (disputeLetterTemplates exists)
+- [x] Store template metadata (name, carrier, claim type, Google Doc ID)
+- [ ] Add template CRUD operations (pending tRPC endpoints)
+
+### Phase 2: Dynamic Element Insertion System ✅
+- [x] Create document builder service (advancedDocumentBuilder.ts)
+- [x] Implement screenshot insertion (from S3 URLs)
+- [x] Add certification insertion with signature blocks
+- [x] Add attestation sections with legal language
+- [x] Implement addendum builder for additional evidence
+- [x] Add reference section builder (carrier terms, laws)
+- [x] Create element positioning system
+
+### Phase 3: Legal References Database ✅
+- [x] Create carrier_terms database table (already exists in schema)
+- [ ] Add carrier-specific terms and conditions (pending data population)
+- [x] Create legal_references table for applicable laws
+- [ ] Add UCC (Uniform Commercial Code) references (pending data population)
+- [ ] Add state-specific shipping laws (pending data population)
+- [ ] Add federal regulations (49 CFR, etc.) (pending data population)
+- [ ] Create reference lookup service (pending tRPC endpoints)
+
+### Phase 4: Evidence Attachment System ✅
+- [x] Create case_evidence table for tracking attachments (caseDocuments exists)
+- [x] Add evidence type categorization (screenshot, certification, receipt, etc.)
+- [ ] Implement evidence upload to S3 (pending UI integration)
+- [ ] Create evidence viewer component (pending)
+- [ ] Add evidence tagging system (pending)
+- [ ] Link evidence to specific document sections (pending)
+
+### Phase 5: Document Builder UI
+- [ ] Create DocumentBuilder component
+- [ ] Add template selector dropdown
+- [ ] Add dynamic element insertion controls
+- [ ] Create evidence attachment interface
+- [ ] Add legal reference selector
+- [ ] Add carrier terms selector
+- [ ] Implement live document preview
+- [ ] Add export options (PDF, DOCX, Google Docs)
+
+### Phase 6: Case Detail Integration
+- [ ] Add "Generate Dispute Letter" button to case detail page
+- [ ] Open document builder modal
+- [ ] Pre-fill with case data
+- [ ] Show available evidence for insertion
+- [ ] Generate final document
+- [ ] Save generated document to case
+- [ ] Send via email or download
+
+### Phase 7: Template Library Management
+- [ ] Create template management page
+- [ ] Add template creation from Google Docs
+- [ ] Add template editing interface
+- [ ] Add template versioning
+- [ ] Create template preview
+- [ ] Add template sharing/export
+
+### Phase 8: Testing & Checkpoint
+- [ ] Test Google Docs integration
+- [ ] Test dynamic element insertion
+- [ ] Test legal reference lookup
+- [ ] Test evidence attachment
+- [ ] Test document generation end-to-end
+- [ ] Save checkpoint

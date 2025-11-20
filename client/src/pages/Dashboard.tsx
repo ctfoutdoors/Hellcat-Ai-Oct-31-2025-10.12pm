@@ -13,6 +13,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AlertTriangle } from "lucide-react";
 import ChannelAnalytics from "@/components/ChannelAnalytics";
+import TimePeriodSelector from "@/components/TimePeriodSelector";
+import { TimePeriod } from "@shared/dateRanges";
 
 // Animated counter component
 function AnimatedCounter({ end, duration = 2000, prefix = "", suffix = "" }: { end: number; duration?: number; prefix?: string; suffix?: string }) {
@@ -72,10 +74,25 @@ export default function Dashboard() {
     return stored === 'true';
   });
 
-  // Fetch real metrics from database
-  const { data: realMetrics, isLoading: metricsLoading } = trpc.dashboard.getMetrics.useQuery(undefined, {
-    enabled: !isDemoMode,
+  // Time period state (persisted in localStorage)
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>(() => {
+    const stored = localStorage.getItem('dashboard-time-period');
+    return (stored as TimePeriod) || 'today';
   });
+
+  // Persist time period changes to localStorage
+  const handleTimePeriodChange = (period: TimePeriod) => {
+    setTimePeriod(period);
+    localStorage.setItem('dashboard-time-period', period);
+  };
+
+  // Fetch real metrics from database with time period filter
+  const { data: realMetrics, isLoading: metricsLoading } = trpc.dashboard.getMetrics.useQuery(
+    { period: timePeriod },
+    {
+      enabled: !isDemoMode,
+    }
+  );
 
   // Toggle demo mode and persist to localStorage
   const toggleDemoMode = (checked: boolean) => {
@@ -272,7 +289,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-      {/* Header with Demo Mode Toggle */}
+      {/* Header with Time Period Selector and Demo Mode Toggle */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
@@ -282,15 +299,18 @@ export default function Dashboard() {
             Carrier Dispute Claims Management System
           </p>
         </div>
-        <div className="flex items-center gap-3 px-4 py-2 bg-muted rounded-lg">
-          <Label htmlFor="demo-mode" className="text-sm font-medium cursor-pointer">
-            Demo Mode
-          </Label>
-          <Switch
-            id="demo-mode"
-            checked={isDemoMode}
-            onCheckedChange={toggleDemoMode}
-          />
+        <div className="flex items-center gap-4">
+          <TimePeriodSelector value={timePeriod} onChange={handleTimePeriodChange} />
+          <div className="flex items-center gap-3 px-4 py-2 bg-muted rounded-lg">
+            <Label htmlFor="demo-mode" className="text-sm font-medium cursor-pointer">
+              Demo Mode
+            </Label>
+            <Switch
+              id="demo-mode"
+              checked={isDemoMode}
+              onCheckedChange={toggleDemoMode}
+            />
+          </div>
         </div>
       </div>
 
@@ -337,7 +357,7 @@ export default function Dashboard() {
       </div>
 
       {/* Channel Analytics Widget */}
-      <ChannelAnalytics />
+      <ChannelAnalytics period={timePeriod} />
 
       {/* Status Banner */}
       <Card className="border-l-4 border-primary bg-gradient-to-r from-primary/5 to-transparent">

@@ -1,13 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc";
 import { TrendingUp, Package, DollarSign } from "lucide-react";
+import { TimePeriod } from "@shared/dateRanges";
+
+interface ChannelAnalyticsProps {
+  period?: TimePeriod;
+}
 
 /**
  * Channel Analytics Widget
  * Displays order count and revenue breakdown by sales channel
  */
-export default function ChannelAnalytics() {
-  const { data, isLoading } = trpc.dashboard.getChannelAnalytics.useQuery();
+export default function ChannelAnalytics({ period = "today" }: ChannelAnalyticsProps) {
+  const { data, isLoading } = trpc.dashboard.getChannelAnalytics.useQuery({ period });
 
   if (isLoading) {
     return (

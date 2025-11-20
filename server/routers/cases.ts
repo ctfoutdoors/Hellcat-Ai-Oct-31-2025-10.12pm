@@ -23,6 +23,184 @@ export const casesRouter = router({
       });
     }),
 
+  /**
+   * Search cases with fuzzy matching across all fields
+   * Returns ranked results by relevance
+   */
+  search: protectedProcedure
+    .input(z.object({
+      query: z.string(),
+    }))
+    .query(async ({ ctx, input }) => {
+      const { query } = input;
+      if (!query || query.length < 2) {
+        return [];
+      }
+
+      // Get all cases for the user
+      const allCases = await db.listCases({ userId: ctx.user.id });
+      if (!allCases || allCases.length === 0) {
+        return [];
+      }
+
+      // Fuzzy search across multiple fields
+      const searchFields = [
+        'trackingNumber',
+        'customerName',
+        'customerEmail',
+        'carrier',
+        'caseNumber',
+        'title',
+        'description',
+        'shippingAddress1',
+        'shippingCity',
+        'shippingState',
+        'shippingZip',
+      ];
+
+      const queryLower = query.toLowerCase();
+      const results = allCases
+        .map((caseItem: any) => {
+          const matchedFields: string[] = [];
+          let relevanceScore = 0;
+
+          // Check each field for matches
+          for (const field of searchFields) {
+            const value = caseItem[field];
+            if (value && typeof value === 'string') {
+              const valueLower = value.toLowerCase();
+              
+              // Exact match (highest score)
+              if (valueLower === queryLower) {
+                relevanceScore += 100;
+                matchedFields.push(field);
+              }
+              // Starts with query (high score)
+              else if (valueLower.startsWith(queryLower)) {
+                relevanceScore += 50;
+                matchedFields.push(field);
+              }
+              // Contains query (medium score)
+              else if (valueLower.includes(queryLower)) {
+                relevanceScore += 25;
+                matchedFields.push(field);
+              }
+              // Fuzzy match - check if query words are in value
+              else {
+                const queryWords = queryLower.split(/\s+/);
+                const matchedWords = queryWords.filter(word => 
+                  valueLower.includes(word) && word.length > 2
+                );
+                if (matchedWords.length > 0) {
+                  relevanceScore += matchedWords.length * 10;
+                  matchedFields.push(field);
+                }
+              }
+            }
+          }
+
+          return {
+            ...caseItem,
+            relevanceScore,
+            matchedFields: [...new Set(matchedFields)], // Remove duplicates
+          };
+        })
+        .filter((result: any) => result.relevanceScore > 0)
+        .sort((a: any, b: any) => b.relevanceScore - a.relevanceScore)
+        .slice(0, 10); // Limit to top 10 results
+
+      return results;
+    }),
+
+  /**
+   * Search cases with fuzzy matching across all fields
+   * Returns ranked results by relevance
+   */
+  search: protectedProcedure
+    .input(z.object({
+      query: z.string(),
+    }))
+    .query(async ({ ctx, input }) => {
+      const { query } = input;
+      if (!query || query.length < 2) {
+        return [];
+      }
+
+      // Get all cases for the user
+      const allCases = await db.listCases({ userId: ctx.user.id });
+      if (!allCases || allCases.length === 0) {
+        return [];
+      }
+
+      // Fuzzy search across multiple fields
+      const searchFields = [
+        'trackingNumber',
+        'customerName',
+        'customerEmail',
+        'carrier',
+        'caseNumber',
+        'title',
+        'description',
+        'shippingAddress1',
+        'shippingCity',
+        'shippingState',
+        'shippingZip',
+      ];
+
+      const queryLower = query.toLowerCase();
+      const results = allCases
+        .map((caseItem: any) => {
+          const matchedFields: string[] = [];
+          let relevanceScore = 0;
+
+          // Check each field for matches
+          for (const field of searchFields) {
+            const value = caseItem[field];
+            if (value && typeof value === 'string') {
+              const valueLower = value.toLowerCase();
+              
+              // Exact match (highest score)
+              if (valueLower === queryLower) {
+                relevanceScore += 100;
+                matchedFields.push(field);
+              }
+              // Starts with query (high score)
+              else if (valueLower.startsWith(queryLower)) {
+                relevanceScore += 50;
+                matchedFields.push(field);
+              }
+              // Contains query (medium score)
+              else if (valueLower.includes(queryLower)) {
+                relevanceScore += 25;
+                matchedFields.push(field);
+              }
+              // Fuzzy match - check if query words are in value
+              else {
+                const queryWords = queryLower.split(/\s+/);
+                const matchedWords = queryWords.filter(word => 
+                  valueLower.includes(word) && word.length > 2
+                );
+                if (matchedWords.length > 0) {
+                  relevanceScore += matchedWords.length * 10;
+                  matchedFields.push(field);
+                }
+              }
+            }
+          }
+
+          return {
+            ...caseItem,
+            relevanceScore,
+            matchedFields: [...new Set(matchedFields)], // Remove duplicates
+          };
+        })
+        .filter((result: any) => result.relevanceScore > 0)
+        .sort((a: any, b: any) => b.relevanceScore - a.relevanceScore)
+        .slice(0, 10); // Limit to top 10 results
+
+      return results;
+    }),
+
   get: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {

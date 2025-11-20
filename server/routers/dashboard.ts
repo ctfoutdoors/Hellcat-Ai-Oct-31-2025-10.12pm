@@ -1,13 +1,33 @@
 import { router, protectedProcedure } from "../_core/trpc";
 import { getDb } from "../db";
 import { orders } from "../../drizzle/schema";
-import { sql, count, sum, eq, gte } from "drizzle-orm";
+import { sql, count, sum, eq, gte, and, lte } from "drizzle-orm";
+import { z } from "zod";
+import { getDateRange, type TimePeriod } from "@shared/dateRanges";
 
 export const dashboardRouter = router({
   /**
    * Get dashboard metrics with real data from database
+   * Supports date range filtering by time period
    */
-  getMetrics: protectedProcedure.query(async () => {
+  getMetrics: protectedProcedure
+    .input(
+      z
+        .object({
+          period: z.enum([
+            "today",
+            "yesterday",
+            "last7days",
+            "last30days",
+            "thisMonth",
+            "lastMonth",
+            "thisQuarter",
+            "yearToDate",
+          ]).optional(),
+        })
+        .optional()
+    )
+    .query(async ({ input }) => {
     const db = await getDb();
     if (!db) {
       // Return demo data if database is not available
@@ -21,12 +41,23 @@ export const dashboardRouter = router({
     }
 
     try {
-      // Calculate total revenue from all orders
+      // Get date range for filtering
+      const period = input?.period || "today";
+      const dateRange = getDateRange(period as TimePeriod);
+      
+      // Build date filter condition
+      const dateFilter = and(
+        gte(orders.orderDate, dateRange.start),
+        lte(orders.orderDate, dateRange.end)
+      );
+
+      // Calculate total revenue from orders in date range
       const revenueResult = await db
         .select({
           total: sum(orders.totalAmount),
         })
-        .from(orders);
+        .from(orders)
+        .where(dateFilter);
 
       const totalRevenue = parseFloat(revenueResult[0]?.total as string || "0");
 
@@ -36,24 +67,22 @@ export const dashboardRouter = router({
       // Calculate inventory value (you'll need to implement this based on your products schema)
       const inventoryValue = 0; // TODO: Implement when products schema is ready
 
-      // Count orders from today
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const ordersTodayResult = await db
+      // Count orders in date range
+      const ordersCountResult = await db
         .select({
           count: count(),
         })
         .from(orders)
-        .where(gte(orders.orderDate, today));
+        .where(dateFilter);
 
-      const ordersToday = ordersTodayResult[0]?.count || 0;
+      const ordersCount = ordersCountResult[0]?.count || 0;
 
       return {
         totalRevenue,
         activeCases,
         inventoryValue,
-        ordersToday,
+        ordersToday: ordersCount,
+        period: dateRange.label,
         isDemo: false,
       };
     } catch (error) {
@@ -71,8 +100,26 @@ export const dashboardRouter = router({
 
   /**
    * Get channel analytics - order count and revenue by channel
+   * Supports date range filtering by time period
    */
-  getChannelAnalytics: protectedProcedure.query(async () => {
+  getChannelAnalytics: protectedProcedure
+    .input(
+      z
+        .object({
+          period: z.enum([
+            "today",
+            "yesterday",
+            "last7days",
+            "last30days",
+            "thisMonth",
+            "lastMonth",
+            "thisQuarter",
+            "yearToDate",
+          ]).optional(),
+        })
+        .optional()
+    )
+    .query(async ({ input }) => {
     const db = await getDb();
     if (!db) {
       // Return demo data if database is not available
@@ -88,7 +135,17 @@ export const dashboardRouter = router({
     }
 
     try {
-      // Get order count and revenue by channel
+      // Get date range for filtering
+      const period = input?.period || "today";
+      const dateRange = getDateRange(period as TimePeriod);
+      
+      // Build date filter condition
+      const dateFilter = and(
+        gte(orders.orderDate, dateRange.start),
+        lte(orders.orderDate, dateRange.end)
+      );
+
+      // Get order count and revenue by channel for date range
       const channelStats = await db
         .select({
           channel: orders.channel,
@@ -96,6 +153,7 @@ export const dashboardRouter = router({
           revenue: sum(orders.totalAmount),
         })
         .from(orders)
+        .where(dateFilter)
         .groupBy(orders.channel);
 
       const channels = channelStats.map((stat) => ({
@@ -106,6 +164,7 @@ export const dashboardRouter = router({
 
       return {
         channels,
+        period: dateRange.label,
         isDemo: false,
       };
     } catch (error) {

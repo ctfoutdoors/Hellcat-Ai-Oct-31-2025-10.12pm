@@ -551,7 +551,7 @@ export const casesRouter = router({
 
   /**
    * Send follow-up email for a case
-   * Sends email via Gmail and logs it in the database
+   * Sends email via Gmail, logs activity, and backs up to Google Drive
    */
   sendFollowUpEmail: protectedProcedure
     .input(z.object({
@@ -565,24 +565,58 @@ export const casesRouter = router({
       try {
         // Send email via Gmail MCP
         const { sendEmailViaGmail } = await import('../integrations/gmail-send');
-        await sendEmailViaGmail({
-          to: [input.to],
-          subject: input.subject,
-          content: input.body,
-        });
+        const { logSentEmail, logFailedEmail } = await import('../services/emailActivityLogger');
+        const { backupEmailToGoogleDrive } = await import('../services/googleDriveBackup');
+        
+        try {
+          await sendEmailViaGmail({
+            to: [input.to],
+            subject: input.subject,
+            content: input.body,
+          });
 
-        // Log email in database
-        await db.addCaseActivity({
-          caseId: input.caseId,
-          activityType: 'email_sent',
-          description: `Sent follow-up email to ${input.to}: ${input.subject}`,
-          performedBy: ctx.user.id,
-        });
+          // Generate message ID for tracking
+          const messageId = `msg-${Date.now()}-${Math.random().toString(36).substring(7)}`;
 
-        return {
-          success: true,
-          message: 'Follow-up email sent successfully',
-        };
+          // Log email activity with evidence storage
+          await logSentEmail({
+            caseId: input.caseId,
+            messageId,
+            to: [input.to],
+            subject: input.subject,
+            body: input.body,
+            performedBy: ctx.user.id,
+          });
+
+          // Backup to Google Drive
+          await backupEmailToGoogleDrive({
+            caseId: input.caseId,
+            messageId,
+            emailData: {
+              to: [input.to],
+              subject: input.subject,
+              body: input.body,
+              sentAt: new Date().toISOString(),
+            },
+          });
+
+          return {
+            success: true,
+            message: 'Follow-up email sent successfully',
+            messageId,
+          };
+        } catch (emailError: any) {
+          // Log failed email
+          await logFailedEmail({
+            caseId: input.caseId,
+            to: [input.to],
+            subject: input.subject,
+            error: emailError.message,
+            performedBy: ctx.user.id,
+          });
+
+          throw emailError;
+        }
       } catch (error: any) {
         throw new Error(`Failed to send email: ${error.message}`);
       }

@@ -1,0 +1,22 @@
+{
+  "query": "SELECT \n  orderNumber, customerName, customerEmail, customerPhone,\n  totalAmount, shippingCost, taxAmount, status,\n  shippingAddress, orderItems\nFROM orders \nWHERE orderNumber = 'WOO-87694';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT \n  orderNumber, customerName, customerEmail, customerPhone,\n  totalAmount, shippingCost, taxAmount, status,\n  shippingAddress, orderItems\nFROM orders \nWHERE orderNumber = 'WOO-87694';",
+  "rows": [
+    {
+      "orderNumber": "WOO-87694",
+      "customerName": "Robert Torn",
+      "customerEmail": "Rwtorn@gmail.com",
+      "customerPhone": "555-0123",
+      "totalAmount": "483.96",
+      "shippingCost": "15.00",
+      "taxAmount": "38.72",
+      "status": "processing",
+      "shippingAddress": "{\"address1\": \"123 Main Street\", \"address2\": \"Apt 4B\", \"city\": \"Los Angeles\", \"company\": null, \"country\": \"US\", \"name\": \"Robert Torn\", \"phone\": \"555-0123\", \"state\": \"CA\", \"zip\": \"90001\"}",
+      "orderItems": "[{\"name\": \"Premium Widget\", \"price\": \"150.00\", \"quantity\": 2, \"sku\": \"WIDGET-001\", \"total\": \"300.00\"}, {\"name\": \"Deluxe Gadget\", \"price\": \"130.24\", \"quantity\": 1, \"sku\": \"GADGET-002\", \"total\": \"130.24\"}]"
+    }
+  ],
+  "messages": [],
+  "stdout": "orderNumber\tcustomerName\tcustomerEmail\tcustomerPhone\ttotalAmount\tshippingCost\ttaxAmount\tstatus\tshippingAddress\torderItems\nWOO-87694\tRobert Torn\tRwtorn@gmail.com\t555-0123\t483.96\t15.00\t38.72\tprocessing\t{\"address1\": \"123 Main Street\", \"address2\": \"Apt 4B\", \"city\": \"Los Angeles\", \"company\": null, \"country\": \"US\", \"name\": \"Robert Torn\", \"phone\": \"555-0123\", \"state\": \"CA\", \"zip\": \"90001\"}\t[{\"name\": \"Premium Widget\", \"price\": \"150.00\", \"quantity\": 2, \"sku\": \"WIDGET-001\", \"total\": \"300.00\"}, {\"name\": \"Deluxe Gadget\", \"price\": \"130.24\", \"quantity\": 1, \"sku\": \"GADGET-002\", \"total\": \"130.24\"}]\n",
+  "stderr": "",
+  "execution_time_ms": 49
+}

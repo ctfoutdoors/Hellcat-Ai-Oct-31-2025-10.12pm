@@ -1,0 +1,16 @@
+{
+  "query": "SELECT id, orderNumber, customerName, customerEmail FROM orders;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT id, orderNumber, customerName, customerEmail FROM orders;",
+  "rows": [
+    {
+      "id": "30001",
+      "orderNumber": "WOO-87694",
+      "customerName": "Robert Torn",
+      "customerEmail": "Rwtorn@gmail.com"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\torderNumber\tcustomerName\tcustomerEmail\n30001\tWOO-87694\tRobert Torn\tRwtorn@gmail.com\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

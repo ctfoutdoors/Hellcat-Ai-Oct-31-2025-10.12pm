@@ -1,5 +1,6 @@
 import { router, protectedProcedure } from "../_core/trpc";
 import { refreshOrderTracking, batchRefreshTracking, autoRefreshMissingTracking } from '../services/trackingRefresh';
+import { syncOrdersFromStore, syncAllStoreOrders, getSyncStats } from '../services/shipstationOrderSync';
 import { z } from "zod";
 import { getDb } from "../db";
 import { orders } from "../../drizzle/schema";
@@ -356,6 +357,36 @@ export const ordersRouter = router({
 
       return ordersList;
     }),
+
+  /**
+   * Sync orders from ShipStation for a specific store
+   */
+  syncStoreOrders: protectedProcedure
+    .input(z.object({
+      storeId: z.number(),
+      daysBack: z.number().optional().default(30),
+    }))
+    .mutation(async ({ input }) => {
+      return await syncOrdersFromStore(input.storeId, input.daysBack);
+    }),
+
+  /**
+   * Sync orders from all ShipStation stores
+   */
+  syncAllOrders: protectedProcedure
+    .input(z.object({
+      daysBack: z.number().optional().default(30),
+    }))
+    .mutation(async ({ input }) => {
+      return await syncAllStoreOrders(input.daysBack);
+    }),
+
+  /**
+   * Get sync statistics
+   */
+  getSyncStats: protectedProcedure.query(async () => {
+    return await getSyncStats();
+  }),
 
   /**
    * Manually set tracking number for an order

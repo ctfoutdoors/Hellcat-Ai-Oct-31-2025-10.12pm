@@ -12,6 +12,7 @@ import { trpc } from "@/lib/trpc";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { AlertTriangle } from "lucide-react";
+import ChannelAnalytics from "@/components/ChannelAnalytics";
 
 // Animated counter component
 function AnimatedCounter({ end, duration = 2000, prefix = "", suffix = "" }: { end: number; duration?: number; prefix?: string; suffix?: string }) {
@@ -334,6 +335,9 @@ export default function Dashboard() {
           </Card>
         ))}
       </div>
+
+      {/* Channel Analytics Widget */}
+      <ChannelAnalytics />
 
       {/* Status Banner */}
       <Card className="border-l-4 border-primary bg-gradient-to-r from-primary/5 to-transparent">

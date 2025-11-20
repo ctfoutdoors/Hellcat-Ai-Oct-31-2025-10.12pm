@@ -257,7 +257,26 @@ export default function OrdersManagement() {
       window.location.reload();
     },
     onError: (error) => {
-      toast.error(`Auto-refresh failed: ${error.message}`);
+      toast.error("Bulk Refresh Failed", {
+        description: error.message,
+      });
+    },
+  });
+
+  // Sync orders from ShipStation mutation
+  const syncOrdersMutation = trpc.orders.syncAllOrders.useMutation({
+    onSuccess: (results) => {
+      const totalCreated = Object.values(results).reduce((sum, r) => sum + r.ordersCreated, 0);
+      const totalUpdated = Object.values(results).reduce((sum, r) => sum + r.ordersUpdated, 0);
+      toast.success("ShipStation Sync Complete", {
+        description: `Created: ${totalCreated}, Updated: ${totalUpdated} orders`,
+      });
+      window.location.reload();
+    },
+    onError: (error) => {
+      toast.error("Sync Failed", {
+        description: error.message,
+      });
     },
   });
 
@@ -265,9 +284,15 @@ export default function OrdersManagement() {
     refreshTrackingMutation.mutate({ orderId });
   };
 
-  const handleAutoRefreshAll = () => {
+  const handleAutoRefreshTracking = () => {
     if (confirm('This will attempt to refresh tracking for up to 50 orders with missing tracking. Continue?')) {
       autoRefreshMutation.mutate({ limit: 50 });
+    }
+  };
+
+  const handleSyncOrders = () => {
+    if (confirm('This will sync orders from all ShipStation stores (eBay, Amazon, etc.) for the last 30 days. Continue?')) {
+      syncOrdersMutation.mutate({ daysBack: 30 });
     }
   };
 
@@ -376,23 +401,40 @@ export default function OrdersManagement() {
               </>
             )}
           </Button>
-          <Button
-            variant="outline"
-            onClick={handleAutoRefreshAll}
-            disabled={autoRefreshMutation.isPending}
-          >
-            {autoRefreshMutation.isPending ? (
-              <>
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Refreshing...
-              </>
-            ) : (
-              <>
-                <RefreshCw className="h-4 w-4 mr-2" />
-                Auto-Refresh Tracking
-              </>
-            )}
-          </Button>
+              <Button
+                variant="outline"
+                onClick={handleAutoRefreshTracking}
+                disabled={autoRefreshMutation.isPending}
+              >
+                {autoRefreshMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Refreshing...
+                  </>
+                ) : (
+                  <>
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Auto-Refresh Tracking
+                  </>
+                )}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={handleSyncOrders}
+                disabled={syncOrdersMutation.isPending}
+              >
+                {syncOrdersMutation.isPending ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Syncing...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Sync from ShipStation
+                  </>
+                )}
+              </Button>
           <Button variant="outline">
             <Download className="h-4 w-4 mr-2" />
             Export
@@ -610,9 +652,25 @@ export default function OrdersManagement() {
                         />
                       )}
                       {column.id === "orderNumber" && (
-                        <Link href={`/order/${order.id}`} className="text-primary hover:underline font-medium">
-                          {order.orderNumber}
-                        </Link>
+                        <div className="flex items-center gap-2">
+                          <Link href={`/order/${order.id}`} className="text-primary hover:underline font-medium">
+                            {order.orderNumber}
+                          </Link>
+                          {order.channel && (
+                            <Badge 
+                              variant="outline" 
+                              className={
+                                order.channel.toLowerCase() === 'ebay' ? 'bg-green-500/10 text-green-700 border-green-500/20' :
+                                order.channel.toLowerCase() === 'amazon' ? 'bg-orange-500/10 text-orange-700 border-orange-500/20' :
+                                order.channel.toLowerCase() === 'woocommerce' ? 'bg-purple-500/10 text-purple-700 border-purple-500/20' :
+                                order.channel.toLowerCase() === 'shopify' ? 'bg-blue-500/10 text-blue-700 border-blue-500/20' :
+                                'bg-gray-500/10 text-gray-700 border-gray-500/20'
+                              }
+                            >
+                              {order.channel}
+                            </Badge>
+                          )}
+                        </div>
                       )}
                       {column.id === "channelOrderNumber" && (
                         <span className="text-muted-foreground">{order.channelOrderNumber}</span>

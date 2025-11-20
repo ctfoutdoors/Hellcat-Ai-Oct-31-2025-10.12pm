@@ -68,4 +68,58 @@ export const dashboardRouter = router({
       };
     }
   }),
+
+  /**
+   * Get channel analytics - order count and revenue by channel
+   */
+  getChannelAnalytics: protectedProcedure.query(async () => {
+    const db = await getDb();
+    if (!db) {
+      // Return demo data if database is not available
+      return {
+        channels: [
+          { channel: "eBay", orderCount: 45, revenue: 12500 },
+          { channel: "Amazon", orderCount: 38, revenue: 9800 },
+          { channel: "WooCommerce", orderCount: 22, revenue: 8200 },
+          { channel: "Shopify", orderCount: 15, revenue: 5400 },
+        ],
+        isDemo: true,
+      };
+    }
+
+    try {
+      // Get order count and revenue by channel
+      const channelStats = await db
+        .select({
+          channel: orders.channel,
+          orderCount: count(),
+          revenue: sum(orders.totalAmount),
+        })
+        .from(orders)
+        .groupBy(orders.channel);
+
+      const channels = channelStats.map((stat) => ({
+        channel: stat.channel || "Unknown",
+        orderCount: stat.orderCount,
+        revenue: parseFloat(stat.revenue as string || "0"),
+      }));
+
+      return {
+        channels,
+        isDemo: false,
+      };
+    } catch (error) {
+      console.error("[Dashboard] Failed to fetch channel analytics:", error);
+      // Return demo data on error
+      return {
+        channels: [
+          { channel: "eBay", orderCount: 45, revenue: 12500 },
+          { channel: "Amazon", orderCount: 38, revenue: 9800 },
+          { channel: "WooCommerce", orderCount: 22, revenue: 8200 },
+          { channel: "Shopify", orderCount: 15, revenue: 5400 },
+        ],
+        isDemo: true,
+      };
+    }
+  }),
 });

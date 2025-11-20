@@ -1962,3 +1962,48 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - `client/src/pages/TestEmail.tsx` - Test email interface for demonstration
 
 **Note:** Gmail MCP server must be configured in Manus account settings before live email sending will work. All infrastructure is ready and tested.
+
+
+---
+
+## eBay & Amazon Orders Integration
+
+### Phase 1: Find ShipStation Channel IDs ✅
+- [x] Query ShipStation API to get all channels
+- [x] Identify "New eBay Store" channel ID (2896008)
+- [x] Identify "New Amazon Store" channel ID (2895995)
+
+### Phase 2: Create eBay Orders Page ✅
+- [x] Create /orders/ebay route
+- [x] Build eBay orders page component
+- [x] Filter orders by "New eBay Store" channel ID
+- [x] Display order list with eBay-specific details
+- [x] Add route to App.tsx
+
+### Phase 3: Create Amazon Orders Page ✅
+- [x] Create /orders/amazon route
+- [x] Build Amazon orders page component
+- [x] Filter orders by "New Amazon Store" channel ID
+- [x] Display order list with Amazon-specific details
+- [x] Add route to App.tsx
+
+### Phase 4: Update Orders Router Backend ✅
+- [x] Add channel/storeId filtering to orders.list endpoint
+- [x] Support filtering by eBay store (2896008)
+- [x] Support filtering by Amazon store (2895995)
+- [x] Support filtering by channel name (ebay, amazon)
+- [x] Ensure All Orders includes both channels
+
+### Phase 5: Update All Orders Page
+- [ ] Ensure eBay orders are included in All Orders view
+- [ ] Ensure Amazon orders are included in All Orders view
+- [ ] Add channel identification badges (eBay/Amazon)
+- [ ] Test filtering by channel
+- [ ] Verify order sync from ShipStation
+
+### Phase 6: Testing & Checkpoint
+- [ ] Test eBay orders page displays correct orders
+- [ ] Test Amazon orders page displays correct orders
+- [ ] Test All Orders includes both channels
+- [ ] Verify order details are complete
+- [ ] Save checkpoint

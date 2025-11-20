@@ -88,6 +88,13 @@ export class ShipStationClient {
   }
 
   /**
+   * Get all stores/channels
+   */
+  async getStores(): Promise<Array<{ storeId: number; storeName: string; marketplaceId: number; marketplaceName: string; active: boolean }>> {
+    return this.request('/stores');
+  }
+
+  /**
    * Get orders with optional filters
    */
   async getOrders(params: {

@@ -76,6 +76,8 @@ import ShipStationAutoImport from "./pages/ShipStationAutoImport";
 import Analytics from "./pages/Analytics";
 import CaseAnalytics from "./pages/CaseAnalytics";
 import TestEmail from "./pages/TestEmail";
+import EBayOrders from "./pages/EBayOrders";
+import AmazonOrders from "./pages/AmazonOrders";
 import SmartPredictions from "./pages/SmartPredictions";
 import AuditTrail from "./pages/AuditTrail";
 
@@ -94,6 +96,8 @@ function Router() {
         
         {/* Orders Module */}
         <Route path="/orders" component={OrdersManagement} />
+        <Route path="/orders/ebay" component={EBayOrders} />
+        <Route path="/orders/amazon" component={AmazonOrders} />
         <Route path="/orders/tracking" component={OrderTracking} />
         <Route path="/orders/:channel" component={OrdersByChannel} />
         <Route path="/order/:id" component={OrderDetail} />

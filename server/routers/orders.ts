@@ -315,6 +315,49 @@ export const ordersRouter = router({
     }),
 
   /**
+   * List orders with optional channel and storeId filtering
+   */
+  list: protectedProcedure
+    .input(z.object({
+      channel: z.string().optional(),
+      storeId: z.number().optional(),
+      status: z.string().optional(),
+      limit: z.number().optional().default(100),
+    }))
+    .query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new Error('Database not available');
+
+      const conditions = [];
+
+      // Filter by channel (ebay, amazon, etc.)
+      if (input.channel) {
+        conditions.push(eq(orders.channel, input.channel));
+      }
+
+      // Filter by ShipStation store ID
+      if (input.storeId) {
+        conditions.push(eq(orders.storeId, input.storeId));
+      }
+
+      // Filter by status
+      if (input.status && input.status !== 'all') {
+        conditions.push(eq(orders.status, input.status));
+      }
+
+      const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+      const ordersList = await db
+        .select()
+        .from(orders)
+        .where(whereClause)
+        .orderBy(desc(orders.orderDate))
+        .limit(input.limit);
+
+      return ordersList;
+    }),
+
+  /**
    * Manually set tracking number for an order
    */
   setTrackingManually: protectedProcedure

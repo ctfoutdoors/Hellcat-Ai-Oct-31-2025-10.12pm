@@ -2206,3 +2206,13 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [ ] Test evidence attachment
 - [ ] Test document generation end-to-end
 - [ ] Save checkpoint
+
+
+---
+
+## Bug Fixes
+
+### Templates Page Issue ✅
+- [x] Fix "Invalid Case ID" error on Templates page (moved /cases/templates route before /cases/:id)
+- [x] Templates page should not require case ID parameter
+- [x] Update routing to handle templates as standalone feature

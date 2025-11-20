@@ -89,10 +89,11 @@ function Router() {
         {/* Cases Module */}
         <Route path="/cases" component={AllCases} />
         <Route path="/cases/new" component={NewCase} />
+        <Route path="/cases/templates" component={CaseTemplates} />
+        <Route path="/cases/settings" component={CasesSettings} />
         <Route path="/cases/:id" component={CaseDetail} />
         <Route path="/import-cases" component={ImportCasesNew} />
-      <Route path="/templates" component={Templates} />   <Route path="/cases/templates" component={CaseTemplates} />
-        <Route path="/cases/settings" component={CasesSettings} />
+        <Route path="/templates" component={Templates} />
         
         {/* Orders Module */}
         <Route path="/orders" component={OrdersManagement} />

@@ -2311,3 +2311,20 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Test Smart Case Search integration on All Cases page (drag-and-drop visible)
 - [ ] Test document generation with all elements (pending actual cases)
 - [x] Verify all database connections working (tRPC endpoints connected)
+
+
+---
+
+## Database Migration & Seeding ✅ COMPLETE
+
+### Migration Tasks ✅
+- [x] Create non-interactive migration script to bypass prompts (migrate-legal-tables.mjs)
+- [x] Execute migration to create legal references table (11 columns, JSON support)
+- [x] Execute migration to create carrier terms table (already exists, verified structure)
+- [x] Verify tables created successfully (both tables confirmed)
+
+### Seeding Tasks ✅
+- [x] Run legal references seed script (11 references - UCC, CFR, USC, state laws)
+- [x] Run carrier terms seed script (19 terms - UPS, FedEx, USPS, DHL, Amazon)
+- [x] Verify data populated correctly (11 legal refs + 19 carrier terms confirmed)
+- [x] Test tRPC endpoints return real data (legalReferences.list, carrierTerms.listByCarrier functional)

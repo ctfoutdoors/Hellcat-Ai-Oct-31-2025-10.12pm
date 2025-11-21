@@ -91,32 +91,37 @@ export default function AIAgents() {
     }
   };
   
+  const transcribeMutation = trpc.aiAgents.transcribeVoice.useMutation({
+    onSuccess: (data) => {
+      setCommand(data.text);
+      toast.success('Voice transcribed successfully');
+    },
+    onError: (error) => {
+      console.error('Transcription error:', error);
+      toast.error('Failed to transcribe: ' + error.message);
+    },
+    onSettled: () => {
+      setIsTranscribing(false);
+    },
+  });
+
   const transcribeAudio = async (audioBlob: Blob) => {
     setIsTranscribing(true);
     
     try {
-      // Upload audio to S3 first
-      const formData = new FormData();
-      formData.append('file', audioBlob, 'voice-command.webm');
+      // Note: In production, upload audio to S3 first and use that URL
+      // For now, create a temporary object URL
+      const audioUrl = URL.createObjectURL(audioBlob);
       
-      // For now, we'll use a simple approach - in production, you'd upload to S3
-      // and then call the Whisper API endpoint
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          // This is a placeholder - you'll need to implement the actual transcription endpoint
-          toast.info('Voice transcription coming soon! For now, please type your command.');
-          setIsTranscribing(false);
-        } catch (error) {
-          console.error('Transcription error:', error);
-          toast.error('Failed to transcribe audio');
-          setIsTranscribing(false);
-        }
-      };
-      reader.readAsDataURL(audioBlob);
+      // Call transcription API
+      transcribeMutation.mutate({
+        audioUrl,
+        language: 'en',
+        prompt: 'Transcribe the user\'s voice command to the AI agent system',
+      });
     } catch (error) {
       console.error('Error transcribing audio:', error);
-      toast.error('Failed to transcribe audio');
+      toast.error('Failed to process audio');
       setIsTranscribing(false);
     }
   };

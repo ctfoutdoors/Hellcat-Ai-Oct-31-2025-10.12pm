@@ -4,6 +4,8 @@ import { AgentFactory } from '../_core/agents/AgentFactory';
 import { getDb } from '../db';
 import { aiAgents, aiAgentTasks, aiAgentConversations } from '../../drizzle/schema';
 import { eq, desc } from 'drizzle-orm';
+import { transcribeAudio } from '../_core/voiceTranscription';
+import { TRPCError } from '@trpc/server';
 
 export const aiAgentsRouter = router({
   /**
@@ -145,5 +147,29 @@ export const aiAgentsRouter = router({
       
       const tasks = await query.orderBy(desc(aiAgentTasks.createdAt)).limit(input.limit);
       return tasks;
+    }),
+  
+  /**
+   * Transcribe voice command to text using Whisper API
+   */
+  transcribeVoice: protectedProcedure
+    .input(z.object({
+      audioUrl: z.string(),
+      language: z.string().optional(),
+      prompt: z.string().optional(),
+    }))
+    .mutation(async ({ input, ctx }) => {
+      const result = await transcribeAudio(input);
+      
+      // Check if it's an error
+      if ('error' in result) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: result.error,
+          cause: result,
+        });
+      }
+      
+      return result;
     }),
 });

@@ -14,6 +14,7 @@ export const aiAgentsRouter = router({
    */
   initializeSystem: protectedProcedure.mutation(async ({ ctx }) => {
     const { ceo, cSuite } = await AgentFactory.initializeCoreAgents(ctx.user.id);
+    const specialists = await AgentFactory.initializeSpecialistAgents(ceo.id, cSuite);
     
     return {
       success: true,
@@ -26,6 +27,12 @@ export const aiAgentsRouter = router({
         id: agent.id,
         name: agent.name,
         role: agent.role,
+      })),
+      specialists: Object.entries(specialists).map(([role, agent]) => ({
+        id: agent.id,
+        name: agent.name,
+        role: agent.role,
+        department: agent.department,
       })),
     };
   }),

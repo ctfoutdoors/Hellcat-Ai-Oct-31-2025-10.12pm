@@ -109,11 +109,24 @@ export default function AIAgents() {
     setIsTranscribing(true);
     
     try {
-      // Note: In production, upload audio to S3 first and use that URL
-      // For now, create a temporary object URL
-      const audioUrl = URL.createObjectURL(audioBlob);
+      // Upload audio to S3 for persistent storage
+      const formData = new FormData();
+      const fileName = `voice-${Date.now()}.webm`;
+      formData.append('file', audioBlob, fileName);
       
-      // Call transcription API
+      // Upload to server which will store in S3
+      const uploadResponse = await fetch('/api/upload-audio', {
+        method: 'POST',
+        body: formData,
+      });
+      
+      if (!uploadResponse.ok) {
+        throw new Error('Failed to upload audio');
+      }
+      
+      const { audioUrl } = await uploadResponse.json();
+      
+      // Call transcription API with S3 URL
       transcribeMutation.mutate({
         audioUrl,
         language: 'en',

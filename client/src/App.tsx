@@ -81,6 +81,7 @@ import AmazonOrders from "./pages/AmazonOrders";
 import SmartPredictions from "./pages/SmartPredictions";
 import AuditTrail from "./pages/AuditTrail";
 import AIAgents from "./pages/ai/AIAgents";
+import KnowledgeSharing from "./pages/ai/KnowledgeSharing";
 
 function Router() {
   return (
@@ -167,6 +168,7 @@ function Router() {
         
         {/* AI Agents */}
         <Route path="/ai/agents" component={AIAgents} />
+        <Route path="/ai/knowledge" component={KnowledgeSharing} />
         
         {/* Settings */}
         <Route path="/settings" component={Settings} />

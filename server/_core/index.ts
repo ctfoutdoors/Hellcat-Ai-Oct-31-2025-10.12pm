@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startMeetingCompletionPoller } from "../services/meetingCompletionPoller";
+import uploadAudioRouter from "../routes/uploadAudio";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -36,6 +37,9 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+  
+  // Audio upload endpoint for voice transcription
+  app.use('/api', uploadAudioRouter);
   
   // Diagnostic endpoint to check environment variables
   app.get("/api/check-env", async (req, res) => {

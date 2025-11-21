@@ -4,6 +4,13 @@ import { BaseAgent, type AgentCapabilities, type ModelConfig } from './BaseAgent
 import { MasterAgent } from './MasterAgent';
 import { CFOAgent, CMOAgent, CTOAgent, COOAgent } from './executives';
 import { FinancialAnalystAgent } from './specialists/FinancialAnalystAgent';
+import { TaxSpecialistAgent } from './specialists/TaxSpecialistAgent';
+import { AccountingSpecialistAgent } from './specialists/AccountingSpecialistAgent';
+import { BudgetManagerAgent } from './specialists/BudgetManagerAgent';
+import { ContentMarketingAgent } from './specialists/ContentMarketingAgent';
+import { SEOSpecialistAgent } from './specialists/SEOSpecialistAgent';
+import { DevOpsEngineerAgent } from './specialists/DevOpsEngineerAgent';
+import { SecuritySpecialistAgent } from './specialists/SecuritySpecialistAgent';
 import { eq } from 'drizzle-orm';
 
 /**
@@ -117,6 +124,20 @@ export class AgentFactory {
         return new COOAgent(agentData);
       case 'financial_analyst':
         return new FinancialAnalystAgent(agentData);
+      case 'tax_specialist':
+        return new TaxSpecialistAgent(agentData);
+      case 'accounting_specialist':
+        return new AccountingSpecialistAgent(agentData);
+      case 'budget_manager':
+        return new BudgetManagerAgent(agentData);
+      case 'content_marketing':
+        return new ContentMarketingAgent(agentData);
+      case 'seo_specialist':
+        return new SEOSpecialistAgent(agentData);
+      case 'devops_engineer':
+        return new DevOpsEngineerAgent(agentData);
+      case 'security_specialist':
+        return new SecuritySpecialistAgent(agentData);
       // Add more specialized agents here
       default:
         return new BaseAgent(agentData);

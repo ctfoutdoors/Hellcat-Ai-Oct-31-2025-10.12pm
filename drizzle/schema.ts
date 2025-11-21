@@ -2085,9 +2085,12 @@ export const aiAgents = mysqlTable("ai_agents", {
     "vp_business_development", "vp_supply_chain",
     // Specialists
     "financial_analyst", "tax_specialist", "accountant", "budget_analyst",
+    "accounting_specialist", "budget_manager",
     "market_researcher", "partnership_developer", "growth_analyst",
     "seo_specialist", "social_media_manager", "content_writer", "email_marketer",
+    "content_marketing",
     "backend_developer", "frontend_developer", "devops_engineer", "qa_engineer",
+    "security_specialist",
     "product_manager", "ux_designer", "data_scientist",
     "recruiter", "hr_specialist", "training_coordinator",
     "customer_success_manager", "support_agent", "community_manager",

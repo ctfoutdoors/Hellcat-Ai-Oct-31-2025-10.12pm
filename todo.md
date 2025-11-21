@@ -2933,3 +2933,35 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 
 ### Final Steps
 - [ ] Save checkpoint if any fixes needed
+
+
+---
+
+## CROSS-DISCIPLINARY AGENT TESTING - Nov 21, 2025
+
+### Cross-Disciplinary Test Scenario
+- [ ] Design complex scenario requiring Finance + Marketing + Technology + HR collaboration
+- [ ] Create "New Product Launch" scenario with budget, marketing, tech stack, and hiring needs
+- [ ] Define expected agent interactions and decision points
+- [ ] Create test script to execute scenario
+
+### Agent Communication Logging
+- [x] Create AgentCommunication table in database schema
+- [x] Implement communication logging in BaseAgent
+- [x] Log agent-to-agent messages, requests, and responses
+- [x] Track decision-making process and reasoning
+- [x] Store communication metadata (sender, receiver, timestamp, context)
+
+### Communication Visualization UI
+- [x] Create Agent Communication Timeline component
+- [x] Display inter-agent messages in chronological order
+- [x] Show agent reasoning and internal monologue
+- [x] Add filtering by agent, department, or conversation thread
+- [x] Implement real-time updates for active conversations
+
+### Testing & Validation
+- [x] Execute cross-disciplinary test scenario
+- [x] Verify all agents participate and communicate
+- [x] Check communication logs capture full dialogue
+- [x] Validate decision-making process is visible
+- [ ] Save checkpoint with working agent communication system

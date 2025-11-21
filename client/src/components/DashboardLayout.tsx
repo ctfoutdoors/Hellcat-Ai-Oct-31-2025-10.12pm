@@ -28,6 +28,7 @@ import {
   User,
   Palette,
   Calendar,
+  MessageSquare,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import VoiceCommand from "./VoiceCommand";
@@ -116,6 +117,7 @@ const menuItems: MenuItem[] = [
     children: [
       { title: "AI Agents", path: "/ai/agents" },
       { title: "Knowledge Sharing", path: "/ai/knowledge" },
+      { title: "Agent Communications", path: "/ai/communications" },
       { title: "Product Intelligence", path: "/intelligence/product" },
       { title: "Variant Intelligence", path: "/intelligence/variant" },
       { title: "Inventory Intelligence", path: "/intelligence/inventory" },

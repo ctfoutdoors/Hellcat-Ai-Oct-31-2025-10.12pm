@@ -7,6 +7,7 @@ import { eq, desc } from 'drizzle-orm';
 import { transcribeAudio } from '../_core/voiceTranscription';
 import { TRPCError } from '@trpc/server';
 import { AgentKnowledgeSharing } from '../_core/agents/AgentKnowledgeSharing';
+import { sql } from 'drizzle-orm';
 
 export const aiAgentsRouter = router({
   /**
@@ -220,5 +221,37 @@ export const aiAgentsRouter = router({
     }))
     .query(async ({ input }) => {
       return await AgentKnowledgeSharing.getCrossFunctionalInsights(input.topic);
+    }),
+
+  /**
+   * Get conversation communications
+   */
+  getConversation: protectedProcedure
+    .input(z.object({
+      conversationId: z.string(),
+    }))
+    .query(async ({ input }) => {
+      const { AgentCommunicationLogger } = await import('../_core/agents/AgentCommunicationLogger');
+      return await AgentCommunicationLogger.getConversation(input.conversationId);
+    }),
+
+  /**
+   * Get recent conversation IDs
+   */
+  getRecentConversations: protectedProcedure
+    .query(async () => {
+      const db = await getDb();
+      if (!db) return [];
+      
+      const { aiAgentCommunications } = await import('../../drizzle/schema');
+      const { sql } = await import('drizzle-orm');
+      
+      const conversations = await db
+        .selectDistinct({ conversationId: aiAgentCommunications.conversationId })
+        .from(aiAgentCommunications)
+        .orderBy(desc(aiAgentCommunications.createdAt))
+        .limit(10);
+      
+      return conversations.map(c => c.conversationId);
     }),
 });

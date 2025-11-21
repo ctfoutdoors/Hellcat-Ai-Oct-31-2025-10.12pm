@@ -2446,3 +2446,25 @@ export const aiSharedKnowledge = mysqlTable("ai_shared_knowledge", {
 
 export type AISharedKnowledge = typeof aiSharedKnowledge.$inferSelect;
 export type InsertAISharedKnowledge = typeof aiSharedKnowledge.$inferInsert;
+
+
+// Agent Communication & Internal Dialogue
+export const aiAgentCommunications = mysqlTable("ai_agent_communications", {
+  id: int("id").autoincrement().primaryKey(),
+  conversationId: varchar("conversation_id", { length: 100 }).notNull(),
+  senderAgentId: int("sender_agent_id").notNull(),
+  receiverAgentId: int("receiver_agent_id"),
+  messageType: mysqlEnum("message_type", ["request", "response", "broadcast", "internal_thought", "decision"]).notNull(),
+  content: text("content").notNull(),
+  context: json("context").$type<Record<string, unknown>>(),
+  reasoning: text("reasoning"),
+  confidence: int("confidence"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  conversationIdx: index("conversation_idx").on(table.conversationId),
+  senderIdx: index("sender_idx").on(table.senderAgentId),
+  receiverIdx: index("receiver_idx").on(table.receiverAgentId),
+}));
+
+export type AgentCommunication = typeof aiAgentCommunications.$inferSelect;
+export type InsertAgentCommunication = typeof aiAgentCommunications.$inferInsert;

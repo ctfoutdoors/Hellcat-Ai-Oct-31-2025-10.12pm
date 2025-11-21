@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS ai_agent_communications (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  conversation_id VARCHAR(100) NOT NULL,\n  sender_agent_id INT NOT NULL,\n  receiver_agent_id INT,\n  message_type ENUM('request', 'response', 'broadcast', 'internal_thought', 'decision') NOT NULL,\n  content TEXT NOT NULL,\n  context JSON,\n  reasoning TEXT,\n  confidence INT,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX conversation_idx (conversation_id),\n  INDEX sender_idx (sender_agent_id),\n  INDEX receiver_idx (receiver_agent_id)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS ai_agent_communications (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  conversation_id VARCHAR(100) NOT NULL,\n  sender_agent_id INT NOT NULL,\n  receiver_agent_id INT,\n  message_type ENUM('request', 'response', 'broadcast', 'internal_thought', 'decision') NOT NULL,\n  content TEXT NOT NULL,\n  context JSON,\n  reasoning TEXT,\n  confidence INT,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX conversation_idx (conversation_id),\n  INDEX sender_idx (sender_agent_id),\n  INDEX receiver_idx (receiver_agent_id)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 250
+}

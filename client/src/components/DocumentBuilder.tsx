@@ -51,8 +51,28 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
   const [additionalNotes, setAdditionalNotes] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [addendums, setAddendums] = useState<Array<{ id: string; content: string }>>([]);
 
-  // Mock data - replace with actual tRPC queries
+  // Fetch legal references from database
+  const { data: legalReferences = [], isLoading: loadingLegalRefs } = trpc.legalReferences.list.useQuery({
+    claimType: caseData.caseType,
+    carrier: caseData.carrier,
+    limit: 20,
+  });
+
+  // Fetch carrier terms from database
+  const { data: carrierTerms = [], isLoading: loadingCarrierTerms } = trpc.carrierTerms.listByCarrier.useQuery({
+    carrier: caseData.carrier,
+    claimType: caseData.caseType,
+  });
+
+  // Fetch case documents (evidence)
+  const { data: evidenceFiles = [], isLoading: loadingEvidence } = trpc.cases.getDocuments.useQuery(
+    { caseId },
+    { enabled: !!caseId }
+  );
+
+  // Mock templates - TODO: create templates router
   const templates = [
     { id: "1", name: "Late Delivery SLA", description: "SLA Violations" },
     { id: "2", name: "Damaged Package", description: "Package Damages" },
@@ -60,27 +80,7 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
     { id: "4", name: "Billing Adjustment", description: "Billing Adjustments" },
   ];
 
-  const legalReferences = [
-    { id: 1, citation: "UCC § 2-314", title: "Implied Warranty of Merchantability", relevance: 85 },
-    { id: 2, citation: "UCC § 2-509", title: "Risk of Loss in the Absence of Breach", relevance: 90 },
-    { id: 3, citation: "UCC § 7-309", title: "Duty of Care; Contractual Limitation", relevance: 95 },
-    { id: 4, citation: "49 CFR § 370.3", title: "Filing of Claims", relevance: 100 },
-    { id: 5, citation: "49 CFR § 370.9", title: "Disposition of Claims", relevance: 95 },
-    { id: 6, citation: "49 U.S.C. § 14706", title: "Carmack Amendment", relevance: 100 },
-  ];
-
-  const carrierTerms = [
-    { id: 1, carrier: caseData.carrier, title: "Declared Value Limit", type: "liability_limit" },
-    { id: 2, carrier: caseData.carrier, title: "Claim Filing Deadline", type: "claim_deadline" },
-    { id: 3, carrier: caseData.carrier, title: "Packaging Requirements", type: "exclusion" },
-    { id: 4, carrier: caseData.carrier, title: "Service Guarantee", type: "service_guarantee" },
-  ];
-
-  const evidenceFiles = [
-    { id: 1, name: "tracking_screenshot.png", type: "screenshot", size: "245 KB" },
-    { id: 2, name: "delivery_confirmation.pdf", type: "certification", size: "128 KB" },
-    { id: 3, name: "package_photos.jpg", type: "photo", size: "1.2 MB" },
-  ];
+  const isLoading = loadingLegalRefs || loadingCarrierTerms || loadingEvidence;
 
   const toggleLegalRef = (id: number) => {
     setSelectedLegalRefs(prev =>
@@ -97,6 +97,24 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
   const toggleEvidence = (id: number) => {
     setSelectedEvidence(prev =>
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
+  const addNewAddendum = () => {
+    const newAddendum = {
+      id: `addendum-${Date.now()}`,
+      content: "",
+    };
+    setAddendums(prev => [...prev, newAddendum]);
+  };
+
+  const removeAddendum = (id: string) => {
+    setAddendums(prev => prev.filter(a => a.id !== id));
+  };
+
+  const updateAddendum = (id: string, content: string) => {
+    setAddendums(prev =>
+      prev.map(a => (a.id === id ? { ...a, content } : a))
     );
   };
 
@@ -175,9 +193,18 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-[300px] pr-4">
-              <div className="space-y-3">
-                {legalReferences.map(ref => (
+            {loadingLegalRefs ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : legalReferences.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No legal references found for this case type
+              </div>
+            ) : (
+              <ScrollArea className="h-[300px] pr-4">
+                <div className="space-y-3">
+                  {legalReferences.map(ref => (
                   <div
                     key={ref.id}
                     className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
@@ -195,15 +222,16 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
                       <div className="flex items-center gap-2">
                         <span className="font-medium text-sm">{ref.citation}</span>
                         <Badge variant="secondary" className="text-xs">
-                          {ref.relevance}% relevant
+                          {ref.relevanceScore}% relevant
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">{ref.title}</p>
                     </div>
                   </div>
-                ))}
-              </div>
-            </ScrollArea>
+                  ))}
+                </div>
+              </ScrollArea>
+            )}
           </CardContent>
         </Card>
 
@@ -219,8 +247,17 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {carrierTerms.map(term => (
+            {loadingCarrierTerms ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              </div>
+            ) : carrierTerms.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                No carrier terms found for {caseData.carrier}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {carrierTerms.map(term => (
                 <div
                   key={term.id}
                   className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
@@ -234,18 +271,19 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
                     checked={selectedCarrierTerms.includes(term.id)}
                     onCheckedChange={() => toggleCarrierTerm(term.id)}
                   />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm">{term.title}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {term.type.replace("_", " ")}
-                      </Badge>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-sm">{term.title}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {term.termType.replace("_", " ")}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-1">{term.carrier}</p>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">{term.carrier}</p>
-                  </div>
                 </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -333,6 +371,56 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
             </div>
           </CardContent>
         </Card>
+
+        {/* Custom Addendums */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Custom Addendums
+            </CardTitle>
+            <CardDescription>
+              Add custom sections with free-text content for specific scenarios
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {addendums.map((addendum, index) => (
+              <div key={addendum.id} className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Addendum {index + 1}</Label>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeAddendum(addendum.id)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <Textarea
+                  placeholder="Enter addendum content (e.g., additional evidence, special circumstances, prior correspondence...)"                  value={addendum.content}
+                  onChange={(e) => updateAddendum(addendum.id, e.target.value)}
+                  rows={6}
+                  className="font-mono text-sm"
+                />
+              </div>
+            ))}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={addNewAddendum}
+              className="w-full"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Addendum
+            </Button>
+            {addendums.length > 0 && (
+              <div className="text-xs text-muted-foreground">
+                {addendums.length} addendum{addendums.length !== 1 ? 's' : ''} will be appended to the document
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       {/* Preview & Actions Panel */}
@@ -364,6 +452,12 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
               <p className="text-sm text-muted-foreground">Evidence Files</p>
               <p className="font-medium">{selectedEvidence.length} attached</p>
             </div>
+            {addendums.length > 0 && (
+              <div>
+                <p className="text-sm text-muted-foreground">Custom Addendums</p>
+                <p className="font-medium">{addendums.length} addendum{addendums.length !== 1 ? 's' : ''}</p>
+              </div>
+            )}
             <Separator />
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm">

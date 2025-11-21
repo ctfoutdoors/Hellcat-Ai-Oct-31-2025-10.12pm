@@ -43,6 +43,8 @@ import { productSyncRouter } from "./routers/productSync";
 import { dashboardRouter } from "./routers/dashboard";
 import { casesRouter } from "./routers/cases";
 import { analyticsRouter } from "./routers/analytics";
+import { legalReferencesRouter } from "./routers/legalReferences";
+import { carrierTermsRouter } from "./routers/carrierTerms";
 
 
 export const appRouter = router({
@@ -63,6 +65,8 @@ export const appRouter = router({
   dashboard: dashboardRouter,
   cases: casesRouter,
   analytics: analyticsRouter,
+  legalReferences: legalReferencesRouter,
+  carrierTerms: carrierTermsRouter,
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

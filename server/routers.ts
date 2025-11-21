@@ -45,6 +45,7 @@ import { casesRouter } from "./routers/cases";
 import { analyticsRouter } from "./routers/analytics";
 import { legalReferencesRouter } from "./routers/legalReferences";
 import { carrierTermsRouter } from "./routers/carrierTerms";
+import { aiAgentsRouter } from "./routers/aiAgents";
 
 
 export const appRouter = router({
@@ -67,6 +68,7 @@ export const appRouter = router({
   analytics: analyticsRouter,
   legalReferences: legalReferencesRouter,
   carrierTerms: carrierTermsRouter,
+  aiAgents: aiAgentsRouter,
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

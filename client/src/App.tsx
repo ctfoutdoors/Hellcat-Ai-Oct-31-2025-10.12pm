@@ -80,6 +80,7 @@ import EBayOrders from "./pages/EBayOrders";
 import AmazonOrders from "./pages/AmazonOrders";
 import SmartPredictions from "./pages/SmartPredictions";
 import AuditTrail from "./pages/AuditTrail";
+import AIAgents from "./pages/ai/AIAgents";
 
 function Router() {
   return (
@@ -164,7 +165,10 @@ function Router() {
         <Route path="/intelligence/mission-control" component={MissionControl} />
         <Route path="/intelligence/templates" component={IntelligenceTemplates} />
         
-               {/* Settings */}
+        {/* AI Agents */}
+        <Route path="/ai/agents" component={AIAgents} />
+        
+        {/* Settings */}
         <Route path="/settings" component={Settings} />
         <Route path="/settings/email-accounts" component={EmailAccountsSettings} />
         <Route path="/settings/integrations-old" component={SettingsIntegrations} />

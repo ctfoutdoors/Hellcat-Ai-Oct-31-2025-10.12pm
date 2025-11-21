@@ -2062,3 +2062,352 @@ export const caseLegalReferences = mysqlTable("case_legal_references", {
 
 export type CaseLegalReference = typeof caseLegalReferences.$inferSelect;
 export type InsertCaseLegalReference = typeof caseLegalReferences.$inferInsert;
+
+
+// ============================================================================
+// AI ENTERPRISE SYSTEM TABLES
+// ============================================================================
+
+/**
+ * AI Agents Table
+ * Stores all AI agents in the enterprise system (120+ agents)
+ */
+export const aiAgents = mysqlTable("ai_agents", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Agent identity
+  role: mysqlEnum("role", [
+    // C-Suite
+    "ceo", "cfo", "cgo", "cmo", "cto", "coo", "chro", "cxo",
+    "chief_intelligence_officer", "clo", "cdo", "cso",
+    // VP-Level
+    "vp_sales", "vp_product", "vp_engineering", "vp_customer_success",
+    "vp_business_development", "vp_supply_chain",
+    // Specialists
+    "financial_analyst", "tax_specialist", "accountant", "budget_analyst",
+    "market_researcher", "partnership_developer", "growth_analyst",
+    "seo_specialist", "social_media_manager", "content_writer", "email_marketer",
+    "backend_developer", "frontend_developer", "devops_engineer", "qa_engineer",
+    "product_manager", "ux_designer", "data_scientist",
+    "recruiter", "hr_specialist", "training_coordinator",
+    "customer_success_manager", "support_agent", "community_manager",
+    "legal_counsel", "compliance_officer", "contract_specialist",
+    "security_analyst", "penetration_tester", "incident_responder",
+    "sales_rep", "account_executive", "sales_engineer",
+    // Personal
+    "personal_assistant", "personal_life_manager", "family_manager",
+    // Generic
+    "specialist", "analyst", "coordinator", "manager"
+  ]).notNull(),
+  
+  name: varchar("name", { length: 200 }).notNull(),
+  department: varchar("department", { length: 100 }), // "Finance", "Marketing", "Engineering", etc.
+  team: varchar("team", { length: 100 }), // "Tax Team", "Social Media Team", etc.
+  
+  // Hierarchy
+  parentAgentId: int("parentAgentId"), // Reports to which agent
+  level: int("level").default(0).notNull(), // 0=CEO, 1=C-Suite, 2=VP, 3=Team Lead, 4=Specialist
+  
+  // Capabilities
+  capabilities: json("capabilities").$type<{
+    analysis?: boolean;
+    decision_making?: boolean;
+    task_execution?: boolean;
+    learning?: boolean;
+    team_creation?: boolean;
+    cross_functional?: boolean;
+    multimodal?: boolean; // Can handle voice/video/text
+  }>().notNull(),
+  
+  // Configuration
+  modelConfig: json("modelConfig").$type<{
+    model: string; // "gpt-4o", "gpt-4-turbo", etc.
+    temperature?: number;
+    max_tokens?: number;
+    system_prompt?: string;
+    tools?: string[]; // Available tools/functions
+  }>().notNull(),
+  
+  // State
+  status: mysqlEnum("status", ["active", "idle", "working", "learning", "error", "offline"]).default("idle").notNull(),
+  currentTask: text("currentTask"),
+  lastActiveAt: timestamp("lastActiveAt"),
+  
+  // Performance metrics
+  tasksCompleted: int("tasksCompleted").default(0).notNull(),
+  avgResponseTime: int("avgResponseTime"), // milliseconds
+  successRate: int("successRate").default(100), // 0-100
+  totalCost: decimal("totalCost", { precision: 10, scale: 2 }).default("0.00"), // OpenAI API cost
+  
+  // Privacy & Access
+  accessLevel: int("accessLevel").default(2).notNull(), // 5=Master, 4=C-Suite, 3=Team Lead, 2=Specialist, 1=Personal
+  canAccessPersonalData: boolean("canAccessPersonalData").default(false).notNull(),
+  
+  // Metadata
+  isActive: boolean("isActive").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  roleIdx: index("role_idx").on(table.role),
+  parentIdx: index("parent_idx").on(table.parentAgentId),
+  statusIdx: index("status_idx").on(table.status),
+  departmentIdx: index("department_idx").on(table.department),
+}));
+
+export type AIAgent = typeof aiAgents.$inferSelect;
+export type InsertAIAgent = typeof aiAgents.$inferInsert;
+
+/**
+ * AI Agent Teams Table
+ * Tracks dynamically created agent teams for specific initiatives
+ */
+export const aiAgentTeams = mysqlTable("ai_agent_teams", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  name: varchar("name", { length: 200 }).notNull(),
+  purpose: text("purpose").notNull(), // "Q4 Product Launch", "APAC Expansion", etc.
+  
+  // Team composition
+  leaderAgentId: int("leaderAgentId").notNull(),
+  memberAgentIds: json("memberAgentIds").$type<number[]>().notNull(),
+  
+  // Lifecycle
+  status: mysqlEnum("status", ["active", "completed", "on_hold", "cancelled"]).default("active").notNull(),
+  startDate: timestamp("startDate").notNull(),
+  endDate: timestamp("endDate"),
+  
+  // Context
+  initiative: varchar("initiative", { length: 200 }), // Links to business initiative
+  priority: mysqlEnum("priority", ["urgent", "high", "normal", "low"]).default("normal").notNull(),
+  
+  // Performance
+  tasksCompleted: int("tasksCompleted").default(0).notNull(),
+  tasksInProgress: int("tasksInProgress").default(0).notNull(),
+  
+  // Metadata
+  createdBy: int("createdBy").notNull(), // Which agent created this team
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  leaderIdx: index("leader_idx").on(table.leaderAgentId),
+  statusIdx: index("status_idx").on(table.status),
+  priorityIdx: index("priority_idx").on(table.priority),
+}));
+
+export type AIAgentTeam = typeof aiAgentTeams.$inferSelect;
+export type InsertAIAgentTeam = typeof aiAgentTeams.$inferInsert;
+
+/**
+ * AI Agent Tasks Table
+ * Tracks tasks assigned to agents
+ */
+export const aiAgentTasks = mysqlTable("ai_agent_tasks", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Task details
+  title: varchar("title", { length: 500 }).notNull(),
+  description: text("description").notNull(),
+  taskType: varchar("taskType", { length: 100 }).notNull(), // "analysis", "decision", "execution", "learning"
+  
+  // Assignment
+  assignedToAgentId: int("assignedToAgentId").notNull(),
+  assignedByAgentId: int("assignedByAgentId"), // Which agent delegated this
+  teamId: int("teamId"), // If part of a team initiative
+  
+  // Context
+  context: json("context").$type<{
+    entity_type?: string; // "case", "customer", "order", etc.
+    entity_id?: number;
+    related_tasks?: number[];
+    dependencies?: number[];
+    [key: string]: any;
+  }>(),
+  
+  // Status
+  status: mysqlEnum("status", ["pending", "in_progress", "completed", "failed", "cancelled"]).default("pending").notNull(),
+  priority: mysqlEnum("priority", ["urgent", "high", "normal", "low"]).default("normal").notNull(),
+  
+  // Timing
+  dueDate: timestamp("dueDate"),
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  
+  // Results
+  result: json("result").$type<{
+    success: boolean;
+    output?: any;
+    error?: string;
+    learnings?: string[];
+    recommendations?: string[];
+  }>(),
+  
+  // Performance
+  executionTime: int("executionTime"), // milliseconds
+  cost: decimal("cost", { precision: 10, scale: 4 }), // OpenAI API cost
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  assignedToIdx: index("assigned_to_idx").on(table.assignedToAgentId),
+  statusIdx: index("status_idx").on(table.status),
+  priorityIdx: index("priority_idx").on(table.priority),
+  teamIdx: index("team_idx").on(table.teamId),
+  dueDateIdx: index("due_date_idx").on(table.dueDate),
+}));
+
+export type AIAgentTask = typeof aiAgentTasks.$inferSelect;
+export type InsertAIAgentTask = typeof aiAgentTasks.$inferInsert;
+
+/**
+ * AI Agent Conversations Table
+ * Stores conversations between agents and with users
+ */
+export const aiAgentConversations = mysqlTable("ai_agent_conversations", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Participants
+  participantAgentIds: json("participantAgentIds").$type<number[]>().notNull(),
+  userId: int("userId"), // If user is involved
+  
+  // Conversation type
+  conversationType: mysqlEnum("type", [
+    "user_command",        // User commanding an agent
+    "agent_collaboration", // Agents working together
+    "escalation",         // Agent escalating to superior
+    "delegation",         // Agent delegating to subordinate
+    "learning",           // Agent learning from feedback
+  ]).notNull(),
+  
+  // Messages
+  messages: json("messages").$type<Array<{
+    role: "user" | "agent" | "system";
+    agent_id?: number;
+    content: string;
+    timestamp: string;
+    modality?: "text" | "voice" | "video";
+  }>>().notNull(),
+  
+  // Context
+  relatedTaskId: int("relatedTaskId"),
+  relatedTeamId: int("relatedTeamId"),
+  
+  // Status
+  status: mysqlEnum("status", ["active", "completed", "archived"]).default("active").notNull(),
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  userIdx: index("user_idx").on(table.userId),
+  typeIdx: index("type_idx").on(table.conversationType),
+  statusIdx: index("status_idx").on(table.status),
+  taskIdx: index("task_idx").on(table.relatedTaskId),
+}));
+
+export type AIAgentConversation = typeof aiAgentConversations.$inferSelect;
+export type InsertAIAgentConversation = typeof aiAgentConversations.$inferInsert;
+
+/**
+ * AI Learning Data Table
+ * Stores outcomes and learnings from cases for continuous improvement
+ */
+export const aiLearningData = mysqlTable("ai_learning_data", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Source
+  sourceType: mysqlEnum("sourceType", [
+    "case_outcome",
+    "template_performance",
+    "user_feedback",
+    "agent_decision",
+    "market_data"
+  ]).notNull(),
+  sourceId: int("sourceId").notNull(), // ID of case, template, etc.
+  
+  // Learning content
+  context: json("context").$type<{
+    carrier?: string;
+    claim_type?: string;
+    amount?: number;
+    template_used?: number;
+    legal_refs_used?: number[];
+    [key: string]: any;
+  }>().notNull(),
+  
+  outcome: json("outcome").$type<{
+    success: boolean;
+    result?: "won" | "lost" | "settled";
+    settlement_amount?: number;
+    response_time_days?: number;
+    carrier_response?: string;
+  }>().notNull(),
+  
+  learnings: json("learnings").$type<{
+    effective_strategies?: string[];
+    ineffective_strategies?: string[];
+    winning_legal_citations?: string[];
+    optimal_evidence_types?: string[];
+    best_language_patterns?: string[];
+    recommendations?: string[];
+  }>(),
+  
+  // Impact on AI
+  appliedToAgents: json("appliedToAgents").$type<number[]>(), // Which agents learned from this
+  improvedMetrics: json("improvedMetrics").$type<{
+    template_win_rate?: number;
+    citation_effectiveness?: number;
+    response_time_improvement?: number;
+  }>(),
+  
+  // Metadata
+  collectedBy: int("collectedBy"), // Which agent collected this learning
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  sourceIdx: index("source_idx").on(table.sourceType, table.sourceId),
+  collectedByIdx: index("collected_by_idx").on(table.collectedBy),
+}));
+
+export type AILearningData = typeof aiLearningData.$inferSelect;
+export type InsertAILearningData = typeof aiLearningData.$inferInsert;
+
+/**
+ * AI Fine-Tuned Models Table
+ * Tracks custom fine-tuned OpenAI models
+ */
+export const aiFineTunedModels = mysqlTable("ai_fine_tuned_models", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Model identity
+  openaiModelId: varchar("openaiModelId", { length: 200 }).notNull().unique(), // "ft:gpt-4o-2024-08-06:..."
+  basedOn: varchar("basedOn", { length: 100 }).notNull(), // "gpt-4o", "gpt-3.5-turbo"
+  purpose: varchar("purpose", { length: 500 }).notNull(), // "Carrier-specific dispute letters", "Legal citation selection"
+  
+  // Training
+  trainingDataSize: int("trainingDataSize").notNull(), // Number of training examples
+  trainingCost: decimal("trainingCost", { precision: 10, scale: 2 }),
+  trainingStartedAt: timestamp("trainingStartedAt"),
+  trainingCompletedAt: timestamp("trainingCompletedAt"),
+  
+  // Performance
+  validationAccuracy: decimal("validationAccuracy", { precision: 5, scale: 2 }), // 0-100
+  productionUsageCount: int("productionUsageCount").default(0).notNull(),
+  avgPerformanceImprovement: decimal("avgPerformanceImprovement", { precision: 5, scale: 2 }), // % improvement over base model
+  
+  // Assignment
+  assignedToAgents: json("assignedToAgents").$type<number[]>(), // Which agents use this model
+  
+  // Status
+  status: mysqlEnum("status", ["training", "validating", "active", "deprecated", "failed"]).default("training").notNull(),
+  
+  // Metadata
+  createdBy: int("createdBy").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  statusIdx: index("status_idx").on(table.status),
+  purposeIdx: index("purpose_idx").on(table.purpose),
+}));
+
+export type AIFineTunedModel = typeof aiFineTunedModels.$inferSelect;
+export type InsertAIFineTunedModel = typeof aiFineTunedModels.$inferInsert;

@@ -6,6 +6,7 @@ import { aiAgents, aiAgentTasks, aiAgentConversations } from '../../drizzle/sche
 import { eq, desc } from 'drizzle-orm';
 import { transcribeAudio } from '../_core/voiceTranscription';
 import { TRPCError } from '@trpc/server';
+import { AgentKnowledgeSharing } from '../_core/agents/AgentKnowledgeSharing';
 
 export const aiAgentsRouter = router({
   /**
@@ -171,5 +172,46 @@ export const aiAgentsRouter = router({
       }
       
       return result;
+    }),
+  
+  /**
+   * Share knowledge from an agent
+   */
+  shareKnowledge: protectedProcedure
+    .input(z.object({
+      agentId: z.number(),
+      topic: z.string(),
+      insights: z.string(),
+      confidence: z.number().min(0).max(1),
+      metadata: z.record(z.any()).optional(),
+    }))
+    .mutation(async ({ input }) => {
+      return await AgentKnowledgeSharing.shareKnowledge(input);
+    }),
+  
+  /**
+   * Query shared knowledge
+   */
+  queryKnowledge: protectedProcedure
+    .input(z.object({
+      topic: z.string().optional(),
+      department: z.string().optional(),
+      agentRole: z.string().optional(),
+      minConfidence: z.number().optional(),
+      limit: z.number().optional(),
+    }))
+    .query(async ({ input }) => {
+      return await AgentKnowledgeSharing.queryKnowledge(input);
+    }),
+  
+  /**
+   * Get cross-functional insights
+   */
+  getCrossFunctionalInsights: protectedProcedure
+    .input(z.object({
+      topic: z.string(),
+    }))
+    .query(async ({ input }) => {
+      return await AgentKnowledgeSharing.getCrossFunctionalInsights(input.topic);
     }),
 });

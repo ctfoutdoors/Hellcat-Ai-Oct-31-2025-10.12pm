@@ -2419,3 +2419,30 @@ export const aiFineTunedModels = mysqlTable("ai_fine_tuned_models", {
 
 export type AIFineTunedModel = typeof aiFineTunedModels.$inferSelect;
 export type InsertAIFineTunedModel = typeof aiFineTunedModels.$inferInsert;
+
+/**
+ * AI Shared Knowledge Table
+ * Cross-agent knowledge sharing and collaboration
+ */
+export const aiSharedKnowledge = mysqlTable("ai_shared_knowledge", {
+  id: int("id").autoincrement().primaryKey(),
+  
+  // Knowledge source
+  agentId: int("agentId").notNull(), // Agent who shared the knowledge
+  topic: varchar("topic", { length: 500 }).notNull(),
+  insights: text("insights").notNull(), // Detailed insights and analysis
+  
+  // Classification
+  department: varchar("department", { length: 100 }).notNull(),
+  confidence: decimal("confidence", { precision: 3, scale: 2 }).notNull(), // 0.00-1.00
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  agentIdx: index("agent_idx").on(table.agentId),
+  departmentIdx: index("department_idx").on(table.department),
+  topicIdx: index("topic_idx").on(table.topic),
+}));
+
+export type AISharedKnowledge = typeof aiSharedKnowledge.$inferSelect;
+export type InsertAISharedKnowledge = typeof aiSharedKnowledge.$inferInsert;

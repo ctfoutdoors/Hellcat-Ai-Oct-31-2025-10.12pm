@@ -1,5 +1,5 @@
 import { getDb } from '../../db';
-import { aiLearningData, aiAgents } from '../../../drizzle/schema';
+import { aiLearningData, aiAgents, aiSharedKnowledge } from '../../../drizzle/schema';
 import { eq, and, desc } from 'drizzle-orm';
 
 /**
@@ -40,6 +40,7 @@ export class AgentKnowledgeSharing {
     agentId: number;
     topic: string;
     insights: string;
+    department: string;
     confidence: number;
     metadata?: Record<string, any>;
   }): Promise<{ success: boolean; knowledgeId?: number }> {
@@ -49,26 +50,12 @@ export class AgentKnowledgeSharing {
         return { success: false };
       }
 
-      // Get agent details
-      const agent = await db.select().from(aiAgents).where(eq(aiAgents.id, params.agentId)).limit(1);
-      if (!agent || agent.length === 0) {
-        return { success: false };
-      }
-
-      // Store knowledge in learning data table
-      const result = await db.insert(aiLearningData).values({
+      // Store knowledge in shared knowledge table
+      const result = await db.insert(aiSharedKnowledge).values({
         agentId: params.agentId,
-        dataType: 'shared_knowledge',
-        content: JSON.stringify({
-          topic: params.topic,
-          insights: params.insights,
-          confidence: params.confidence,
-          agentName: agent[0].name,
-          agentRole: agent[0].role,
-          department: agent[0].department,
-          metadata: params.metadata || {},
-        }),
-        source: 'agent_collaboration',
+        topic: params.topic,
+        insights: params.insights,
+        department: params.department,
         confidence: params.confidence,
         createdAt: new Date(),
       });
@@ -93,67 +80,52 @@ export class AgentKnowledgeSharing {
         return [];
       }
 
-      // Build query for shared knowledge
-      let dbQuery = db
+      // Query shared knowledge with agent details
+      const results = await db
         .select({
-          id: aiLearningData.id,
-          agentId: aiLearningData.agentId,
-          content: aiLearningData.content,
-          confidence: aiLearningData.confidence,
-          createdAt: aiLearningData.createdAt,
+          id: aiSharedKnowledge.id,
+          agentId: aiSharedKnowledge.agentId,
+          topic: aiSharedKnowledge.topic,
+          insights: aiSharedKnowledge.insights,
+          department: aiSharedKnowledge.department,
+          confidence: aiSharedKnowledge.confidence,
+          createdAt: aiSharedKnowledge.createdAt,
+          agentName: aiAgents.name,
+          agentRole: aiAgents.role,
         })
-        .from(aiLearningData)
-        .where(eq(aiLearningData.dataType, 'shared_knowledge'));
-
-      // Apply confidence filter
-      if (query.minConfidence) {
-        dbQuery = dbQuery.where(
-          and(
-            eq(aiLearningData.dataType, 'shared_knowledge'),
-            // Note: confidence comparison would need proper SQL expression
-          )
-        );
-      }
-
-      const results = await dbQuery
-        .orderBy(desc(aiLearningData.createdAt))
+        .from(aiSharedKnowledge)
+        .leftJoin(aiAgents, eq(aiSharedKnowledge.agentId, aiAgents.id))
+        .orderBy(desc(aiSharedKnowledge.createdAt))
         .limit(query.limit || 50);
 
-      // Parse and filter results
-      const knowledge: SharedKnowledge[] = [];
-      for (const row of results) {
-        try {
-          const content = JSON.parse(row.content as string);
-          
-          // Apply filters
-          if (query.topic && !content.topic.toLowerCase().includes(query.topic.toLowerCase())) {
-            continue;
+      // Filter results based on query parameters
+      const knowledge: SharedKnowledge[] = results
+        .filter((row) => {
+          if (query.topic && !row.topic.toLowerCase().includes(query.topic.toLowerCase())) {
+            return false;
           }
-          if (query.department && content.department !== query.department) {
-            continue;
+          if (query.department && row.department !== query.department) {
+            return false;
           }
-          if (query.agentRole && content.agentRole !== query.agentRole) {
-            continue;
+          if (query.agentRole && row.agentRole !== query.agentRole) {
+            return false;
           }
-          if (query.minConfidence && content.confidence < query.minConfidence) {
-            continue;
+          if (query.minConfidence && Number(row.confidence) < query.minConfidence) {
+            return false;
           }
-
-          knowledge.push({
-            id: row.id,
-            agentId: row.agentId,
-            agentName: content.agentName,
-            agentRole: content.agentRole,
-            department: content.department,
-            topic: content.topic,
-            insights: content.insights,
-            confidence: content.confidence,
-            createdAt: row.createdAt,
-          });
-        } catch (parseError) {
-          console.error('[AgentKnowledgeSharing] Error parsing knowledge:', parseError);
-        }
-      }
+          return true;
+        })
+        .map((row) => ({
+          id: row.id,
+          agentId: row.agentId,
+          agentName: row.agentName || 'Unknown Agent',
+          agentRole: row.agentRole || 'unknown',
+          department: row.department,
+          topic: row.topic,
+          insights: row.insights,
+          confidence: Number(row.confidence),
+          createdAt: row.createdAt,
+        }));
 
       return knowledge;
     } catch (error) {

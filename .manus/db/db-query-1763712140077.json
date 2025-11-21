@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS ai_shared_knowledge (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  agentId INT NOT NULL,\n  topic VARCHAR(500) NOT NULL,\n  insights TEXT NOT NULL,\n  department VARCHAR(100) NOT NULL,\n  confidence DECIMAL(3, 2) NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX agent_idx (agentId),\n  INDEX department_idx (department),\n  INDEX topic_idx (topic)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS ai_shared_knowledge (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  agentId INT NOT NULL,\n  topic VARCHAR(500) NOT NULL,\n  insights TEXT NOT NULL,\n  department VARCHAR(100) NOT NULL,\n  confidence DECIMAL(3, 2) NOT NULL,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX agent_idx (agentId),\n  INDEX department_idx (department),\n  INDEX topic_idx (topic)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 236
+}

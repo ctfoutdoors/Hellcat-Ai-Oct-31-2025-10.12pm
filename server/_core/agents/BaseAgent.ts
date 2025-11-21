@@ -1,4 +1,5 @@
 import { invokeLLM } from '../llm';
+import { AgentMemory } from './AgentMemory';
 import type { AIAgent, InsertAIAgent } from '../../../drizzle/schema';
 
 export type AgentRole = AIAgent['role'];
@@ -87,7 +88,7 @@ export class BaseAgent {
   }
   
   /**
-   * Execute a task using GPT-4o
+   * Execute a task using GPT-4o with extended memory
    */
   async executeTask(
     taskDescription: string,
@@ -95,11 +96,39 @@ export class BaseAgent {
     options?: {
       temperature?: number;
       max_tokens?: number;
+      includeMemory?: boolean;
     }
   ): Promise<TaskResult> {
     try {
       const systemPrompt = this.buildSystemPrompt();
-      const userPrompt = this.buildUserPrompt(taskDescription, context);
+      
+      // Build comprehensive context with memory
+      let userPrompt = taskDescription;
+      
+      // Add memory context if enabled (default: true)
+      if (options?.includeMemory !== false) {
+        const memoryContext = await AgentMemory.getComprehensiveContext(this.id, {
+          entityType: context?.entity_type,
+          entityId: context?.entity_id,
+          maxConversations: 5,
+          maxLearnings: 10,
+        });
+        
+        if (memoryContext) {
+          userPrompt = `${memoryContext}
+
+=== CURRENT TASK ===
+${taskDescription}`;
+        }
+      }
+      
+      // Add additional context if provided
+      if (context) {
+        userPrompt += `
+
+Additional Context:
+${JSON.stringify(context, null, 2)}`;
+      }
       
       const response = await invokeLLM({
         messages: [
@@ -260,7 +289,36 @@ Always provide detailed, actionable insights based on your expertise and role.
    * Get default system prompt for this agent type
    */
   protected getDefaultSystemPrompt(): string {
-    return `You are an AI agent in an enterprise system. Your role is to provide expert analysis, decisions, and recommendations within your area of expertise.`;
+    return `You are a PhD-level AI agent in an enterprise system with deep expertise in your domain.
+
+**RESPONSE QUALITY STANDARDS (PhD-Level):**
+
+1. **Depth & Rigor**: Provide comprehensive, well-researched analysis with academic-level depth
+2. **Evidence-Based**: Support all claims with data, research, or logical reasoning
+3. **Structured Thinking**: Use clear frameworks (hypothesis → analysis → evidence → conclusion)
+4. **Multi-Perspective**: Consider multiple viewpoints and potential counterarguments
+5. **Precision**: Use precise terminology and avoid vague generalizations
+6. **Citations**: Reference relevant theories, frameworks, or best practices when applicable
+7. **Actionable**: Translate insights into specific, implementable recommendations
+8. **Context-Aware**: Build on previous interactions and maintain continuity
+
+**ANALYSIS FRAMEWORK:**
+- Begin with clear problem definition
+- State assumptions explicitly
+- Present systematic analysis with supporting evidence
+- Acknowledge limitations and uncertainties
+- Provide confidence levels for predictions
+- Offer alternative scenarios where relevant
+- Conclude with prioritized, actionable recommendations
+
+**COMMUNICATION STYLE:**
+- Professional yet accessible
+- Data-driven with clear explanations
+- Structured with clear headings/sections
+- Comprehensive but focused
+- Forward-looking with strategic implications
+
+Your responses should demonstrate the analytical rigor, intellectual depth, and practical wisdom expected of a subject matter expert with doctoral-level training.`;
   }
   
   /**

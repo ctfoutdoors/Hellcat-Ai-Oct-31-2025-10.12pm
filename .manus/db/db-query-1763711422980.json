@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE ai_agents MODIFY COLUMN role ENUM('ceo', 'cfo', 'cmo', 'cto', 'coo', 'chro', 'cxo', 'chief_intelligence_officer', 'clo', 'cdo', 'cso', 'cgo', 'financial_analyst', 'tax_specialist', 'accounting_specialist', 'budget_manager', 'content_marketing', 'seo_specialist', 'devops_engineer', 'security_specialist', 'recruiter', 'hr_specialist', 'training_coordinator', 'sales_representative', 'account_executive', 'customer_success_manager', 'data_engineer', 'business_analyst', 'legal_counsel', 'compliance_officer', 'contract_specialist', 'product_manager', 'ux_designer', 'qa_engineer', 'support_agent', 'onboarding_specialist', 'sales_engineer', 'compensation_analyst', 'data_scientist') NOT NULL;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute ALTER TABLE ai_agents MODIFY COLUMN role ENUM('ceo', 'cfo', 'cmo', 'cto', 'coo', 'chro', 'cxo', 'chief_intelligence_officer', 'clo', 'cdo', 'cso', 'cgo', 'financial_analyst', 'tax_specialist', 'accounting_specialist', 'budget_manager', 'content_marketing', 'seo_specialist', 'devops_engineer', 'security_specialist', 'recruiter', 'hr_specialist', 'training_coordinator', 'sales_representative', 'account_executive', 'customer_success_manager', 'data_engineer', 'business_analyst', 'legal_counsel', 'compliance_officer', 'contract_specialist', 'product_manager', 'ux_designer', 'qa_engineer', 'support_agent', 'onboarding_specialist', 'sales_engineer', 'compensation_analyst', 'data_scientist') NOT NULL;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 627
+}

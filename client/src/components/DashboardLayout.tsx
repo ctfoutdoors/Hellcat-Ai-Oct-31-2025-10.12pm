@@ -114,6 +114,8 @@ const menuItems: MenuItem[] = [
     title: "Intelligence",
     icon: Lightbulb,
     children: [
+      { title: "AI Agents", path: "/ai/agents" },
+      { title: "Knowledge Sharing", path: "/ai/knowledge" },
       { title: "Product Intelligence", path: "/intelligence/product" },
       { title: "Variant Intelligence", path: "/intelligence/variant" },
       { title: "Inventory Intelligence", path: "/intelligence/inventory" },

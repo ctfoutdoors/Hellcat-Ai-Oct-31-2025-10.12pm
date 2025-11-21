@@ -60,4 +60,7 @@ Provide technical leadership and strategic technology recommendations.
   }
 }
 
+// COOAgent is exported from COOAgent.ts
+export { COOAgent } from './COOAgent';
+
 

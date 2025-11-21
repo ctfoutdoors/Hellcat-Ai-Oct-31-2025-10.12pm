@@ -2,7 +2,8 @@ import { getDb } from '../../db';
 import { aiAgents, type InsertAIAgent, type AIAgent } from '../../../drizzle/schema';
 import { BaseAgent, type AgentCapabilities, type ModelConfig } from './BaseAgent';
 import { MasterAgent } from './MasterAgent';
-import { CFOAgent, CMOAgent, CTOAgent } from './executives';
+import { CFOAgent, CMOAgent, CTOAgent, COOAgent } from './executives';
+import { FinancialAnalystAgent } from './specialists/FinancialAnalystAgent';
 import { eq } from 'drizzle-orm';
 
 /**
@@ -112,6 +113,10 @@ export class AgentFactory {
         return new CMOAgent(agentData);
       case 'cto':
         return new CTOAgent(agentData);
+      case 'coo':
+        return new COOAgent(agentData);
+      case 'financial_analyst':
+        return new FinancialAnalystAgent(agentData);
       // Add more specialized agents here
       default:
         return new BaseAgent(agentData);

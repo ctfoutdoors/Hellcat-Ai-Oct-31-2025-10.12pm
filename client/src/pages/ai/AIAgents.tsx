@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { trpc } from '@/lib/trpc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Send, Sparkles, Users, Brain, Zap } from 'lucide-react';
+import { Loader2, Send, Sparkles, Users, Brain, Zap, Mic, MicOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function AIAgents() {
   const [command, setCommand] = useState('');
   const [isInitializing, setIsInitializing] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTranscribing, setIsTranscribing] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
   
   const { data: agents, isLoading: loadingAgents, refetch: refetchAgents } = trpc.aiAgents.listAgents.useQuery();
   const { data: conversations, refetch: refetchConversations } = trpc.aiAgents.getConversations.useQuery({ limit: 10 });
@@ -51,6 +55,70 @@ export default function AIAgents() {
   const handleSendCommand = () => {
     if (!command.trim()) return;
     commandMutation.mutate({ command: command.trim() });
+  };
+  
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        await transcribeAudio(audioBlob);
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Error accessing microphone:', error);
+      toast.error('Failed to access microphone. Please check permissions.');
+    }
+  };
+  
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+  
+  const transcribeAudio = async (audioBlob: Blob) => {
+    setIsTranscribing(true);
+    
+    try {
+      // Upload audio to S3 first
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'voice-command.webm');
+      
+      // For now, we'll use a simple approach - in production, you'd upload to S3
+      // and then call the Whisper API endpoint
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        try {
+          // This is a placeholder - you'll need to implement the actual transcription endpoint
+          toast.info('Voice transcription coming soon! For now, please type your command.');
+          setIsTranscribing(false);
+        } catch (error) {
+          console.error('Transcription error:', error);
+          toast.error('Failed to transcribe audio');
+          setIsTranscribing(false);
+        }
+      };
+      reader.readAsDataURL(audioBlob);
+    } catch (error) {
+      console.error('Error transcribing audio:', error);
+      toast.error('Failed to transcribe audio');
+      setIsTranscribing(false);
+    }
   };
   
   const ceo = agents?.find(a => a.role === 'ceo');
@@ -185,7 +253,7 @@ export default function AIAgents() {
             {/* Command Input */}
             <div className="flex gap-2">
               <Input
-                placeholder="Enter command for Master Agent (e.g., 'Analyze our Q4 revenue trends')"
+                placeholder={isRecording ? 'Recording...' : isTranscribing ? 'Transcribing...' : "Enter command for Master Agent (or use voice)"}
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
                 onKeyDown={(e) => {
@@ -194,11 +262,25 @@ export default function AIAgents() {
                     handleSendCommand();
                   }
                 }}
-                disabled={commandMutation.isPending}
+                disabled={commandMutation.isPending || isRecording || isTranscribing}
               />
               <Button
+                onClick={isRecording ? stopRecording : startRecording}
+                disabled={commandMutation.isPending || isTranscribing}
+                variant={isRecording ? 'destructive' : 'outline'}
+                size="icon"
+              >
+                {isTranscribing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : isRecording ? (
+                  <MicOff className="h-4 w-4" />
+                ) : (
+                  <Mic className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
                 onClick={handleSendCommand}
-                disabled={!command.trim() || commandMutation.isPending}
+                disabled={!command.trim() || commandMutation.isPending || isRecording || isTranscribing}
               >
                 {commandMutation.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

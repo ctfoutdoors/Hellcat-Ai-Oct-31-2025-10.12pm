@@ -3239,3 +3239,103 @@ Download all WooCommerce orders from 2025 and import into database
 - [ ] Verify all fixes work
 - [ ] Create final test report
 - [ ] Save checkpoint with all fixes
+
+
+---
+
+## NEXT STEPS - Nov 22 Continuation
+
+### Chrome Dependencies & Screenshot Capture
+- [ ] Install Chrome system dependencies (libnss3, libgbm1, libasound2, etc.)
+- [ ] Test Puppeteer screenshot capture with real FedEx tracking 394733401787
+- [ ] Verify delivery proof photo extraction works
+- [ ] Test tracking timeline screenshot capture
+
+### PDF Dispute Letter Generation
+- [ ] Choose PDF library (pdf-lib, pdfkit, or puppeteer PDF)
+- [ ] Create dispute letter template system
+- [ ] Implement PDF generation service
+- [ ] Add merge fields for case data
+- [ ] Integrate legal references into PDF
+- [ ] Integrate carrier terms into PDF
+- [ ] Add evidence attachments to PDF
+- [ ] Test PDF generation end-to-end
+
+### Legal References & Carrier Terms
+- [ ] Create legalReferences tRPC router
+- [ ] Create carrierTerms tRPC router
+- [ ] Populate legal_references table with sample data
+- [ ] Populate carrier_terms table with FedEx/UPS/USPS terms
+- [ ] Test DocumentBuilder component with real data
+
+### Email Workflow Testing
+- [ ] Set up email monitoring service
+- [ ] Send test email from herve@catchthefever.com
+- [ ] Include tracking 394733401787 in email body
+- [ ] Verify email detection works
+- [ ] Verify case auto-creation from email
+- [ ] Test tracking number extraction
+
+### Final Testing & Delivery
+- [ ] Test complete workflow end-to-end
+- [ ] Verify all buttons work
+- [ ] Create final checkpoint
+- [ ] Push to GitHub
+
+
+---
+
+## NOV 22 TESTING SESSION - Case Workflow & Evidence Collection
+
+### Comprehensive Testing Completed ✅
+- [x] Test case creation with real FedEx data (tracking 394733401787, $77.99 overcharge)
+- [x] Test status updates and activity logging
+- [x] Test AI Review feature (75% case strength assessment)
+- [x] Test Add Evidence dialog
+- [x] Test Generate Document button wiring
+
+### Critical Fixes Completed ✅
+- [x] Create case_notes table (fixed 500 errors)
+- [x] Create legal_references table
+- [x] Create carrier_terms table
+- [x] Create evidence_items table
+- [x] Create tracking_events table
+- [x] Create facility_locations table
+- [x] Create delivery_proofs table
+- [x] Add getNotes and getActivities tRPC procedures
+- [x] Wire screenshot capture button to evidence.captureFedExProof
+- [x] Wire generate document button to cases.generateDocument
+- [x] Install Chrome for Puppeteer (172.3 MB)
+- [x] Test Puppeteer Chrome launch (working, FedEx blocks bots)
+
+### PDF Generation System Built ✅
+- [x] Install PDFKit library
+- [x] Create PDF generation service (server/services/pdfGenerator.ts)
+- [x] Wire generateDocument procedure to PDF service
+- [x] Implement S3 upload for generated PDFs
+
+### Routers Already Implemented ✅
+- [x] legalReferences router (list, search, getByRelevance, incrementUsage)
+- [x] carrierTerms router (listByCarrier, getByType, getCarriers, getTermTypes)
+- [x] evidence router (captureFedExProof, captureTrackingTimeline, addEvidence, listEvidence)
+
+### Remaining Issues to Fix
+- [ ] Fix SQL query generation in legalReferences.list (isActive column mismatch)
+- [ ] Fix SQL query generation in carrierTerms.listByCarrier (column name mismatch)
+- [ ] Test PDF download after SQL fixes
+- [ ] Implement FedEx bot detection bypass for screenshot capture
+- [ ] Set up email monitoring for automatic case creation
+- [ ] Test email workflow with herve@catchthefever.com
+
+### Documentation Created ✅
+- [x] SESSION_NOTES_NOV22.md - Complete session summary
+- [x] HANDOFF_TO_NEXT_AGENT.md - Next agent instructions
+- [x] CURRENT_STATUS.md - Feature status matrix
+- [x] test_results_nov22.md - Testing findings
+- [x] FINAL_TEST_RESULTS_NOV22.md - Comprehensive test report
+
+### Next Steps
+1. Fix legal_references and carrier_terms SQL queries
+2. Test PDF generation end-to-end
+3. Implement email monitoring service
+4. Test complete workflow: Email → Case Creation → Evidence Collection → Letter Generation

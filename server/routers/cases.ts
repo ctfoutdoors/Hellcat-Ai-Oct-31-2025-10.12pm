@@ -3,6 +3,7 @@ import { z } from "zod";
 import * as db from "../db";
 import { createShipStationClient } from "../integrations/shipstation";
 import { storagePut } from "../storage";
+import { generateDisputeLetterPDF } from "../services/pdfGenerator";
 import { parseClaimDocument, extractTextFromDocument } from "../services/documentParser";
 import { generateDisputeLetter, generateFollowUpEmail } from "../services/documentGenerator";
 import { scheduleFollowUps, cancelFollowUps, getScheduledFollowups } from "../services/followupScheduler";
@@ -1030,19 +1031,46 @@ Hellcat Intelligence Platform
       }).optional()
     }))
     .mutation(async ({ input }) => {
-      // TODO: Implement full PDF generation service
-      // For now, return placeholder response
       const caseData = await db.getCaseById(input.caseId);
       
       if (!caseData) {
         throw new Error('Case not found');
       }
 
-      // Placeholder: In production, this would call documentGeneration service
+      // Generate PDF
+      const pdfBuffer = await generateDisputeLetterPDF({
+        caseNumber: caseData.caseNumber,
+        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        carrier: caseData.carrier || 'Unknown Carrier',
+        trackingNumber: caseData.trackingNumber || 'N/A',
+        claimAmount: parseFloat(caseData.claimAmount || '0'),
+        description: caseData.description || '',
+        customerName: caseData.customerName || 'Customer',
+        customerEmail: caseData.customerEmail || undefined,
+        customerPhone: caseData.customerPhone || undefined,
+        includeCertification: input.options?.includeCertification || false,
+        includeAttestation: input.options?.includeAttestation || false,
+      });
+
+      // Upload PDF to S3
+      const timestamp = Date.now();
+      const fileKey = `cases/${input.caseId}/dispute-letter-${timestamp}.pdf`;
+      const { url } = await storagePut(fileKey, pdfBuffer, 'application/pdf');
+
+      // Save document record to database
+      await db.addCaseAttachment({
+        caseId: input.caseId,
+        fileName: `dispute-letter-${timestamp}.pdf`,
+        fileType: 'application/pdf',
+        fileSize: pdfBuffer.length,
+        fileUrl: url,
+        uploadedBy: 'system',
+      });
+
       return {
         success: true,
-        documentUrl: null,
-        message: 'Document generation service not yet fully implemented. PDF generation coming soon.',
+        documentUrl: url,
+        message: 'Dispute letter generated successfully',
         caseNumber: caseData.caseNumber,
       };
     }),

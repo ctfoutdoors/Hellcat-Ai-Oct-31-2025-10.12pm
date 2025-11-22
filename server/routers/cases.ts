@@ -3,7 +3,6 @@ import { z } from "zod";
 import * as db from "../db";
 import { createShipStationClient } from "../integrations/shipstation";
 import { storagePut } from "../storage";
-import { generateDisputeLetterPDF } from "../services/pdfGenerator";
 import { parseClaimDocument, extractTextFromDocument } from "../services/documentParser";
 import { generateDisputeLetter, generateFollowUpEmail } from "../services/documentGenerator";
 import { scheduleFollowUps, cancelFollowUps, getScheduledFollowups } from "../services/followupScheduler";
@@ -1002,77 +1001,6 @@ Hellcat Intelligence Platform
     .input(z.object({ caseId: z.number() }))
     .query(async ({ input }) => {
       return await db.getCaseActivities(input.caseId);
-    }),
-
-  /**
-   * Get generated documents for a case
-   */
-  getDocuments: protectedProcedure
-    .input(z.object({ caseId: z.number() }))
-    .query(async ({ input }) => {
-      // TODO: Query case_documents table when implemented
-      // For now return empty array
-      return [];
-    }),
-
-  /**
-   * Generate dispute letter document
-   */
-  generateDocument: protectedProcedure
-    .input(z.object({
-      caseId: z.number(),
-      templateId: z.string().optional(),
-      options: z.object({
-        includeCertification: z.boolean().optional(),
-        includeAttestation: z.boolean().optional(),
-        legalReferences: z.array(z.number()).optional(),
-        carrierTerms: z.array(z.number()).optional(),
-        evidenceFiles: z.array(z.number()).optional(),
-      }).optional()
-    }))
-    .mutation(async ({ input }) => {
-      const caseData = await db.getCaseById(input.caseId);
-      
-      if (!caseData) {
-        throw new Error('Case not found');
-      }
-
-      // Generate PDF
-      const pdfBuffer = await generateDisputeLetterPDF({
-        caseNumber: caseData.caseNumber,
-        date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-        carrier: caseData.carrier || 'Unknown Carrier',
-        trackingNumber: caseData.trackingNumber || 'N/A',
-        claimAmount: parseFloat(caseData.claimAmount || '0'),
-        description: caseData.description || '',
-        customerName: caseData.customerName || 'Customer',
-        customerEmail: caseData.customerEmail || undefined,
-        customerPhone: caseData.customerPhone || undefined,
-        includeCertification: input.options?.includeCertification || false,
-        includeAttestation: input.options?.includeAttestation || false,
-      });
-
-      // Upload PDF to S3
-      const timestamp = Date.now();
-      const fileKey = `cases/${input.caseId}/dispute-letter-${timestamp}.pdf`;
-      const { url } = await storagePut(fileKey, pdfBuffer, 'application/pdf');
-
-      // Save document record to database
-      await db.addCaseAttachment({
-        caseId: input.caseId,
-        fileName: `dispute-letter-${timestamp}.pdf`,
-        fileType: 'application/pdf',
-        fileSize: pdfBuffer.length,
-        fileUrl: url,
-        uploadedBy: 'system',
-      });
-
-      return {
-        success: true,
-        documentUrl: url,
-        message: 'Dispute letter generated successfully',
-        caseNumber: caseData.caseNumber,
-      };
     }),
 });
 

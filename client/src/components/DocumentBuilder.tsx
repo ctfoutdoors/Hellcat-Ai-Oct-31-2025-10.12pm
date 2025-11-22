@@ -118,20 +118,6 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
     );
   };
 
-  const generateDocMutation = trpc.cases.generateDocument.useMutation({
-    onSuccess: (data) => {
-      if (data.documentUrl) {
-        setPreviewUrl(data.documentUrl);
-        toast.success('Document generated successfully!');
-      } else {
-        toast.info(data.message || 'Document generation in progress');
-      }
-    },
-    onError: (error) => {
-      toast.error(`Failed to generate document: ${error.message}`);
-    }
-  });
-
   const handleGenerateDocument = async () => {
     if (!selectedTemplate) {
       toast.error("Please select a template");
@@ -140,19 +126,13 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
 
     setIsGenerating(true);
     try {
-      await generateDocMutation.mutateAsync({
-        caseId,
-        templateId: selectedTemplate,
-        options: {
-          includeCertification,
-          includeAttestation,
-          legalReferences: selectedLegalRefs,
-          carrierTerms: selectedCarrierTerms,
-          evidenceFiles: selectedEvidence,
-        }
-      });
+      // TODO: Call actual document generation endpoint
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      toast.success("Document generated successfully");
+      setPreviewUrl("/mock-preview-url.pdf");
     } catch (error) {
-      // Error already handled by mutation
+      toast.error("Failed to generate document");
     } finally {
       setIsGenerating(false);
     }

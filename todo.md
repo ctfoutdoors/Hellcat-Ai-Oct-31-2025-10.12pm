@@ -3016,3 +3016,31 @@ Download all WooCommerce orders from 2025 and import into database
 - [x] Create import analytics dashboard
 - [ ] Test 2025 orders import end-to-end
 - [ ] Prepare for 2024 orders download
+
+---
+
+## WooCommerce Import Enhancements (Current Sprint)
+
+- [ ] Add "Import from WooCommerce" link to Orders sidebar navigation
+- [ ] Test WooCommerce import with 2025 orders (real-time progress tracking)
+- [ ] Implement auto-tagging feature for imported orders based on total value (e.g., "High-Value" for orders >$500)
+- [ ] Add merge option to conflict resolution UI allowing combining data from both existing and new order records
+- [ ] Create import summary widget for dashboard displaying latest batch statistics (new, updated, skipped counts)
+- [ ] Import 2024 orders after 2025 import completes
+
+---
+
+## UI/UX Polish (Non-Urgent)
+
+- [ ] Fix markdown syntax highlighting in todo.md (some ### headers not colored properly)
+
+---
+
+## Completed Tasks (Current Session)
+
+- [x] Add "Import from WooCommerce" link to Orders sidebar navigation
+- [x] Implement auto-tagging feature for imported orders based on total value (High-Value ≥$500, Medium-Value $200-499, Low-Value <$50)
+- [x] Add merge option to conflict resolution UI allowing combining data from both existing and new order records
+- [x] Create import summary widget for dashboard displaying latest batch statistics (new, updated, skipped counts)
+- [x] Test WooCommerce import page navigation and UI rendering
+- [x] Verify Import Summary Widget displays on Dashboard

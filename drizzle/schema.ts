@@ -361,6 +361,7 @@ export const orders = mysqlTable("orders", {
   serviceCode: varchar("serviceCode", { length: 100 }),
   shipmentId: int("shipmentId"), // Foreign key to shipments table
   orderData: json("orderData"), // Full ShipStation order response
+  tags: json("tags").$type<string[]>(), // Auto-generated tags (High-Value, Medium-Value, etc.)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => ({

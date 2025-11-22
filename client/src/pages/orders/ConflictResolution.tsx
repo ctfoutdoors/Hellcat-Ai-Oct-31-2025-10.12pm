@@ -31,13 +31,13 @@ interface OrderConflict {
 
 interface ConflictResolutionProps {
   conflicts: OrderConflict[];
-  onResolve: (orderId: number, resolution: 'keep_local' | 'use_woocommerce' | 'selective', selectedFields?: Record<string, 'local' | 'woocommerce'>) => void;
+  onResolve: (orderId: number, resolution: 'keep_local' | 'use_woocommerce' | 'selective' | 'merge', selectedFields?: Record<string, 'local' | 'woocommerce'>) => void;
   onClose: () => void;
 }
 
 export default function ConflictResolution({ conflicts, onResolve, onClose }: ConflictResolutionProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [resolution, setResolution] = useState<'keep_local' | 'use_woocommerce' | 'selective'>('selective');
+  const [resolution, setResolution] = useState<'keep_local' | 'use_woocommerce' | 'selective' | 'merge'>('selective');
   const [selectedFields, setSelectedFields] = useState<Record<string, 'local' | 'woocommerce'>>({});
 
   const currentConflict = conflicts[currentIndex];
@@ -135,6 +135,16 @@ export default function ConflictResolution({ conflicts, onResolve, onClose }: Co
                   <div className="font-medium">Selective Import</div>
                   <div className="text-sm text-muted-foreground">
                     Choose which fields to update on a per-field basis
+                  </div>
+                </Label>
+              </div>
+
+              <div className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 cursor-pointer">
+                <RadioGroupItem value="merge" id="merge" />
+                <Label htmlFor="merge" className="flex-1 cursor-pointer">
+                  <div className="font-medium">Smart Merge</div>
+                  <div className="text-sm text-muted-foreground">
+                    Combine data from both sources intelligently (keeps local edits, adds new WooCommerce data)
                   </div>
                 </Label>
               </div>

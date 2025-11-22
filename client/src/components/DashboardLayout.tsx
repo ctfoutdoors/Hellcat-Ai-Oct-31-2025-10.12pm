@@ -63,6 +63,7 @@ const menuItems: MenuItem[] = [
     icon: ShoppingCart,
     children: [
       { title: "All Orders", path: "/orders" },
+      { title: "Import from WooCommerce", path: "/orders/import/woocommerce" },
       { title: "Order Tracking", path: "/orders/tracking" },
       { title: "Website (CTF)", path: "/orders/website" },
       { title: "Amazon", path: "/orders/amazon" },

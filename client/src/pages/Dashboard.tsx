@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { AlertTriangle } from "lucide-react";
 import ChannelAnalytics from "@/components/ChannelAnalytics";
 import TimePeriodSelector from "@/components/TimePeriodSelector";
+import ImportSummaryWidget from "@/components/ImportSummaryWidget";
 import { TimePeriod } from "@shared/dateRanges";
 
 // Animated counter component
@@ -356,8 +357,11 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Channel Analytics Widget */}
-      <ChannelAnalytics period={timePeriod} />
+      {/* Channel Analytics & Import Summary */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <ChannelAnalytics period={timePeriod} />
+        <ImportSummaryWidget />
+      </div>
 
       {/* Status Banner */}
       <Card className="border-l-4 border-primary bg-gradient-to-r from-primary/5 to-transparent">

@@ -148,4 +148,22 @@ export const woocommerceImportRouter = router({
       // TODO: Implement rollback
       return { success: true };
     }),
+
+  /**
+   * Get last import summary for dashboard widget
+   */
+  getLastImportSummary: protectedProcedure.query(async () => {
+    // TODO: Implement actual import history tracking
+    // For now, return mock data
+    return {
+      totalProcessed: 0,
+      created: 0,
+      updated: 0,
+      skipped: 0,
+      conflicts: 0,
+      errors: 0,
+      duration: 0,
+      completedAt: null,
+    };
+  }),
 });

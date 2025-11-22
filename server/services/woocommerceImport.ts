@@ -351,6 +351,27 @@ export class WooCommerceImportService {
     // Link or create customer
     const customerId = await this.linkCustomer(wcOrder);
 
+    // Auto-tag orders based on total value
+    const tags: string[] = [];
+    const totalValue = parseFloat(wcOrder.total);
+    
+    if (totalValue >= 500) {
+      tags.push('High-Value');
+    } else if (totalValue >= 200) {
+      tags.push('Medium-Value');
+    } else if (totalValue < 50) {
+      tags.push('Low-Value');
+    }
+    
+    // Add status-based tags
+    if (wcOrder.status === 'processing') {
+      tags.push('Processing');
+    } else if (wcOrder.status === 'completed') {
+      tags.push('Completed');
+    } else if (wcOrder.status === 'refunded') {
+      tags.push('Refunded');
+    }
+
     const orderData = {
       orderNumber: wcOrder.number,
       source: 'woocommerce',
@@ -370,6 +391,7 @@ export class WooCommerceImportService {
       status: wcOrder.status,
       orderItems: wcOrder.line_items,
       orderData: wcOrder,
+      tags, // Auto-generated tags
     };
 
     const [inserted] = await db.insert(orders).values(orderData);

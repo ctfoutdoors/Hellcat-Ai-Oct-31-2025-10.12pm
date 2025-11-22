@@ -954,8 +954,7 @@ Hellcat Intelligence Platform
 
   /**
    * Calculate AI success probability for a case
-   */
-  calculateSuccessProbability: protectedProcedure
+   */  calculateSuccessProbability: protectedProcedure
     .input(z.object({ caseId: z.number() }))
     .mutation(async ({ input }) => {
       const caseData = await db.getCaseById(input.caseId);
@@ -984,6 +983,24 @@ Hellcat Intelligence Platform
         success: true,
         ...result,
       };
+    }),
+
+  /**
+   * Get notes for a case
+   */
+  getNotes: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .query(async ({ input }) => {
+      return await db.getCaseNotes(input.caseId);
+    }),
+
+  /**
+   * Get activities for a case
+   */
+  getActivities: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .query(async ({ input }) => {
+      return await db.getCaseActivities(input.caseId);
     }),
 });
 

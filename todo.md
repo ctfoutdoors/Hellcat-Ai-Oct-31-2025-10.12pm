@@ -3044,3 +3044,128 @@ Download all WooCommerce orders from 2025 and import into database
 - [x] Create import summary widget for dashboard displaying latest batch statistics (new, updated, skipped counts)
 - [x] Test WooCommerce import page navigation and UI rendering
 - [x] Verify Import Summary Widget displays on Dashboard
+
+
+---
+
+## EVIDENCE COLLECTION & LOCATION INTELLIGENCE SYSTEM
+
+### Phase 1: Core Workflow Fixes
+- [ ] Add getNotes and getActivities tRPC procedures
+- [ ] Test status update with activity logging
+- [ ] Verify case_activities table working correctly
+
+### Phase 2: Evidence Indexation & Screenshot Capture (PRIORITY)
+- [ ] Design evidence indexation database schema
+- [ ] Implement automatic evidence categorization and tagging
+- [ ] Build OCR service for uploaded documents
+- [ ] Create FedEx proof of delivery screenshot capture system
+- [ ] Extract delivery photo from FedEx tracking page
+- [ ] Store screenshots with metadata (timestamp, location, recipient)
+- [ ] Build evidence timeline visualization UI
+
+### Phase 3: Package Journey Data Collection
+- [ ] Create tracking_events table for complete scan history
+- [ ] Implement FedEx tracking API integration for full timeline
+- [ ] Store all checkpoint data: facility, scan type, timestamp, location
+- [ ] Calculate delays between consecutive scans
+- [ ] Extract route information (origin → hubs → destination)
+
+### Phase 4: Location Intelligence & Geocoding
+- [ ] Create facility_locations table with confidence labels
+- [ ] Implement geocoding service for all scan locations
+- [ ] Cross-reference with FedEx facility directory
+- [ ] Verify locations using Google Maps API
+- [ ] Assign confidence labels: "Known", "Suspected", "Unverified", "Investigating"
+- [ ] Store verification sources and timestamps
+- [ ] Flag anomalies (residential addresses as hubs, etc.)
+
+### Phase 5: Hub & Time Pattern Analysis
+- [ ] Build hub performance scoring system
+- [ ] Analyze day vs night scan patterns
+- [ ] Identify staffing-related delays
+- [ ] Calculate average processing time per hub
+- [ ] Detect problematic distribution centers
+- [ ] Generate trend reports for carrier performance
+
+### Phase 6: Dispute Letter Generation Testing
+- [ ] Test PDF generation with real FedEx case
+- [ ] Verify template selection works
+- [ ] Validate legal references integration
+- [ ] Test carrier terms inclusion
+- [ ] Verify evidence attachment links
+
+### Phase 7: UI Integration
+- [ ] Build comprehensive evidence viewer
+- [ ] Create interactive route map with all checkpoints
+- [ ] Display location confidence labels
+- [ ] Show time pattern analysis charts
+- [ ] Integrate screenshot gallery
+- [ ] Add evidence export functionality
+
+### Phase 8: End-to-End Testing
+- [ ] Test complete workflow with real FedEx case (tracking 394733401787)
+- [ ] Verify all evidence collected and indexed
+- [ ] Validate location geocoding and confidence labels
+- [ ] Test dispute letter generation with all evidence
+- [ ] Confirm screenshot capture works
+- [ ] Validate hub analysis and time patterns
+
+
+
+---
+
+## EVIDENCE COLLECTION & LOCATION INTELLIGENCE - Nov 22, 2025
+
+### Phase 1: Database Schema ✅
+- [x] Evidence database schema (evidence_items, tracking_events, facility_locations, delivery_proofs)
+- [x] Create evidence_items table with OCR and AI analysis fields
+- [x] Create tracking_events table for package journey data
+- [x] Create facility_locations table with geocoding and confidence labels
+- [x] Create delivery_proofs table for screenshot storage
+- [x] Push all schema changes to database
+
+### Phase 2: Screenshot Capture System ✅
+- [x] FedEx screenshot capture service with Puppeteer
+- [x] Delivery proof extraction (photos, dates, signatures)
+- [x] Tracking timeline screenshot capture
+- [x] Evidence database helpers and tRPC endpoints
+- [x] Evidence router added to appRouter
+
+### Phase 3: Tracking Data Collection 🔄
+- [ ] FedEx tracking API integration service
+- [ ] Parse tracking events from API responses
+- [ ] Extract scan timestamps, locations, and event types
+- [ ] Calculate delay metrics between scans
+- [ ] Identify night scans (8PM-6AM) and weekend scans
+- [ ] Store complete package journey in tracking_events table
+
+### Phase 4: Location Intelligence 🔄
+- [ ] Geocoding service using Google Maps API
+- [ ] Facility identification and verification
+- [ ] Confidence labeling (Known, Suspected, Unverified, Investigating)
+- [ ] Multi-source verification (carrier directory, Google Maps, public records)
+- [ ] Anomaly detection (residential addresses as hubs)
+- [ ] Hub performance scoring
+
+### Phase 5: Evidence Viewer UI 🔄
+- [ ] Evidence list component for case details page
+- [ ] Screenshot gallery with lightbox
+- [ ] Delivery proof viewer with photo display
+- [ ] Tracking timeline visualization
+- [ ] Evidence upload dialog
+- [ ] OCR text display and editing
+
+### Phase 6: Route Mapping & Analysis 🔄
+- [ ] Google Maps route visualization for package journey
+- [ ] Hub markers with performance indicators
+- [ ] Delay hotspot identification
+- [ ] Time-of-day pattern visualization
+- [ ] Hub analysis dashboard
+
+### Phase 7: Testing & Checkpoint
+- [ ] Test screenshot capture with real FedEx case (394733401787)
+- [ ] Verify tracking data collection
+- [ ] Test geocoding and facility verification
+- [ ] End-to-end evidence workflow test
+- [ ] Create checkpoint and deploy

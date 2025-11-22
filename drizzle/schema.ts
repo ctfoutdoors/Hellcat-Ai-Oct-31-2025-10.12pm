@@ -209,6 +209,193 @@ export type InsertCaseNote = typeof caseNotes.$inferInsert;
 export type CaseActivity = typeof caseActivities.$inferSelect;
 export type InsertCaseActivity = typeof caseActivities.$inferInsert;
 
+// ============================================================================
+// EVIDENCE COLLECTION & LOCATION INTELLIGENCE TABLES
+// ============================================================================
+
+/**
+ * Evidence Items - Comprehensive evidence management with OCR and AI analysis
+ */
+export const evidenceItems = mysqlTable("evidence_items", {
+  id: int("id").autoincrement().primaryKey(),
+  caseId: int("caseId").notNull(),
+  evidenceType: varchar("evidenceType", { length: 100 }).notNull(),
+  category: varchar("category", { length: 100 }),
+  title: varchar("title", { length: 500 }).notNull(),
+  description: text("description"),
+  fileUrl: text("fileUrl"),
+  fileName: varchar("fileName", { length: 500 }),
+  fileType: varchar("fileType", { length: 100 }),
+  fileSize: int("fileSize"),
+  thumbnailUrl: text("thumbnailUrl"),
+  
+  // OCR and Analysis
+  ocrText: text("ocrText"),
+  ocrConfidence: decimal("ocrConfidence", { precision: 5, scale: 2 }),
+  aiSummary: text("aiSummary"),
+  aiTags: json("aiTags").$type<string[]>(),
+  
+  // Metadata
+  capturedAt: timestamp("capturedAt"),
+  uploadedBy: int("uploadedBy").notNull(),
+  uploadedAt: timestamp("uploadedAt").defaultNow().notNull(),
+  verifiedBy: int("verifiedBy"),
+  verifiedAt: timestamp("verifiedAt"),
+  isVerified: boolean("isVerified").default(false),
+  
+  // Legal metadata
+  chainOfCustody: json("chainOfCustody"),
+  legalHold: boolean("legalHold").default(false),
+}, (table) => ({
+  caseIdx: index("case_idx").on(table.caseId),
+  typeIdx: index("type_idx").on(table.evidenceType),
+  categoryIdx: index("category_idx").on(table.category),
+  uploadedIdx: index("uploaded_idx").on(table.uploadedAt),
+}));
+
+export type EvidenceItem = typeof evidenceItems.$inferSelect;
+export type InsertEvidenceItem = typeof evidenceItems.$inferInsert;
+
+/**
+ * Tracking Events - Complete package journey with timing analysis
+ */
+export const trackingEvents = mysqlTable("tracking_events", {
+  id: int("id").autoincrement().primaryKey(),
+  caseId: int("caseId").notNull(),
+  trackingNumber: varchar("trackingNumber", { length: 100 }).notNull(),
+  carrier: varchar("carrier", { length: 100 }).notNull(),
+  
+  // Event Details
+  eventType: varchar("eventType", { length: 100 }).notNull(),
+  eventDescription: text("eventDescription").notNull(),
+  eventTimestamp: timestamp("eventTimestamp").notNull(),
+  eventCode: varchar("eventCode", { length: 50 }),
+  
+  // Location Data
+  locationName: varchar("locationName", { length: 500 }),
+  locationAddress: text("locationAddress"),
+  locationCity: varchar("locationCity", { length: 255 }),
+  locationState: varchar("locationState", { length: 100 }),
+  locationZip: varchar("locationZip", { length: 20 }),
+  locationCountry: varchar("locationCountry", { length: 100 }),
+  latitude: decimal("latitude", { precision: 10, scale: 7 }),
+  longitude: decimal("longitude", { precision: 10, scale: 7 }),
+  
+  // Facility Intelligence
+  facilityId: int("facilityId"),
+  
+  // Timing Analysis
+  delayMinutes: int("delayMinutes"),
+  isNightScan: boolean("isNightScan"),
+  isWeekendScan: boolean("isWeekendScan"),
+  scanHour: int("scanHour"),
+  
+  // Metadata
+  rawData: json("rawData"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  caseIdx: index("case_idx").on(table.caseId),
+  trackingIdx: index("tracking_idx").on(table.trackingNumber),
+  timestampIdx: index("timestamp_idx").on(table.eventTimestamp),
+  facilityIdx: index("facility_idx").on(table.facilityId),
+  nightScanIdx: index("night_scan_idx").on(table.isNightScan),
+  delayIdx: index("delay_idx").on(table.delayMinutes),
+}));
+
+export type TrackingEvent = typeof trackingEvents.$inferSelect;
+export type InsertTrackingEvent = typeof trackingEvents.$inferInsert;
+
+/**
+ * Facility Locations - Geocoded locations with confidence labels
+ */
+export const facilityLocations = mysqlTable("facility_locations", {
+  id: int("id").autoincrement().primaryKey(),
+  carrier: varchar("carrier", { length: 100 }).notNull(),
+  facilityName: varchar("facilityName", { length: 500 }).notNull(),
+  facilityType: varchar("facilityType", { length: 100 }),
+  
+  // Address
+  address: text("address"),
+  city: varchar("city", { length: 255 }),
+  state: varchar("state", { length: 100 }),
+  zip: varchar("zip", { length: 20 }),
+  country: varchar("country", { length: 100 }),
+  
+  // Geocoding
+  latitude: decimal("latitude", { precision: 10, scale: 7 }),
+  longitude: decimal("longitude", { precision: 10, scale: 7 }),
+  geocodedAt: timestamp("geocodedAt"),
+  
+  // Confidence & Verification
+  confidenceLabel: varchar("confidenceLabel", { length: 50 }).notNull(),
+  verificationSources: json("verificationSources").$type<string[]>(),
+  verificationNotes: text("verificationNotes"),
+  lastVerified: timestamp("lastVerified"),
+  verifiedBy: int("verifiedBy"),
+  
+  // Anomaly Flags
+  isAnomaly: boolean("isAnomaly").default(false),
+  anomalyReason: text("anomalyReason"),
+  
+  // Performance Metrics
+  averageProcessingMinutes: int("averageProcessingMinutes"),
+  totalScans: int("totalScans").default(0),
+  delayIncidents: int("delayIncidents").default(0),
+  performanceScore: decimal("performanceScore", { precision: 5, scale: 2 }),
+  
+  // Metadata
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+}, (table) => ({
+  carrierIdx: index("carrier_idx").on(table.carrier),
+  confidenceIdx: index("confidence_idx").on(table.confidenceLabel),
+  locationIdx: index("location_idx").on(table.latitude, table.longitude),
+  performanceIdx: index("performance_idx").on(table.performanceScore),
+}));
+
+export type FacilityLocation = typeof facilityLocations.$inferSelect;
+export type InsertFacilityLocation = typeof facilityLocations.$inferInsert;
+
+/**
+ * Delivery Proofs - Screenshots and photos from carrier websites
+ */
+export const deliveryProofs = mysqlTable("delivery_proofs", {
+  id: int("id").autoincrement().primaryKey(),
+  caseId: int("caseId").notNull(),
+  trackingNumber: varchar("trackingNumber", { length: 100 }).notNull(),
+  carrier: varchar("carrier", { length: 100 }).notNull(),
+  
+  // Screenshot Data
+  screenshotUrl: text("screenshotUrl").notNull(),
+  thumbnailUrl: text("thumbnailUrl"),
+  capturedAt: timestamp("capturedAt").defaultNow().notNull(),
+  
+  // Delivery Details
+  deliveryDate: timestamp("deliveryDate"),
+  deliveryTime: varchar("deliveryTime", { length: 50 }),
+  deliveryLocation: varchar("deliveryLocation", { length: 500 }),
+  recipientName: varchar("recipientName", { length: 255 }),
+  signatureRequired: boolean("signatureRequired"),
+  signatureObtained: boolean("signatureObtained"),
+  
+  // Photo Analysis
+  hasDeliveryPhoto: boolean("hasDeliveryPhoto").default(false),
+  deliveryPhotoUrl: text("deliveryPhotoUrl"),
+  photoAnalysis: json("photoAnalysis"),
+  
+  // Metadata
+  sourceUrl: text("sourceUrl"),
+  capturedBy: int("capturedBy").notNull(),
+  evidenceItemId: int("evidenceItemId"),
+}, (table) => ({
+  caseIdx: index("case_idx").on(table.caseId),
+  trackingIdx: index("tracking_idx").on(table.trackingNumber),
+  deliveryDateIdx: index("delivery_date_idx").on(table.deliveryDate),
+}));
+
+export type DeliveryProof = typeof deliveryProofs.$inferSelect;
+export type InsertDeliveryProof = typeof deliveryProofs.$inferInsert;
+
 /**
  * Extraction History - AI Learning System
  * Tracks document extractions to improve accuracy over time
@@ -375,7 +562,8 @@ export const orders = mysqlTable("orders", {
 export type Order = typeof orders.$inferSelect;
 export type InsertOrder = typeof orders.$inferInsert;
 
-export const trackingEvents = mysqlTable("tracking_events", {
+// Renamed to avoid conflict with case tracking_events table
+export const shipmentTrackingEvents = mysqlTable("shipment_tracking_events", {
   id: int("id").autoincrement().primaryKey(),
   shipmentId: int("shipmentId").notNull(),
   eventDate: timestamp("eventDate").notNull(),
@@ -387,6 +575,9 @@ export const trackingEvents = mysqlTable("tracking_events", {
   shipmentIdx: index("shipment_idx").on(table.shipmentId),
   eventDateIdx: index("event_date_idx").on(table.eventDate),
 }));
+
+export type ShipmentTrackingEvent = typeof shipmentTrackingEvents.$inferSelect;
+export type InsertShipmentTrackingEvent = typeof shipmentTrackingEvents.$inferInsert;
 
 export const deliveryGuarantees = mysqlTable("delivery_guarantees", {
   id: int("id").autoincrement().primaryKey(),

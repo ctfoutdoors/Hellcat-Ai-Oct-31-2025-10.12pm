@@ -9,7 +9,7 @@ interface WooCommerceConfig {
   consumerSecret: string;
 }
 
-interface WooCommerceOrder {
+export interface WooCommerceOrder {
   id: number;
   parent_id: number;
   number: string;
@@ -134,15 +134,15 @@ export class WooCommerceClient {
   private config: WooCommerceConfig;
   private authHeader: string;
 
-  constructor(storeUrl: string, consumerKey: string, consumerSecret: string) {
+  constructor(config: WooCommerceConfig) {
     this.config = {
-      storeUrl: storeUrl.replace(/\/$/, ''), // Remove trailing slash
-      consumerKey,
-      consumerSecret,
+      storeUrl: config.storeUrl.replace(/\/$/, ''), // Remove trailing slash
+      consumerKey: config.consumerKey,
+      consumerSecret: config.consumerSecret,
     };
     
     // WooCommerce uses Basic Auth with Consumer Key:Consumer Secret
-    const credentials = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
+    const credentials = Buffer.from(`${config.consumerKey}:${config.consumerSecret}`).toString('base64');
     this.authHeader = `Basic ${credentials}`;
   }
 

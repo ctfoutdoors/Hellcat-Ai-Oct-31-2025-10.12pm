@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `delivery_proofs` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `caseId` INT NOT NULL,\n  `trackingNumber` VARCHAR(100) NOT NULL,\n  `carrier` VARCHAR(100) NOT NULL,\n  `screenshotUrl` TEXT NOT NULL,\n  `thumbnailUrl` TEXT,\n  `capturedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  `deliveryDate` TIMESTAMP NULL,\n  `deliveryTime` VARCHAR(50),\n  `deliveryLocation` VARCHAR(500),\n  `recipientName` VARCHAR(255),\n  `signatureRequired` BOOLEAN,\n  `signatureObtained` BOOLEAN,\n  `hasDeliveryPhoto` BOOLEAN DEFAULT FALSE,\n  `deliveryPhotoUrl` TEXT,\n  `photoAnalysis` JSON,\n  `sourceUrl` TEXT,\n  `capturedBy` INT NOT NULL,\n  `evidenceItemId` INT,\n  INDEX `case_idx` (`caseId`),\n  INDEX `tracking_idx` (`trackingNumber`),\n  INDEX `delivery_date_idx` (`deliveryDate`)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS `delivery_proofs` (\n  `id` INT AUTO_INCREMENT PRIMARY KEY,\n  `caseId` INT NOT NULL,\n  `trackingNumber` VARCHAR(100) NOT NULL,\n  `carrier` VARCHAR(100) NOT NULL,\n  `screenshotUrl` TEXT NOT NULL,\n  `thumbnailUrl` TEXT,\n  `capturedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  `deliveryDate` TIMESTAMP NULL,\n  `deliveryTime` VARCHAR(50),\n  `deliveryLocation` VARCHAR(500),\n  `recipientName` VARCHAR(255),\n  `signatureRequired` BOOLEAN,\n  `signatureObtained` BOOLEAN,\n  `hasDeliveryPhoto` BOOLEAN DEFAULT FALSE,\n  `deliveryPhotoUrl` TEXT,\n  `photoAnalysis` JSON,\n  `sourceUrl` TEXT,\n  `capturedBy` INT NOT NULL,\n  `evidenceItemId` INT,\n  INDEX `case_idx` (`caseId`),\n  INDEX `tracking_idx` (`trackingNumber`),\n  INDEX `delivery_date_idx` (`deliveryDate`)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 175
+}

@@ -105,8 +105,9 @@ export class WooCommerceSync {
           .limit(1);
 
         const customerData = {
-          // woocommerceId: wooCustomer.id,
-          customerType: wooCustomer.billing.company ? "company" : "individual",
+          customerNumber: `WOO-${wooCustomer.id}`,
+          customerType: (wooCustomer.billing.company ? "company" : "individual") as "company" | "individual",
+          businessType: "retail" as const,
           companyName: wooCustomer.billing.company || null,
           firstName: wooCustomer.first_name || wooCustomer.billing.first_name,
           lastName: wooCustomer.last_name || wooCustomer.billing.last_name,

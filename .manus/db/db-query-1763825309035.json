@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS `case_activities` (\n  `id` int AUTO_INCREMENT PRIMARY KEY,\n  `caseId` int NOT NULL,\n  `activityType` varchar(100) NOT NULL,\n  `description` text NOT NULL,\n  `metadata` json,\n  `performedBy` int,\n  `createdAt` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX `case_idx` (`caseId`),\n  INDEX `type_idx` (`activityType`)\n)",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS `case_activities` (\n  `id` int AUTO_INCREMENT PRIMARY KEY,\n  `caseId` int NOT NULL,\n  `activityType` varchar(100) NOT NULL,\n  `description` text NOT NULL,\n  `metadata` json,\n  `performedBy` int,\n  `createdAt` timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX `case_idx` (`caseId`),\n  INDEX `type_idx` (`activityType`)\n)",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 173
+}

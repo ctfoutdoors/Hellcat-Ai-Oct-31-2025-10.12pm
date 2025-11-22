@@ -675,12 +675,13 @@ export const casesRouter = router({
       const { url } = await storagePut(fileKey, pdfBuffer, 'application/pdf');
 
       // Save to database as attachment
-      await db.addCaseAttachment({
+      await db.uploadCaseDocument({
         caseId: input.caseId,
         fileName: `Dispute Letter - ${caseData.caseNumber}.pdf`,
+        fileUrl: url,
         fileType: 'application/pdf',
         fileSize: pdfBuffer.length,
-        fileUrl: url,
+        documentType: 'dispute_letter',
         uploadedBy: ctx.user.id,
       });
 

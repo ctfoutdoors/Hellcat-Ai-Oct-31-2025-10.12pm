@@ -1,0 +1,18 @@
+{
+  "query": "SELECT id, caseId, fileName, documentType, fileSize, createdAt FROM case_documents WHERE caseId = 1 ORDER BY createdAt DESC LIMIT 5",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT id, caseId, fileName, documentType, fileSize, createdAt FROM case_documents WHERE caseId = 1 ORDER BY createdAt DESC LIMIT 5",
+  "rows": [
+    {
+      "id": "1",
+      "caseId": "1",
+      "fileName": "Dispute Letter - CASE-1763825164911.pdf",
+      "documentType": "dispute_letter",
+      "fileSize": "3537",
+      "createdAt": "2025-11-22 20:28:58"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcaseId\tfileName\tdocumentType\tfileSize\tcreatedAt\n1\t1\tDispute Letter - CASE-1763825164911.pdf\tdispute_letter\t3537\t2025-11-22 20:28:58\n",
+  "stderr": "",
+  "execution_time_ms": 55
+}

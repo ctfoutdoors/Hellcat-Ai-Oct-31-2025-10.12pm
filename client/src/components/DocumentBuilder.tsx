@@ -118,6 +118,8 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
     );
   };
 
+  const generateDocumentMutation = trpc.cases.generateDisputeLetter.useMutation();
+
   const handleGenerateDocument = async () => {
     if (!selectedTemplate) {
       toast.error("Please select a template");
@@ -126,13 +128,12 @@ export default function DocumentBuilder({ caseId, caseData }: DocumentBuilderPro
 
     setIsGenerating(true);
     try {
-      // TODO: Call actual document generation endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const result = await generateDocumentMutation.mutateAsync({ caseId });
       
       toast.success("Document generated successfully");
-      setPreviewUrl("/mock-preview-url.pdf");
-    } catch (error) {
-      toast.error("Failed to generate document");
+      setPreviewUrl(result.fileUrl);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to generate document");
     } finally {
       setIsGenerating(false);
     }

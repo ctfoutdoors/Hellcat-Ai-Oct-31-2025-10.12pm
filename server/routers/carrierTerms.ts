@@ -26,7 +26,7 @@ export const carrierTermsRouter = router({
       let conditions = [sql`${carrierTerms.isActive} = true`];
 
       if (input?.carrier) {
-        conditions.push(sql`${carrierTerms.carrier} = ${input.carrier}`);
+        conditions.push(sql`UPPER(${carrierTerms.carrier}) = UPPER(${input.carrier})`);
       }
 
       if (input?.termType) {
@@ -63,7 +63,7 @@ export const carrierTermsRouter = router({
         .select()
         .from(carrierTerms)
         .where(
-          sql`${carrierTerms.isActive} = true AND ${carrierTerms.carrier} = ${input.carrier}`
+          sql`${carrierTerms.isActive} = true AND UPPER(${carrierTerms.carrier}) = UPPER(${input.carrier})`
         )
         .orderBy(carrierTerms.termType);
 
@@ -100,7 +100,7 @@ export const carrierTermsRouter = router({
       ];
 
       if (input.carrier) {
-        conditions.push(sql`${carrierTerms.carrier} = ${input.carrier}`);
+        conditions.push(sql`UPPER(${carrierTerms.carrier}) = UPPER(${input.carrier})`);
       }
 
       const results = await db

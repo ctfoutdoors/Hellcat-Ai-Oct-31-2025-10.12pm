@@ -1002,6 +1002,50 @@ Hellcat Intelligence Platform
     .query(async ({ input }) => {
       return await db.getCaseActivities(input.caseId);
     }),
+
+  /**
+   * Get generated documents for a case
+   */
+  getDocuments: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .query(async ({ input }) => {
+      // TODO: Query case_documents table when implemented
+      // For now return empty array
+      return [];
+    }),
+
+  /**
+   * Generate dispute letter document
+   */
+  generateDocument: protectedProcedure
+    .input(z.object({
+      caseId: z.number(),
+      templateId: z.string().optional(),
+      options: z.object({
+        includeCertification: z.boolean().optional(),
+        includeAttestation: z.boolean().optional(),
+        legalReferences: z.array(z.number()).optional(),
+        carrierTerms: z.array(z.number()).optional(),
+        evidenceFiles: z.array(z.number()).optional(),
+      }).optional()
+    }))
+    .mutation(async ({ input }) => {
+      // TODO: Implement full PDF generation service
+      // For now, return placeholder response
+      const caseData = await db.getCaseById(input.caseId);
+      
+      if (!caseData) {
+        throw new Error('Case not found');
+      }
+
+      // Placeholder: In production, this would call documentGeneration service
+      return {
+        success: true,
+        documentUrl: null,
+        message: 'Document generation service not yet fully implemented. PDF generation coming soon.',
+        caseNumber: caseData.caseNumber,
+      };
+    }),
 });
 
 

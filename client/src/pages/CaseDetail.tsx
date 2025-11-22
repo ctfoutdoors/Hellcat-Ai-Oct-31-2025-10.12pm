@@ -190,9 +190,32 @@ export default function CaseDetail() {
     toast.success("Case renamed successfully");
   };
 
+  const captureProofMutation = trpc.evidence.captureFedExProof.useMutation({
+    onSuccess: (data) => {
+      toast.success('Screenshot captured successfully!');
+      setEvidenceDialogOpen(false);
+      // TODO: Refresh evidence list when viewer is implemented
+    },
+    onError: (error) => {
+      toast.error(`Failed to capture screenshot: ${error.message}`);
+    }
+  });
+
   const handleCaptureScreenshot = async () => {
-    // TODO: Implement screenshot capture
-    toast.info("Screenshot capture feature coming soon");
+    if (!caseData?.trackingNumber) {
+      toast.error('No tracking number available for this case');
+      return;
+    }
+    if (!caseData?.carrier) {
+      toast.error('No carrier specified for this case');
+      return;
+    }
+    
+    await captureProofMutation.mutateAsync({
+      caseId: caseData.id,
+      trackingNumber: caseData.trackingNumber,
+      carrier: caseData.carrier
+    });
   };
 
   const handleUploadEvidence = async () => {

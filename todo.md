@@ -3169,3 +3169,73 @@ Download all WooCommerce orders from 2025 and import into database
 - [ ] Test geocoding and facility verification
 - [ ] End-to-end evidence workflow test
 - [ ] Create checkpoint and deploy
+
+
+---
+
+## COMPREHENSIVE END-TO-END TESTING - Nov 22, 2025
+
+### Real Case Data:
+- FedEx Tracking: 394733401787
+- Carrier: FedEx 2Day® One Rate
+- Overcharge: $77.99 ($94.54 charged vs $16.55 quoted)
+- Reason: Dimensional weight discrepancy + surcharges
+- Test Email: herve@catchthefever.com
+
+### Phase 1: Email Workflow Testing
+- [ ] Send test email from herve@catchthefever.com with tracking 394733401787
+- [ ] Verify email monitoring detects tracking number
+- [ ] Confirm case auto-creation from email
+- [ ] Test email parsing and data extraction
+
+### Phase 2: Case Management Testing
+- [ ] Create case with real FedEx data
+- [ ] Test all form fields and validation
+- [ ] Test status updates (Draft → Open → In Progress → Resolved)
+- [ ] Test activity logging
+- [ ] Test notes and comments
+- [ ] Verify case number generation
+- [ ] Test case editing and updates
+
+### Phase 3: Evidence Collection Testing
+- [ ] Test "Add Evidence" button functionality
+- [ ] Test FedEx screenshot capture (evidence.captureFedExProof)
+- [ ] Verify delivery photo extraction
+- [ ] Test tracking timeline screenshot capture
+- [ ] Test manual evidence upload
+- [ ] Verify evidence list display
+- [ ] Test evidence viewer/gallery
+
+### Phase 4: Dispute Letter Generation Testing
+- [ ] Test "Generate Dispute Letter" button
+- [ ] Select real template
+- [ ] Populate with case data (tracking, amounts, dates)
+- [ ] Test all merge fields work correctly
+- [ ] Generate PDF
+- [ ] Verify PDF content accuracy
+- [ ] Test download functionality
+
+### Phase 5: UI/UX Verification
+- [ ] Test every button on case detail page
+- [ ] Verify "Add Evidence" button works
+- [ ] Verify "AI Review" button works
+- [ ] Verify "Generate & Send to ShipStation" button works
+- [ ] Verify "Update Status" button works
+- [ ] Test all tabs load correctly
+- [ ] Test navigation between pages
+- [ ] Verify no broken links
+- [ ] Test responsive design
+- [ ] Verify all icons display correctly
+
+### Phase 6: Issue Documentation & Fixes
+- [ ] Document all bugs found
+- [ ] Prioritize critical vs minor issues
+- [ ] Fix critical issues blocking workflow
+- [ ] Fix UI/UX issues
+- [ ] Retest after each fix
+
+### Phase 7: Final Validation
+- [ ] Complete end-to-end workflow test
+- [ ] Verify all fixes work
+- [ ] Create final test report
+- [ ] Save checkpoint with all fixes

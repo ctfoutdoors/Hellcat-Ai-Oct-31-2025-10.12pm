@@ -1,0 +1,8 @@
+{
+  "query": "ALTER TABLE orders \nADD COLUMN woocommerceId INT UNIQUE AFTER externalId,\nADD COLUMN billingAddress JSON AFTER customerPhone;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute ALTER TABLE orders \nADD COLUMN woocommerceId INT UNIQUE AFTER externalId,\nADD COLUMN billingAddress JSON AFTER customerPhone;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 8200 (HY000) at line 1: unsupported add column 'woocommerceid' constraint UNIQUE KEY when altering 'bQwuvX7ycRD88MLXJHLZXd.orders'"
+  ]
+}

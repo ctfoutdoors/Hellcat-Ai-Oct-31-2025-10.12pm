@@ -46,6 +46,7 @@ import { analyticsRouter } from "./routers/analytics";
 import { legalReferencesRouter } from "./routers/legalReferences";
 import { carrierTermsRouter } from "./routers/carrierTerms";
 import { aiAgentsRouter } from "./routers/aiAgents";
+import { woocommerceImportRouter } from "./routers/woocommerceImport";
 
 
 export const appRouter = router({
@@ -69,6 +70,7 @@ export const appRouter = router({
   legalReferences: legalReferencesRouter,
   carrierTerms: carrierTermsRouter,
   aiAgents: aiAgentsRouter,
+  woocommerceImport: woocommerceImportRouter,
   system: systemRouter,
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),

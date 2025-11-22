@@ -343,10 +343,12 @@ export const orders = mysqlTable("orders", {
   source: varchar("source", { length: 100 }).notNull(), // "shipstation", "manual", etc.
   channel: varchar("channel", { length: 100 }), // "Amazon", "eBay", "Shopify", etc.
   externalId: varchar("externalId", { length: 255 }), // ShipStation orderId
+  woocommerceId: int("woocommerceId").unique(), // WooCommerce order ID
   customerName: varchar("customerName", { length: 255 }),
   customerEmail: varchar("customerEmail", { length: 320 }),
   customerPhone: varchar("customerPhone", { length: 50 }),
-  shippingAddress: json("shippingAddress"), // Full address object
+  billingAddress: json("billingAddress"), // Full billing address object
+  shippingAddress: json("shippingAddress"), // Full shipping address object
   orderDate: timestamp("orderDate").notNull(),
   shipDate: timestamp("shipDate"),
   totalAmount: decimal("totalAmount", { precision: 10, scale: 2 }),
@@ -2468,3 +2470,24 @@ export const aiAgentCommunications = mysqlTable("ai_agent_communications", {
 
 export type AgentCommunication = typeof aiAgentCommunications.$inferSelect;
 export type InsertAgentCommunication = typeof aiAgentCommunications.$inferInsert;
+
+
+export const orderHistory = mysqlTable("order_history", {
+  id: int("id").autoincrement().primaryKey(),
+  orderId: int("orderId").notNull(),
+  changeType: mysqlEnum("changeType", ["created", "updated", "imported", "manual_edit", "reimported"]).notNull(),
+  changedBy: int("changedBy"), // userId
+  changedFields: json("changedFields").$type<Record<string, { old: any; new: any }>>(), // Field-level changes
+  previousData: json("previousData"), // Full snapshot before change
+  newData: json("newData"), // Full snapshot after change
+  source: varchar("source", { length: 100 }), // "woocommerce", "manual", "api"
+  notes: text("notes"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => ({
+  orderIdx: index("order_idx").on(table.orderId),
+  changeTypeIdx: index("change_type_idx").on(table.changeType),
+  createdAtIdx: index("created_at_idx").on(table.createdAt),
+}));
+
+export type OrderHistory = typeof orderHistory.$inferSelect;
+export type InsertOrderHistory = typeof orderHistory.$inferInsert;

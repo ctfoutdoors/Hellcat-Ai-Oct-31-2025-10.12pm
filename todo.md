@@ -2965,3 +2965,54 @@ Mission Control uses dark NASA-style theme (black background, green monospace te
 - [x] Check communication logs capture full dialogue
 - [x] Validate decision-making process is visible
 - [ ] Save checkpoint with working agent communication system
+
+
+---
+
+## WOOCOMMERCE STORAGE ANALYSIS - Nov 21, 2025
+
+### Objective
+Estimate storage requirements for downloading 65,000 WooCommerce order records
+
+### Tasks
+- [x] Fetch sample of recent WooCommerce orders
+- [x] Analyze order data structure and fields
+- [x] Calculate average JSON size per order
+- [x] Calculate average database row size per order
+- [x] Estimate total storage for 65,000 orders (JSON + Database)
+- [x] Provide breakdown of storage by component (orders, line items, metadata)
+- [x] Deliver storage estimate report to user
+
+
+---
+
+## WOOCOMMERCE 2025 ORDERS DOWNLOAD - Nov 21, 2025
+
+### Objective
+Download all WooCommerce orders from 2025 and import into database
+
+### Tasks
+- [x] Verify WooCommerce API credentials are configured
+- [x] Design order history/changelog schema
+- [x] Create order_history table for tracking changes
+- [x] Build WooCommerce import service with batch processing (50 orders)
+- [x] Implement smart duplicate detection (WC ID, order number, email+date)
+- [x] Add field-level change detection with user attribution
+- [x] Create customer linking (match by email, create if new)
+- [x] Add profit margin calculations during import
+- [x] Implement address geocoding for mapping
+- [x] Add validation & error handling (missing data, suspicious orders)
+- [x] Create import dashboard UI with dual progress bars
+- [x] Add batch progress bar (X of Y batches)
+- [x] Add order progress bar (X of 50 in current batch)
+- [x] Display live order data as it imports (cool effects)
+- [x] Build conflict resolution UI (side-by-side comparison)
+- [x] Add field-level diff viewer with hover popups
+- [x] Implement selective reimport (user chooses fields)
+- [x] Create order changelog viewer with user tracking
+- [x] Add manual import triggers (single order, date range, all)
+- [x] Implement hourly auto-sync scheduler
+- [x] Add rollback capability (undo last import)
+- [x] Create import analytics dashboard
+- [ ] Test 2025 orders import end-to-end
+- [ ] Prepare for 2024 orders download

@@ -83,6 +83,7 @@ import AuditTrail from "./pages/AuditTrail";
 import AIAgents from "./pages/ai/AIAgents";
 import KnowledgeSharing from "./pages/ai/KnowledgeSharing";
 import AgentCommunications from "./pages/ai/AgentCommunications";
+import WooCommerceImport from "./pages/orders/WooCommerceImport";
 
 function Router() {
   return (
@@ -100,6 +101,7 @@ function Router() {
         
         {/* Orders Module */}
         <Route path="/orders" component={OrdersManagement} />
+        <Route path="/orders/import/woocommerce" component={WooCommerceImport} />
         <Route path="/orders/ebay" component={EBayOrders} />
         <Route path="/orders/amazon" component={AmazonOrders} />
         <Route path="/orders/tracking" component={OrderTracking} />

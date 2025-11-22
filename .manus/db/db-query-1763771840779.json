@@ -1,0 +1,9 @@
+{
+  "query": "CREATE TABLE IF NOT EXISTS order_history (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  orderId INT NOT NULL,\n  changeType ENUM('created', 'updated', 'imported', 'manual_edit', 'reimported') NOT NULL,\n  changedBy INT,\n  changedFields JSON,\n  previousData JSON,\n  newData JSON,\n  source VARCHAR(100),\n  notes TEXT,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX order_idx (orderId),\n  INDEX change_type_idx (changeType),\n  INDEX created_at_idx (createdAt)\n);",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute CREATE TABLE IF NOT EXISTS order_history (\n  id INT AUTO_INCREMENT PRIMARY KEY,\n  orderId INT NOT NULL,\n  changeType ENUM('created', 'updated', 'imported', 'manual_edit', 'reimported') NOT NULL,\n  changedBy INT,\n  changedFields JSON,\n  previousData JSON,\n  newData JSON,\n  source VARCHAR(100),\n  notes TEXT,\n  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,\n  INDEX order_idx (orderId),\n  INDEX change_type_idx (changeType),\n  INDEX created_at_idx (createdAt)\n);",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 172
+}

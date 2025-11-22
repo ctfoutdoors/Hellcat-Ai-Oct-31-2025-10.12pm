@@ -101,11 +101,11 @@ export class WooCommerceSync {
         const existing = await db
           .select()
           .from(customers)
-          .where(eq(customers.woocommerceId, wooCustomer.id))
+          .where(eq(customers.email, wooCustomer.email))
           .limit(1);
 
         const customerData = {
-          woocommerceId: wooCustomer.id,
+          // woocommerceId: wooCustomer.id,
           customerType: wooCustomer.billing.company ? "company" : "individual",
           companyName: wooCustomer.billing.company || null,
           firstName: wooCustomer.first_name || wooCustomer.billing.first_name,
@@ -131,7 +131,7 @@ export class WooCommerceSync {
           imported.push({ id: existing[0].id, action: "updated" });
         } else {
           // Insert new
-          const [result] = await db.insert(customers).values(customerData);
+          const [result] = await db.insert(customers).values([customerData]);
           imported.push({ id: result.insertId, action: "created" });
         }
       }
@@ -180,7 +180,7 @@ export class WooCommerceSync {
         const existing = await db
           .select()
           .from(orders)
-          .where(eq(orders.woocommerceOrderId, wooOrder.id))
+          .where(eq(orders.woocommerceId, wooOrder.id))
           .limit(1);
 
         // Find customer by WooCommerce ID
@@ -189,7 +189,7 @@ export class WooCommerceSync {
           const customer = await db
             .select()
             .from(customers)
-            .where(eq(customers.woocommerceId, wooOrder.customer_id))
+            .where(eq(customers.email, wooOrder.billing.email))
             .limit(1);
           
           if (customer.length > 0) {
@@ -198,7 +198,7 @@ export class WooCommerceSync {
         }
 
         const orderData = {
-          woocommerceOrderId: wooOrder.id,
+          woocommerceId: wooOrder.id,
           orderNumber: wooOrder.number,
           customerId,
           orderDate: new Date(wooOrder.date_created),

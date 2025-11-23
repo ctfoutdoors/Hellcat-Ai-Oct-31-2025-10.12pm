@@ -5,6 +5,7 @@ import { createShipStationClient } from "../integrations/shipstation";
 import { storagePut } from "../storage";
 import { parseClaimDocument, extractTextFromDocument } from "../services/documentParser";
 import { generateDisputeLetter, generateFollowUpEmail } from "../services/documentGenerator";
+import { createEmailSender, getCarrierEmail } from "../services/emailSender";
 import { scheduleFollowUps, cancelFollowUps, getScheduledFollowups } from "../services/followupScheduler";
 import { calculateSuccessProbability } from "../services/successProbabilityCalculator";
 
@@ -697,6 +698,71 @@ export const casesRouter = router({
         success: true,
         fileUrl: url,
         fileName: `Dispute Letter - ${caseData.caseNumber}.pdf`,
+      };
+    }),
+
+  /**
+   * Send dispute letter via email
+   */
+  sendDisputeLetterEmail: protectedProcedure
+    .input(z.object({
+      caseId: z.number(),
+      recipientEmail: z.string().email().optional(),
+      additionalMessage: z.string().optional(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const caseData = await db.getCaseById(input.caseId);
+      if (!caseData) {
+        throw new Error('Case not found');
+      }
+
+      // Get the latest dispute letter document
+      const documents = await db.getCaseDocuments(input.caseId);
+      const disputeLetter = documents.find(doc => doc.documentType === 'dispute_letter');
+      
+      if (!disputeLetter) {
+        throw new Error('No dispute letter found. Please generate a dispute letter first.');
+      }
+
+      // Create email sender
+      const emailSender = createEmailSender();
+      if (!emailSender) {
+        throw new Error('Email service not configured. Please contact administrator.');
+      }
+
+      // Determine recipient email
+      let recipientEmail = input.recipientEmail;
+      if (!recipientEmail && caseData.carrier) {
+        recipientEmail = getCarrierEmail(caseData.carrier);
+      }
+      
+      if (!recipientEmail) {
+        throw new Error('No recipient email provided and carrier email not found');
+      }
+
+      // Send email with PDF attachment
+      await emailSender.sendDisputeLetter({
+        to: recipientEmail,
+        carrierName: caseData.carrier || 'Carrier',
+        caseNumber: caseData.caseNumber,
+        trackingNumber: caseData.trackingNumber || undefined,
+        claimAmount: caseData.claimAmount || undefined,
+        pdfUrl: disputeLetter.fileUrl,
+        additionalMessage: input.additionalMessage,
+      });
+
+      // Add activity log
+      await db.addCaseActivity({
+        caseId: input.caseId,
+        activityType: 'email_sent',
+        description: `Sent dispute letter to ${recipientEmail}`,
+        performedBy: ctx.user.id,
+      });
+
+      return {
+        success: true,
+        recipientEmail,
+        message: `Dispute letter sent successfully to ${recipientEmail}`,
       };
     }),
 

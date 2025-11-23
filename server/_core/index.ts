@@ -8,7 +8,9 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { startMeetingCompletionPoller } from "../services/meetingCompletionPoller";
+import { startEmailMonitor } from "../services/emailMonitor";
 import uploadAudioRouter from "../routes/uploadAudio";
+import emailWebhookRouter from "../routes/emailWebhook";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -39,7 +41,8 @@ async function startServer() {
   registerOAuthRoutes(app);
   
   // Audio upload endpoint for voice transcription
-  app.use('/api', uploadAudioRouter);
+  app.use("/api", uploadAudioRouter);
+  app.use("/api", emailWebhookRouter);
   
   // Diagnostic endpoint to check environment variables
   app.get("/api/check-env", async (req, res) => {
@@ -120,6 +123,9 @@ async function startServer() {
     
     // Start meeting completion poller
     startMeetingCompletionPoller();
+    
+    // Start email monitoring service
+    startEmailMonitor();
   });
 }
 

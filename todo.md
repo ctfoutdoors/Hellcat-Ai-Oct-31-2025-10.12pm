@@ -3265,3 +3265,52 @@ Download all WooCommerce orders from 2025 and import into database
 - [x] PDF metadata saved to case_documents table
 
 **Status:** ✅ PDF generation is fully operational
+
+
+---
+
+## EMAIL INTEGRATION - Webhook + SMTP
+
+### Phase 1: Email Receiving (Make.com Webhook)
+- [x] Create webhook endpoint /api/email-webhook
+- [x] Accept POST requests with email data from Make.com
+- [x] Parse email subject, body, sender, attachments
+- [x] Extract carrier, tracking number, claim amount
+- [x] Auto-create draft cases from incoming emails
+- [x] Return success/error response to Make.com
+
+### Phase 2: Email Sending (Nodemailer SMTP)
+- [x] Install nodemailer package
+- [x] Create email sending service
+- [x] Configure SMTP with environment variables
+- [x] Implement sendDisputeLetter function
+- [x] Attach generated PDF to email
+- [x] Add tRPC procedure for sending emails
+- [ ] Add "Send via Email" button to case detail page UI
+
+### Phase 2: Email Parsing Logic
+- [ ] Extract carrier name from sender or subject
+- [ ] Extract tracking number from email body
+- [ ] Extract claim amount from email content
+- [ ] Identify case type (billing, damage, lost, late delivery)
+- [ ] Extract relevant dates and reference numbers
+
+### Phase 3: Case Creation Integration
+- [ ] Use existing createCase function from db.ts
+- [ ] Auto-populate case fields from email data
+- [ ] Attach original email as evidence
+- [ ] Set initial status to "draft" for review
+- [ ] Log activity for email-created cases
+
+### Phase 4: Configuration & Security
+- [ ] Add EMAIL_HOST, EMAIL_PORT, EMAIL_USER, EMAIL_PASSWORD to env
+- [ ] Request secrets from user via webdev_request_secrets
+- [ ] Add email monitoring toggle in settings
+- [ ] Implement error handling and retry logic
+
+### Phase 5: Testing & Deployment
+- [ ] Test with sample carrier dispute emails
+- [ ] Verify case creation accuracy
+- [ ] Test error handling (invalid emails, connection failures)
+- [ ] Add monitoring service startup to server index
+- [ ] Create checkpoint

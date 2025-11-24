@@ -767,6 +767,69 @@ export const casesRouter = router({
     }),
 
   /**
+   * Get all documents for a case
+   */
+  getDocuments: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .query(async ({ input }) => {
+      return await db.getCaseDocuments(input.caseId);
+    }),
+
+  /**
+   * Generate and send complaint email to ShipStation
+   */
+  generateComplaint: protectedProcedure
+    .input(z.object({ caseId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const caseData = await db.getCaseById(input.caseId);
+      if (!caseData) {
+        throw new Error('Case not found');
+      }
+
+      // Generate complaint email using AI
+      const { generateShipStationComplaint } = await import('../services/complaintGenerator');
+      const { subject, body } = await generateShipStationComplaint({
+        caseNumber: caseData.caseNumber,
+        title: caseData.title,
+        description: caseData.description || '',
+        carrier: caseData.carrier,
+        trackingNumber: caseData.trackingNumber || '',
+        claimAmount: caseData.claimAmount?.toString() || '0',
+      });
+
+      // Send email via SMTP
+      const { createEmailSender } = await import('../services/emailSender');
+      const emailSender = createEmailSender();
+      
+      if (!emailSender) {
+        throw new Error('Email sender not configured. Please set SMTP environment variables.');
+      }
+      
+      const recipientEmail = 'support@shipstation.com';
+      
+      await emailSender.sendEmail({
+        to: recipientEmail,
+        subject,
+        text: body,
+      });
+
+      // Log activity
+      await db.addCaseActivity({
+        caseId: input.caseId,
+        activityType: 'complaint_sent',
+        description: `Sent complaint email to ${recipientEmail}`,
+        performedBy: ctx.user.id,
+      });
+
+      return {
+        success: true,
+        subject,
+        body,
+        recipientEmail,
+      };
+    }),
+
+  /**
    * Generate follow-up email template for a case
    * Uses AI to create professional follow-up email content
    */

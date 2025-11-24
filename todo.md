@@ -3314,3 +3314,23 @@ Download all WooCommerce orders from 2025 and import into database
 - [ ] Test error handling (invalid emails, connection failures)
 - [ ] Add monitoring service startup to server index
 - [ ] Create checkpoint
+
+
+---
+
+## BUG FIXES - Test Results
+
+### Critical Missing Procedures
+- [x] Implement `cases.getDocuments` tRPC procedure
+- [x] Implement `cases.generateComplaint` tRPC procedure for ShipStation integration
+
+### Schema & Query Issues
+- [x] Fix Legal References schema mismatch (schema was already correct)
+- [x] Fix Carrier Terms schema mismatch (updated schema definition)
+
+### Testing
+- [ ] Test getDocuments procedure
+- [ ] Test generateComplaint procedure
+- [ ] Test Legal References after schema fix
+- [ ] Test Carrier Terms after query fix
+- [ ] Full end-to-end test of all features

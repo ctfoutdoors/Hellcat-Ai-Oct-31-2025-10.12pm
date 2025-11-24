@@ -1,0 +1,52 @@
+{
+  "query": "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'legal_references' AND TABLE_SCHEMA = DATABASE() ORDER BY ORDINAL_POSITION;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'legal_references' AND TABLE_SCHEMA = DATABASE() ORDER BY ORDINAL_POSITION;",
+  "rows": [
+    {
+      "COLUMN_NAME": "id"
+    },
+    {
+      "COLUMN_NAME": "citation"
+    },
+    {
+      "COLUMN_NAME": "title"
+    },
+    {
+      "COLUMN_NAME": "summary"
+    },
+    {
+      "COLUMN_NAME": "category"
+    },
+    {
+      "COLUMN_NAME": "jurisdiction"
+    },
+    {
+      "COLUMN_NAME": "sourceUrl"
+    },
+    {
+      "COLUMN_NAME": "relevanceScore"
+    },
+    {
+      "COLUMN_NAME": "usageCount"
+    },
+    {
+      "COLUMN_NAME": "isActive"
+    },
+    {
+      "COLUMN_NAME": "createdAt"
+    },
+    {
+      "COLUMN_NAME": "updatedAt"
+    },
+    {
+      "COLUMN_NAME": "applicableClaimTypes"
+    },
+    {
+      "COLUMN_NAME": "applicableCarriers"
+    }
+  ],
+  "messages": [],
+  "stdout": "COLUMN_NAME\nid\ncitation\ntitle\nsummary\ncategory\njurisdiction\nsourceUrl\nrelevanceScore\nusageCount\nisActive\ncreatedAt\nupdatedAt\napplicableClaimTypes\napplicableCarriers\n",
+  "stderr": "",
+  "execution_time_ms": 58
+}

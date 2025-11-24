@@ -1,0 +1,25 @@
+{
+  "query": "SELECT * FROM carrier_terms LIMIT 1;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user tzGyVcj9oHnaUv9.3cfa47fa1e17 --database bQwuvX7ycRD88MLXJHLZXd --execute SELECT * FROM carrier_terms LIMIT 1;",
+  "rows": [
+    {
+      "id": "1",
+      "carrier": "UPS",
+      "termType": "liability",
+      "title": "UPS Limitation of Liability",
+      "content": "UPS's liability is limited to $100 per package unless additional insurance is purchased. For international shipments, liability is limited to the declared value.",
+      "section": "Terms and Conditions of Service - Section 2",
+      "effectiveDate": "2024-01-01",
+      "sourceUrl": "https://www.ups.com/us/en/support/shipping-support/legal-terms-conditions.page",
+      "applicableClaimTypes": "[\"damage\", \"lost\"]",
+      "usageCount": "0",
+      "isActive": "1",
+      "createdAt": "2025-11-21 02:44:31",
+      "updatedAt": "2025-11-21 02:44:31"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tcarrier\ttermType\ttitle\tcontent\tsection\teffectiveDate\tsourceUrl\tapplicableClaimTypes\tusageCount\tisActive\tcreatedAt\tupdatedAt\n1\tUPS\tliability\tUPS Limitation of Liability\tUPS's liability is limited to $100 per package unless additional insurance is purchased. For international shipments, liability is limited to the declared value.\tTerms and Conditions of Service - Section 2\t2024-01-01\thttps://www.ups.com/us/en/support/shipping-support/legal-terms-conditions.page\t[\"damage\", \"lost\"]\t0\t1\t2025-11-21 02:44:31\t2025-11-21 02:44:31\n",
+  "stderr": "",
+  "execution_time_ms": 56
+}

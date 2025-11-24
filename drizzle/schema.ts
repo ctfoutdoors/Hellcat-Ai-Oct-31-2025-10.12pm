@@ -654,15 +654,21 @@ export const carrierServices = mysqlTable("carrier_services", {
 
 export const carrierTerms = mysqlTable("carrier_terms", {
   id: int("id").autoincrement().primaryKey(),
-  carrierId: int("carrierId").notNull(),
-  version: varchar("version", { length: 50 }).notNull(),
-  effectiveDate: timestamp("effectiveDate").notNull(),
-  termsUrl: varchar("termsUrl", { length: 500 }),
-  termsContent: text("termsContent"),
-  changes: text("changes"),
+  carrier: varchar("carrier", { length: 100 }).notNull(),
+  termType: varchar("termType", { length: 100 }).notNull(),
+  title: varchar("title", { length: 500 }).notNull(),
+  content: text("content").notNull(),
+  section: varchar("section", { length: 100 }),
+  effectiveDate: timestamp("effectiveDate"),
+  sourceUrl: varchar("sourceUrl", { length: 1000 }),
+  applicableClaimTypes: json("applicableClaimTypes").$type<string[]>(),
+  usageCount: int("usageCount").default(0),
+  isActive: boolean("isActive").default(true).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 }, (table) => ({
-  carrierIdx: index("carrier_idx").on(table.carrierId),
+  carrierIdx: index("carrier_idx").on(table.carrier),
+  termTypeIdx: index("term_type_idx").on(table.termType),
 }));
 
 export const carrierRateCards = mysqlTable("carrier_rate_cards", {

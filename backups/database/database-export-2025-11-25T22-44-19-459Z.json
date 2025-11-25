@@ -1,0 +1,2886 @@
+{
+  "exportedAt": "2025-11-25T22:44:19.472Z",
+  "schemaVersion": "1.0",
+  "tables": {
+    "activitiesAttachments": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "entityType": "customer",
+          "entityId": 2,
+          "fileName": "test_email.pdf",
+          "fileSize": 1411,
+          "mimeType": "application/pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/attachments/customer/2/1763520681971-fovdo-test_email.pdf",
+          "fileKey": "attachments/customer/2/1763520681971-fovdo-test_email.pdf",
+          "activityType": "email",
+          "isEmailAttachment": true,
+          "emailSubject": null,
+          "emailDate": null,
+          "emailDirection": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-19T02:51:22.000Z"
+        }
+      ]
+    },
+    "aiActions": {
+      "error": "Failed query: select `id`, `actionType`, `description`, `parameters`, `result`, `status`, `executedAt`, `createdAt` from `ai_actions`\nparams: "
+    },
+    "aiAgentCommunications": {
+      "rowCount": 7,
+      "sampleData": [
+        {
+          "id": 1,
+          "conversationId": "cross-disc-a0399f35-519d-4549-8ef5-1796dd55f93a",
+          "senderAgentId": 1,
+          "receiverAgentId": null,
+          "messageType": "broadcast",
+          "content": "Team, we're launching an AI-Powered Customer Analytics Platform. I need each department to provide their analysis and requirements. Target launch: Q2 2025. Budget: $500K.",
+          "context": {
+            "budget": 500000,
+            "project": "AI Customer Analytics Platform",
+            "timeline": "Q2 2025"
+          },
+          "reasoning": "Strategic initiative to enhance customer insights and drive data-driven decision making",
+          "confidence": 95,
+          "createdAt": "2025-11-21T08:13:02.000Z"
+        },
+        {
+          "id": 2,
+          "conversationId": "cross-disc-a0399f35-519d-4549-8ef5-1796dd55f93a",
+          "senderAgentId": 2,
+          "receiverAgentId": null,
+          "messageType": "internal_thought",
+          "content": "Need to assess: development costs, infrastructure, team salaries, marketing budget, contingency. Must ensure positive ROI within 18 months.",
+          "context": null,
+          "reasoning": "Financial viability analysis before commitment",
+          "confidence": 90,
+          "createdAt": "2025-11-21T08:13:02.000Z"
+        },
+        {
+          "id": 3,
+          "conversationId": "cross-disc-a0399f35-519d-4549-8ef5-1796dd55f93a",
+          "senderAgentId": 3,
+          "receiverAgentId": null,
+          "messageType": "internal_thought",
+          "content": "Target market: Enterprise B2B (500+ employees). Key differentiators: AI-powered insights, real-time analytics, predictive modeling. Need strong content marketing and thought leadership.",
+          "context": null,
+          "reasoning": "Market positioning analysis for competitive advantage",
+          "confidence": 92,
+          "createdAt": "2025-11-21T08:13:02.000Z"
+        },
+        {
+          "id": 4,
+          "conversationId": "cross-disc-a0399f35-519d-4549-8ef5-1796dd55f93a",
+          "senderAgentId": 4,
+          "receiverAgentId": null,
+          "messageType": "internal_thought",
+          "content": "Architecture requirements: Scalable microservices, real-time data processing, ML pipeline for predictive analytics, SOC 2 compliance. Stack: Node.js, Python (ML), PostgreSQL, Redis, Kubernetes.",
+          "context": null,
+          "reasoning": "Technical feasibility and scalability assessment",
+          "confidence": 93,
+          "createdAt": "2025-11-21T08:13:02.000Z"
+        },
+        {
+          "id": 5,
+          "conversationId": "cross-disc-a0399f35-519d-4549-8ef5-1796dd55f93a",
+          "senderAgentId": 6,
+          "receiverAgentId": null,
+          "messageType": "internal_thought",
+          "content": "Hiring needs: 5 engineers (2 backend, 2 ML, 1 DevOps), 2 marketers (1 content, 1 demand gen), 1 product manager. Timeline: 3 months. Competitive market requires strong employer branding.",
+          "context": null,
+          "reasoning": "Talent acquisition strategy aligned with technical and marketing requirements",
+          "confidence": 87,
+          "createdAt": "2025-11-21T08:13:02.000Z"
+        },
+        {
+          "id": 6,
+          "conversationId": "cross-disc-a0399f35-519d-4549-8ef5-1796dd55f93a",
+          "senderAgentId": 1,
+          "receiverAgentId": null,
+          "messageType": "internal_thought",
+          "content": "All departments aligned. CFO confirms financial viability (180% ROI), CMO has strong GTM strategy, CTO architecture is solid, CHRO can hire team in 3 months. Green light for launch.",
+          "context": null,
+          "reasoning": "Cross-functional alignment achieved, all key risks mitigated",
+          "confidence": 94,
+          "createdAt": "2025-11-21T08:13:02.000Z"
+        },
+        {
+          "id": 7,
+          "conversationId": "cross-disc-a0399f35-519d-4549-8ef5-1796dd55f93a",
+          "senderAgentId": 1,
+          "receiverAgentId": null,
+          "messageType": "decision",
+          "content": "DECISION: Approved. Launch AI-Powered Customer Analytics Platform. Budget: $500K initial + $980K annual team cost. Timeline: Q2 2025 launch. CFO proceed with budget allocation, CMO execute GTM strategy, CTO begin architecture implementation, CHRO start hiring immediately.",
+          "context": {
+            "annualCost": 980000,
+            "decision": "APPROVED",
+            "initialBudget": 500000,
+            "launchDate": "Q2 2025",
+            "nextSteps": [
+              "CFO: Allocate budget",
+              "CMO: Execute GTM strategy",
+              "CTO: Implement architecture",
+              "CHRO: Begin hiring"
+            ]
+          },
+          "reasoning": "Strong cross-functional consensus, clear ROI, manageable risks, strategic fit",
+          "confidence": 96,
+          "createdAt": "2025-11-21T08:13:02.000Z"
+        }
+      ]
+    },
+    "aiAgentConversations": {
+      "error": "Failed query: select `id`, `participantAgentIds`, `userId`, `type`, `messages`, `relatedTaskId`, `relatedTeamId`, `status`, `createdAt`, `updatedAt` from `ai_agent_conversations`\nparams: "
+    },
+    "aiAgentTasks": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "aiAgentTeams": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "aiAgents": {
+      "rowCount": 54,
+      "sampleData": [
+        {
+          "id": 1,
+          "role": "ceo",
+          "name": "Master AI Agent",
+          "department": null,
+          "team": null,
+          "parentAgentId": null,
+          "level": 0,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 5,
+          "canAccessPersonalData": true,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 2,
+          "role": "cfo",
+          "name": "Chief Financial Officer",
+          "department": "Finance",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 3,
+          "role": "cmo",
+          "name": "Chief Marketing Officer",
+          "department": "Marketing",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 4,
+          "role": "cto",
+          "name": "Chief Technology Officer",
+          "department": "Technology",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 5,
+          "role": "coo",
+          "name": "Chief Operating Officer",
+          "department": "Operations",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 6,
+          "role": "chro",
+          "name": "Chief Human Resources Officer",
+          "department": "Human Resources",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 7,
+          "role": "cxo",
+          "name": "Chief Experience Officer",
+          "department": "Customer Experience",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 8,
+          "role": "chief_intelligence_officer",
+          "name": "Chief Intelligence Officer",
+          "department": "Intelligence",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 9,
+          "role": "clo",
+          "name": "Chief Legal Officer",
+          "department": "Legal",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        },
+        {
+          "id": 10,
+          "role": "cdo",
+          "name": "Chief Data Officer",
+          "department": "Data & Analytics",
+          "team": null,
+          "parentAgentId": 1,
+          "level": 1,
+          "capabilities": {
+            "analysis": true,
+            "cross_functional": true,
+            "decision_making": true,
+            "learning": true,
+            "multimodal": true,
+            "task_execution": true,
+            "team_creation": true
+          },
+          "modelConfig": {
+            "max_tokens": 4000,
+            "model": "gpt-4o",
+            "temperature": 0.7
+          },
+          "status": "idle",
+          "currentTask": null,
+          "lastActiveAt": null,
+          "tasksCompleted": 0,
+          "avgResponseTime": null,
+          "successRate": 100,
+          "totalCost": "0.00",
+          "accessLevel": 4,
+          "canAccessPersonalData": false,
+          "isActive": true,
+          "createdAt": "2025-11-21T04:47:50.000Z",
+          "updatedAt": "2025-11-21T04:47:50.000Z"
+        }
+      ]
+    },
+    "aiConversations": {
+      "error": "Failed query: select `id`, `userId`, `conversationId`, `message`, `response`, `context`, `createdAt` from `ai_conversations`\nparams: "
+    },
+    "aiFineTunedModels": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "aiKnowledgeBase": {
+      "error": "Failed query: select `id`, `category`, `title`, `content`, `tags`, `source`, `relevanceScore`, `createdBy`, `createdAt`, `updatedAt` from `ai_knowledge_base`\nparams: "
+    },
+    "aiLearningData": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "aiRecommendations": {
+      "error": "Failed query: select `id`, `recommendationType`, `targetId`, `targetType`, `recommendation`, `priority`, `status`, `createdAt` from `ai_recommendations`\nparams: "
+    },
+    "aiSharedKnowledge": {
+      "rowCount": 7,
+      "sampleData": [
+        {
+          "id": 1,
+          "agentId": 2,
+          "topic": "Q4 2024 Financial Performance Analysis",
+          "insights": "**Executive Summary:**\n\nOur Q4 2024 financial analysis reveals strong revenue growth of 23% year-over-year, driven primarily by enterprise customer expansion and successful product launches. Operating margins improved to 18.5%, exceeding our 15% target.\n\n**Key Findings:**\n1. **Revenue Growth**: Total revenue reached $12.3M, up from $10.0M in Q4 2023\n2. **Customer Acquisition**: 47 new enterprise customers, average contract value $85K\n3. **Cost Optimization**: Reduced operational costs by 12% through automation initiatives\n4. **Cash Position**: Strong cash reserves of $4.2M, sufficient for 18 months runway\n\n**Recommendations:**\n- Increase R&D investment by 15% to accelerate product development\n- Expand sales team to capitalize on market momentum\n- Implement advanced financial forecasting models for better planning",
+          "department": "Finance",
+          "confidence": "0.92",
+          "createdAt": "2025-11-21T08:04:28.000Z"
+        },
+        {
+          "id": 2,
+          "agentId": 13,
+          "topic": "2024 Tax Optimization Strategy",
+          "insights": "**Tax Planning Recommendations:**\n\nBased on comprehensive analysis of current tax regulations and company structure, I recommend the following optimization strategies for 2024:\n\n**Key Strategies:**\n1. **R&D Tax Credits**: Eligible for $180K in federal R&D credits based on software development activities\n2. **Section 179 Deduction**: Accelerate equipment depreciation to reduce taxable income by $120K\n3. **State Tax Optimization**: Establish nexus in Delaware to reduce state tax burden by 8%\n4. **International Tax Planning**: Utilize transfer pricing strategies for overseas operations\n\n**Estimated Tax Savings**: $420K annually\n\n**Implementation Timeline**: Q1 2025 for maximum benefit",
+          "department": "Finance",
+          "confidence": "0.88",
+          "createdAt": "2025-11-21T08:04:28.000Z"
+        },
+        {
+          "id": 3,
+          "agentId": 3,
+          "topic": "Q1 2025 Marketing Campaign Strategy",
+          "insights": "**Campaign Overview:**\n\nOur Q1 2025 marketing strategy focuses on multi-channel engagement to drive enterprise customer acquisition and brand awareness in key verticals.\n\n**Campaign Objectives:**\n1. Generate 500 qualified enterprise leads\n2. Achieve 25% increase in website traffic\n3. Improve brand awareness by 40% in target markets\n4. Launch 3 major product announcements\n\n**Channel Strategy:**\n- **Content Marketing**: 8 thought leadership articles, 4 case studies\n- **SEO**: Target 50 high-value keywords, improve domain authority\n- **Social Media**: LinkedIn focus for B2B engagement, 3 posts/week\n- **Events**: Sponsor 2 industry conferences, host 1 virtual summit\n\n**Budget Allocation**: $280K total\n- Content: $80K (29%)\n- Paid Advertising: $120K (43%)\n- Events: $60K (21%)\n- Tools & Technology: $20K (7%)",
+          "department": "Marketing",
+          "confidence": "0.90",
+          "createdAt": "2025-11-21T08:04:28.000Z"
+        },
+        {
+          "id": 4,
+          "agentId": 30005,
+          "topic": "Technical SEO Audit & Optimization Plan",
+          "insights": "**SEO Audit Results:**\n\nComprehensive technical SEO analysis reveals significant opportunities for organic search improvement.\n\n**Current Performance:**\n- Domain Authority: 42/100\n- Monthly Organic Traffic: 12,500 visitors\n- Average Page Load Time: 2.8 seconds\n- Mobile Usability Score: 87/100\n\n**Critical Issues Identified:**\n1. **Core Web Vitals**: LCP needs improvement (3.2s → target 2.5s)\n2. **Crawl Budget**: 23% of pages not indexed due to crawl errors\n3. **Internal Linking**: Weak link structure limiting page authority distribution\n4. **Schema Markup**: Missing structured data on 65% of pages\n\n**Optimization Roadmap:**\n- Phase 1 (Weeks 1-2): Fix critical technical errors, implement schema markup\n- Phase 2 (Weeks 3-4): Optimize page speed, improve mobile experience\n- Phase 3 (Weeks 5-6): Enhance internal linking, content optimization\n\n**Expected Impact**: 45% increase in organic traffic within 90 days",
+          "department": "Marketing",
+          "confidence": "0.85",
+          "createdAt": "2025-11-21T08:04:28.000Z"
+        },
+        {
+          "id": 5,
+          "agentId": 4,
+          "topic": "2025 Technology Roadmap & Architecture Strategy",
+          "insights": "**Technology Vision:**\n\nOur 2025 technology roadmap focuses on scalability, security, and AI integration to support 10x growth while maintaining system reliability.\n\n**Key Initiatives:**\n1. **Microservices Migration**: Transition from monolith to microservices architecture\n2. **AI/ML Integration**: Implement predictive analytics and automation across platform\n3. **Security Hardening**: Achieve SOC 2 Type II compliance by Q3\n4. **Infrastructure Optimization**: Reduce cloud costs by 30% through right-sizing\n\n**Architecture Decisions:**\n- **Backend**: Node.js + TypeScript, tRPC for type-safe APIs\n- **Database**: PostgreSQL primary, Redis for caching\n- **Infrastructure**: Kubernetes on AWS, multi-region deployment\n- **AI/ML**: OpenAI GPT-4o for intelligence features, custom models for domain-specific tasks\n\n**Team Expansion**: Hire 3 senior engineers, 1 DevOps specialist, 1 security engineer\n\n**Budget**: $1.2M for infrastructure, $800K for team expansion",
+          "department": "Technology",
+          "confidence": "0.93",
+          "createdAt": "2025-11-21T08:04:28.000Z"
+        },
+        {
+          "id": 6,
+          "agentId": 30006,
+          "topic": "Infrastructure Cost Optimization Analysis",
+          "insights": "**Cost Optimization Report:**\n\nDetailed analysis of current infrastructure spending reveals opportunities to reduce monthly cloud costs by $12,000 (32%) without impacting performance.\n\n**Current Spending Breakdown:**\n- Compute (EC2/ECS): $18,000/month (48%)\n- Database (RDS): $9,000/month (24%)\n- Storage (S3/EBS): $6,000/month (16%)\n- Networking (CloudFront/ALB): $4,500/month (12%)\n\n**Optimization Opportunities:**\n1. **Right-sizing**: 40% of instances over-provisioned → save $7,200/month\n2. **Reserved Instances**: Convert on-demand to 1-year reserved → save $3,600/month\n3. **Storage Lifecycle**: Implement S3 lifecycle policies → save $1,200/month\n4. **CDN Optimization**: Improve cache hit ratio from 65% to 85% → save $900/month\n\n**Implementation Plan:**\n- Week 1: Implement monitoring and alerting for cost anomalies\n- Week 2-3: Right-size compute resources based on actual usage\n- Week 4: Purchase reserved instances for stable workloads\n\n**Risk Assessment**: Low - changes are reversible and monitored",
+          "department": "Technology",
+          "confidence": "0.89",
+          "createdAt": "2025-11-21T08:04:28.000Z"
+        },
+        {
+          "id": 7,
+          "agentId": 6,
+          "topic": "Q1 2025 Talent Acquisition & Retention Strategy",
+          "insights": "**Talent Strategy Overview:**\n\nOur Q1 2025 talent strategy addresses critical hiring needs while implementing retention programs to maintain our 92% employee satisfaction rate.\n\n**Hiring Plan:**\n- Engineering: 5 senior engineers, 3 mid-level developers\n- Sales: 4 account executives, 2 sales engineers\n- Marketing: 2 content marketers, 1 SEO specialist\n- Operations: 1 operations manager, 1 customer success manager\n\n**Total Headcount Growth**: 18 positions (30% increase)\n\n**Retention Initiatives:**\n1. **Career Development**: Launch mentorship program, quarterly skill development workshops\n2. **Compensation Review**: Market adjustment for top performers (average 8% increase)\n3. **Work-Life Balance**: Implement flexible work arrangements, unlimited PTO policy\n4. **Culture Building**: Monthly team events, annual company retreat\n\n**Diversity Goals**: Achieve 40% gender diversity, 30% underrepresented minorities\n\n**Budget**: $2.4M for new hires, $180K for retention programs",
+          "department": "Human Resources",
+          "confidence": "0.87",
+          "createdAt": "2025-11-21T08:04:28.000Z"
+        }
+      ]
+    },
+    "alerts": {
+      "error": "Failed query: select `id`, `alertType`, `severity`, `title`, `message`, `targetId`, `targetType`, `isRead`, `readAt`, `createdAt` from `alerts`\nparams: "
+    },
+    "apiRequests": {
+      "error": "Failed query: select `id`, `service`, `endpoint`, `method`, `requestData`, `responseData`, `statusCode`, `duration`, `createdAt` from `api_requests`\nparams: "
+    },
+    "auditLogs": {
+      "error": "Failed query: select `id`, `userId`, `action`, `resource`, `resourceId`, `details`, `ipAddress`, `userAgent`, `createdAt` from `audit_logs`\nparams: "
+    },
+    "calendarMeetings": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "carrierAccounts": {
+      "error": "Failed query: select `id`, `carrierId`, `accountNumber`, `accountName`, `credentialId`, `isActive`, `createdAt` from `carrier_accounts`\nparams: "
+    },
+    "carrierRateCards": {
+      "error": "Failed query: select `id`, `carrierId`, `serviceId`, `effectiveDate`, `expiryDate`, `rateData`, `createdAt` from `carrier_rate_cards`\nparams: "
+    },
+    "carrierServices": {
+      "error": "Failed query: select `id`, `carrierId`, `serviceName`, `serviceCode`, `hasDeliveryGuarantee`, `guaranteeTerms`, `isActive`, `createdAt` from `carrier_services`\nparams: "
+    },
+    "carrierTerms": {
+      "rowCount": 19,
+      "sampleData": [
+        {
+          "id": 1,
+          "carrier": "UPS",
+          "termType": "liability",
+          "title": "UPS Limitation of Liability",
+          "content": "UPS's liability is limited to $100 per package unless additional insurance is purchased. For international shipments, liability is limited to the declared value.",
+          "section": "Terms and Conditions of Service - Section 2",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.ups.com/us/en/support/shipping-support/legal-terms-conditions.page",
+          "applicableClaimTypes": [
+            "damage",
+            "lost"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 2,
+          "carrier": "UPS",
+          "termType": "claims",
+          "title": "UPS Claims Filing Requirements",
+          "content": "Claims must be filed within 60 days of shipment date for domestic packages and 60 days for international. Claimant must provide proof of value and evidence of damage or loss.",
+          "section": "Claims Process - Section 4",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.ups.com/us/en/support/file-a-claim.page",
+          "applicableClaimTypes": [
+            "damage",
+            "lost"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 3,
+          "carrier": "UPS",
+          "termType": "packaging",
+          "title": "UPS Packaging Requirements",
+          "content": "Shipper is responsible for proper packaging. UPS may deny claims if damage results from inadequate packaging. Specific requirements apply for fragile items.",
+          "section": "Packaging Guidelines - Section 3",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.ups.com/us/en/support/shipping-support/packaging.page",
+          "applicableClaimTypes": [
+            "damage"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 4,
+          "carrier": "UPS",
+          "termType": "guarantee",
+          "title": "UPS Service Guarantee",
+          "content": "UPS guarantees on-time delivery for certain services. If guarantee is not met, shipping charges may be refunded. Guarantee does not apply during peak seasons or force majeure events.",
+          "section": "Service Guarantee - Section 5",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.ups.com/us/en/support/shipping-support/service-guarantee.page",
+          "applicableClaimTypes": [
+            "delay",
+            "sla_violation"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 5,
+          "carrier": "FedEx",
+          "termType": "liability",
+          "title": "FedEx Limitation of Liability",
+          "content": "FedEx's liability is limited to $100 per package for most services unless declared value is purchased. Maximum liability varies by service type.",
+          "section": "Service Guide - Liability",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.fedex.com/en-us/service-guide.html",
+          "applicableClaimTypes": [
+            "damage",
+            "lost"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 6,
+          "carrier": "FedEx",
+          "termType": "claims",
+          "title": "FedEx Claims Process",
+          "content": "Claims must be filed within 21 days of delivery date or scheduled delivery date for lost packages. Proof of value and evidence of loss or damage required.",
+          "section": "Service Guide - Claims",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.fedex.com/en-us/claims.html",
+          "applicableClaimTypes": [
+            "damage",
+            "lost"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 7,
+          "carrier": "FedEx",
+          "termType": "packaging",
+          "title": "FedEx Packaging Standards",
+          "content": "Shipper must use packaging adequate to protect contents during normal handling. FedEx packaging guidelines specify requirements for different item types.",
+          "section": "Service Guide - Packaging",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.fedex.com/en-us/packaging.html",
+          "applicableClaimTypes": [
+            "damage"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 8,
+          "carrier": "FedEx",
+          "termType": "guarantee",
+          "title": "FedEx Money-Back Guarantee",
+          "content": "FedEx offers money-back guarantee on select services if delivery commitment is not met. Exclusions apply for weather, customs delays, and other circumstances beyond FedEx control.",
+          "section": "Service Guide - Guarantee",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.fedex.com/en-us/money-back-guarantee.html",
+          "applicableClaimTypes": [
+            "delay",
+            "sla_violation"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 9,
+          "carrier": "USPS",
+          "termType": "liability",
+          "title": "USPS Insurance Coverage",
+          "content": "USPS liability varies by service. Priority Mail includes $100 insurance. Additional insurance available up to $5,000 for most items.",
+          "section": "Domestic Mail Manual - Section 609",
+          "effectiveDate": null,
+          "sourceUrl": "https://pe.usps.com/text/dmm300/609.htm",
+          "applicableClaimTypes": [
+            "damage",
+            "lost"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        },
+        {
+          "id": 10,
+          "carrier": "USPS",
+          "termType": "claims",
+          "title": "USPS Claims Filing",
+          "content": "Claims must be filed within specific timeframes: 60 days for domestic mail, 180 days for international. Online filing available through USPS website.",
+          "section": "Domestic Mail Manual - Section 609.4",
+          "effectiveDate": null,
+          "sourceUrl": "https://www.usps.com/help/claims.htm",
+          "applicableClaimTypes": [
+            "damage",
+            "lost"
+          ],
+          "usageCount": 0,
+          "isActive": true,
+          "createdAt": "2025-11-21T02:44:31.000Z",
+          "updatedAt": "2025-11-21T02:44:31.000Z"
+        }
+      ]
+    },
+    "carriers": {
+      "error": "Failed query: select `id`, `name`, `code`, `website`, `supportEmail`, `supportPhone`, `apiEndpoint`, `isActive`, `createdAt` from `carriers`\nparams: "
+    },
+    "caseActivities": {
+      "rowCount": 72,
+      "sampleData": [
+        {
+          "id": 1,
+          "caseId": 1,
+          "activityType": "status_change",
+          "description": "Status changed to open",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-22T15:34:56.000Z"
+        },
+        {
+          "id": 30001,
+          "caseId": 1,
+          "activityType": "document_generated",
+          "description": "Generated dispute letter PDF",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-22T20:28:58.000Z"
+        },
+        {
+          "id": 60001,
+          "caseId": 1,
+          "activityType": "document_generated",
+          "description": "Generated dispute letter PDF",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-23T05:15:18.000Z"
+        },
+        {
+          "id": 90001,
+          "caseId": 1,
+          "activityType": "document_generated",
+          "description": "Generated dispute letter PDF",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-24T04:45:24.000Z"
+        },
+        {
+          "id": 90002,
+          "caseId": 30001,
+          "activityType": "import",
+          "description": "Case imported from ShipStation (Order: 87412-PC, Exception: no_tracking)",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 90003,
+          "caseId": 30003,
+          "activityType": "import",
+          "description": "Case imported from ShipStation (Order: 87425-0, Exception: no_tracking)",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 90004,
+          "caseId": 30004,
+          "activityType": "import",
+          "description": "Case imported from ShipStation (Order: 87431-CTF, Exception: no_tracking)",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 90005,
+          "caseId": 30005,
+          "activityType": "import",
+          "description": "Case imported from ShipStation (Order: 87431-PC, Exception: no_tracking)",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 90006,
+          "caseId": 30006,
+          "activityType": "import",
+          "description": "Case imported from ShipStation (Order: 87293, Exception: no_tracking)",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 90007,
+          "caseId": 30008,
+          "activityType": "import",
+          "description": "Case imported from ShipStation (Order: SEAuto-Ijv06vi8RkWYUPDd_b0JWw, Exception: no_tracking)",
+          "metadata": null,
+          "performedBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z"
+        }
+      ]
+    },
+    "caseDocuments": {
+      "rowCount": 14,
+      "sampleData": [
+        {
+          "id": 1,
+          "caseId": 1,
+          "fileName": "Dispute Letter - CASE-1763825164911.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/1/dispute-letter-1763843338015.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3537,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-22T20:28:58.000Z"
+        },
+        {
+          "id": 30001,
+          "caseId": 1,
+          "fileName": "Dispute Letter - CASE-1763825164911.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/1/dispute-letter-1763874918285.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3315,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-23T05:15:18.000Z"
+        },
+        {
+          "id": 60001,
+          "caseId": 1,
+          "fileName": "Dispute Letter - CASE-1763825164911.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/1/dispute-letter-1763959524267.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3280,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T04:45:24.000Z"
+        },
+        {
+          "id": 90001,
+          "caseId": 30007,
+          "fileName": "Dispute Letter - CASE-1763960549618.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/30007/dispute-letter-1763962303157.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 2902,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T05:31:44.000Z"
+        },
+        {
+          "id": 120001,
+          "caseId": 60003,
+          "fileName": "Dispute Letter - CASE-1763962304557-j7tgr.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/60003/dispute-letter-1763964602469.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3108,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T06:10:02.000Z"
+        },
+        {
+          "id": 120002,
+          "caseId": 60003,
+          "fileName": "Dispute Letter - CASE-1763962304557-j7tgr.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/60003/dispute-letter-1763966191194.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3289,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T06:36:31.000Z"
+        },
+        {
+          "id": 120003,
+          "caseId": 60003,
+          "fileName": "Dispute Letter - CASE-1763962304557-j7tgr.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/60003/dispute-letter-1763966364912.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3412,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T06:39:25.000Z"
+        },
+        {
+          "id": 120004,
+          "caseId": 60003,
+          "fileName": "Dispute Letter - CASE-1763962304557-j7tgr.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/60003/dispute-letter-1763966679588.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3541,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T06:44:39.000Z"
+        },
+        {
+          "id": 120005,
+          "caseId": 60003,
+          "fileName": "Dispute Letter - CASE-1763962304557-j7tgr.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/60003/dispute-letter-1763967200485.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3364,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T06:53:20.000Z"
+        },
+        {
+          "id": 120006,
+          "caseId": 60003,
+          "fileName": "Dispute Letter - CASE-1763962304557-j7tgr.pdf",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/cases/60003/dispute-letter-1763967972750.pdf",
+          "fileType": "application/pdf",
+          "fileSize": 3438,
+          "documentType": "dispute_letter",
+          "source": "ctf",
+          "isAuthoritative": true,
+          "ocrText": null,
+          "aiSummary": null,
+          "uploadedBy": 1,
+          "createdAt": "2025-11-24T07:06:12.000Z"
+        }
+      ]
+    },
+    "caseLegalReferences": {
+      "error": "Failed query: select `id`, `caseId`, `legalReferenceId`, `relevanceNote`, `includeInLetter`, `addedBy`, `addedAt` from `case_legal_references`\nparams: "
+    },
+    "caseNotes": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "casePrecedents": {
+      "error": "Failed query: select `id`, `caseId`, `caseType`, `carrier`, `outcome`, `claimAmount`, `recoveredAmount`, `strategy`, `keyFactors`, `createdAt` from `case_precedents`\nparams: "
+    },
+    "caseTemplates": {
+      "error": "Failed query: select `id`, `name`, `description`, `caseType`, `carrier`, `templateData`, `isActive`, `createdBy`, `createdAt`, `updatedAt` from `case_templates`\nparams: "
+    },
+    "cases": {
+      "rowCount": 63,
+      "sampleData": [
+        {
+          "id": 1,
+          "caseNumber": "CASE-1763825164911",
+          "title": "FedEx Dimensional Weight Overcharge - Tracking 394733401787",
+          "description": "FedEx charged $94.54 instead of quoted $16.55 for FedEx 2Day One Rate service. Overcharge of $77.99 due to dimensional weight discrepancy. Quoted dimensions: 233.68 x 5.08 x 5.08 cm. Actual dimensions: 236.22 x 12.70 x 17.78 cm. Additional unauthorized surcharges applied: Fuel Surcharge, Demand-Add'l Handling, Add'l Handling-Dimension, Residential Delivery, DAS Residential. Adjustment date: 11/20/2025.",
+          "status": "draft",
+          "priority": "medium",
+          "caseType": "adjustments",
+          "carrier": "fedex",
+          "trackingNumber": "394733401787",
+          "claimAmount": "77.99",
+          "recoveredAmount": null,
+          "customerName": null,
+          "customerEmail": null,
+          "customerPhone": null,
+          "shippingAddress1": null,
+          "shippingAddress2": null,
+          "shippingCity": null,
+          "shippingState": null,
+          "shippingZip": null,
+          "shippingCountry": null,
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-22T15:26:04.000Z",
+          "updatedAt": "2025-11-22T15:26:04.000Z"
+        },
+        {
+          "id": 30001,
+          "caseNumber": "CASE-1763960547242-1ryz4n",
+          "title": "NO TRACKING: Order 87412-PC",
+          "description": "Automatically imported from ShipStation. Exception type: no_tracking. Severity: medium.",
+          "status": "draft",
+          "priority": "high",
+          "caseType": "no_tracking",
+          "carrier": "fedex_walleted",
+          "trackingNumber": null,
+          "claimAmount": "214.98",
+          "recoveredAmount": null,
+          "customerName": "Raymon Cage",
+          "customerEmail": "rrcage6@gmail.com",
+          "customerPhone": null,
+          "shippingAddress1": "414 W GRANT ST",
+          "shippingAddress2": null,
+          "shippingCity": "WALTON",
+          "shippingState": "KS",
+          "shippingZip": "67151",
+          "shippingCountry": "US",
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30002,
+          "caseNumber": "CASE-1763960549128",
+          "title": "Test Case for File Upload",
+          "description": null,
+          "status": "draft",
+          "priority": "medium",
+          "caseType": "late_delivery",
+          "carrier": null,
+          "trackingNumber": null,
+          "claimAmount": null,
+          "recoveredAmount": null,
+          "customerName": null,
+          "customerEmail": null,
+          "customerPhone": null,
+          "shippingAddress1": null,
+          "shippingAddress2": null,
+          "shippingCity": null,
+          "shippingState": null,
+          "shippingZip": null,
+          "shippingCountry": null,
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30003,
+          "caseNumber": "CASE-1763960549474-2c59w",
+          "title": "NO TRACKING: Order 87425-0",
+          "description": "Automatically imported from ShipStation. Exception type: no_tracking. Severity: medium.",
+          "status": "draft",
+          "priority": "high",
+          "caseType": "no_tracking",
+          "carrier": "fedex_walleted",
+          "trackingNumber": null,
+          "claimAmount": "149.99",
+          "recoveredAmount": null,
+          "customerName": "Zachery Rhoads",
+          "customerEmail": "zarhunter1@aol.com",
+          "customerPhone": null,
+          "shippingAddress1": "155 SALEM CHURCH RD LOT 61",
+          "shippingAddress2": null,
+          "shippingCity": "MECHANICSBURG",
+          "shippingState": "PA",
+          "shippingZip": "17050-8109",
+          "shippingCountry": "US",
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30004,
+          "caseNumber": "CASE-1763960549514-0mbnns",
+          "title": "NO TRACKING: Order 87431-CTF",
+          "description": "Automatically imported from ShipStation. Exception type: no_tracking. Severity: medium.",
+          "status": "draft",
+          "priority": "high",
+          "caseType": "no_tracking",
+          "carrier": "stamps_com",
+          "trackingNumber": null,
+          "claimAmount": "29.95",
+          "recoveredAmount": null,
+          "customerName": "Tyler Call",
+          "customerEmail": "tc919846@gmail.com",
+          "customerPhone": null,
+          "shippingAddress1": "1854 AYERS AVE",
+          "shippingAddress2": null,
+          "shippingCity": "GRIDLEY",
+          "shippingState": "CA",
+          "shippingZip": "95948-9700",
+          "shippingCountry": "US",
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30005,
+          "caseNumber": "CASE-1763960549540-2pu1t",
+          "title": "NO TRACKING: Order 87431-PC",
+          "description": "Automatically imported from ShipStation. Exception type: no_tracking. Severity: medium.",
+          "status": "draft",
+          "priority": "high",
+          "caseType": "no_tracking",
+          "carrier": "fedex_walleted",
+          "trackingNumber": null,
+          "claimAmount": "149.99",
+          "recoveredAmount": null,
+          "customerName": "Tyler Call",
+          "customerEmail": "tc919846@gmail.com",
+          "customerPhone": null,
+          "shippingAddress1": "1854 AYERS AVE",
+          "shippingAddress2": null,
+          "shippingCity": "GRIDLEY",
+          "shippingState": "CA",
+          "shippingZip": "95948-9700",
+          "shippingCountry": "US",
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30006,
+          "caseNumber": "CASE-1763960549607-k99zro",
+          "title": "NO TRACKING: Order 87293",
+          "description": "Automatically imported from ShipStation. Exception type: no_tracking. Severity: medium.",
+          "status": "draft",
+          "priority": "high",
+          "caseType": "no_tracking",
+          "carrier": "fedex_walleted",
+          "trackingNumber": null,
+          "claimAmount": "299.98",
+          "recoveredAmount": null,
+          "customerName": "Tyler Jones",
+          "customerEmail": "tjones927@gmail.com",
+          "customerPhone": null,
+          "shippingAddress1": "412 S HAMILTON ST",
+          "shippingAddress2": null,
+          "shippingCity": "MARISSA",
+          "shippingState": "IL",
+          "shippingZip": "62257-1561",
+          "shippingCountry": "US",
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30007,
+          "caseNumber": "CASE-1763960549618",
+          "title": "Test Case for Document Generation",
+          "description": null,
+          "status": "draft",
+          "priority": "high",
+          "caseType": "late_delivery",
+          "carrier": "UPS",
+          "trackingNumber": "1Z999AA10123456784",
+          "claimAmount": "150.00",
+          "recoveredAmount": null,
+          "customerName": null,
+          "customerEmail": null,
+          "customerPhone": null,
+          "shippingAddress1": null,
+          "shippingAddress2": null,
+          "shippingCity": null,
+          "shippingState": null,
+          "shippingZip": null,
+          "shippingCountry": null,
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30008,
+          "caseNumber": "CASE-1763960549632-0e2kf",
+          "title": "NO TRACKING: Order SEAuto-Ijv06vi8RkWYUPDd_b0JWw",
+          "description": "Automatically imported from ShipStation. Exception type: no_tracking. Severity: medium.",
+          "status": "draft",
+          "priority": "high",
+          "caseType": "no_tracking",
+          "carrier": "fedex_walleted",
+          "trackingNumber": null,
+          "claimAmount": "0.00",
+          "recoveredAmount": null,
+          "customerName": "Marisela Lopez",
+          "customerEmail": null,
+          "customerPhone": null,
+          "shippingAddress1": "3748 BLACK WALNUT AVE",
+          "shippingAddress2": null,
+          "shippingCity": "LAS VEGAS",
+          "shippingState": "NV",
+          "shippingZip": "89115-8115",
+          "shippingCountry": "US",
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        },
+        {
+          "id": 30009,
+          "caseNumber": "CASE-1763960549656-h6m916",
+          "title": "NO TRACKING: Order SEAuto-D87nUr9GhE-ueT1SwcPeZg",
+          "description": "Automatically imported from ShipStation. Exception type: no_tracking. Severity: medium.",
+          "status": "draft",
+          "priority": "high",
+          "caseType": "no_tracking",
+          "carrier": "fedex_walleted",
+          "trackingNumber": null,
+          "claimAmount": "0.00",
+          "recoveredAmount": null,
+          "customerName": "camela houston",
+          "customerEmail": null,
+          "customerPhone": null,
+          "shippingAddress1": "7981 W COUNTY ROAD 800 N",
+          "shippingAddress2": null,
+          "shippingCity": "ROSSVILLE",
+          "shippingState": "IN",
+          "shippingZip": "46065-9501",
+          "shippingCountry": "US",
+          "billingAddress1": null,
+          "billingAddress2": null,
+          "billingCity": null,
+          "billingState": null,
+          "billingZip": null,
+          "billingCountry": null,
+          "orderNumber": null,
+          "orderDate": null,
+          "orderTotal": null,
+          "productSku": null,
+          "productName": null,
+          "productQuantity": null,
+          "productPrice": null,
+          "serviceType": null,
+          "actualDimensions": null,
+          "carrierStatedDimensions": null,
+          "dimensionsMismatch": false,
+          "closestTubeSize": null,
+          "dimensionDifference": null,
+          "assignedTo": null,
+          "templateId": null,
+          "aiSuccessProbability": null,
+          "aiRecommendation": null,
+          "dueDate": null,
+          "resolvedAt": null,
+          "isFlagged": 0,
+          "flagReason": null,
+          "flaggedAt": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-24T05:02:29.000Z",
+          "updatedAt": "2025-11-24T05:02:29.000Z"
+        }
+      ]
+    },
+    "channelInventory": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "companies": {
+      "error": "Failed query: select `id`, `name`, `website`, `industry`, `accountType`, `tier`, `annualRevenue`, `lifetimeValue`, `parentCompanyId`, `address`, `city`, `state`, `zipCode`, `country`, `tags`, `customFields`, `createdAt`, `updatedAt`, `deletedAt` from `companies`\nparams: "
+    },
+    "complaintEmails": {
+      "error": "Failed query: select `id`, `caseId`, `recipient`, `subject`, `body`, `status`, `sentAt`, `responseReceived`, `responseReceivedAt`, `createdAt`, `updatedAt` from `complaint_emails`\nparams: "
+    },
+    "contacts": {
+      "error": "Failed query: select `id`, `firstName`, `lastName`, `email`, `phone`, `companyId`, `title`, `linkedinUrl`, `notes`, `createdAt`, `updatedAt` from `contacts`\nparams: "
+    },
+    "costAnalysis": {
+      "error": "Failed query: select `id`, `analysisDate`, `period`, `carrierId`, `totalCost`, `totalSavings`, `analysisData`, `createdAt` from `cost_analysis`\nparams: "
+    },
+    "credentialsVault": {
+      "error": "Failed query: select `id`, `service`, `credentialType`, `encryptedValue`, `description`, `isActive`, `lastUsed`, `createdAt`, `updatedAt` from `credentials_vault`\nparams: "
+    },
+    "crmActivities": {
+      "error": "Failed query: select `id`, `contactId`, `companyId`, `dealId`, `activityType`, `subject`, `description`, `activityDate`, `createdBy`, `createdAt` from `crm_activities`\nparams: "
+    },
+    "crmCompanies": {
+      "error": "Failed query: select `id`, `name`, `website`, `industry`, `size`, `notes`, `createdAt`, `updatedAt` from `crm_companies`\nparams: "
+    },
+    "crmNotes": {
+      "error": "Failed query: select `id`, `contactId`, `companyId`, `content`, `createdBy`, `createdAt` from `crm_notes`\nparams: "
+    },
+    "customerActivities": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "customerContacts": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "customerShipments": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "customers": {
+      "rowCount": 2,
+      "sampleData": [
+        {
+          "id": 1,
+          "customerNumber": "CUST-1763477857848",
+          "customerType": "company",
+          "businessType": "wholesale",
+          "firstName": null,
+          "lastName": null,
+          "email": "test@emailtestingservice.com",
+          "phone": "99999998888",
+          "companyName": "Test customer Company",
+          "taxId": null,
+          "website": "testwebsite.com",
+          "billingAddress": {
+            "city": "Louisville",
+            "country": "USA",
+            "state": "KY",
+            "street": "505 no street S",
+            "zip": "42701"
+          },
+          "shippingAddress": {
+            "city": "Louisville",
+            "country": "USA",
+            "state": "KY",
+            "street": "505 no street S",
+            "zip": "42701"
+          },
+          "googlePlaceId": null,
+          "latitude": null,
+          "longitude": null,
+          "source": "direct",
+          "externalIds": null,
+          "tags": null,
+          "notes": null,
+          "createdAt": "2025-11-18T14:57:37.000Z",
+          "updatedAt": "2025-11-18T14:57:37.000Z"
+        },
+        {
+          "id": 2,
+          "customerNumber": "CUST-1763478289958",
+          "customerType": "individual",
+          "businessType": "retail",
+          "firstName": "Test",
+          "lastName": "Customer 2",
+          "email": "test2@example.com",
+          "phone": "555-0102",
+          "companyName": null,
+          "taxId": null,
+          "website": null,
+          "billingAddress": null,
+          "shippingAddress": null,
+          "googlePlaceId": null,
+          "latitude": null,
+          "longitude": null,
+          "source": "direct",
+          "externalIds": null,
+          "tags": null,
+          "notes": null,
+          "createdAt": "2025-11-18T15:04:49.000Z",
+          "updatedAt": "2025-11-18T15:04:49.000Z"
+        }
+      ]
+    },
+    "dashboards": {
+      "error": "Failed query: select `id`, `dashboardName`, `description`, `config`, `isDefault`, `createdBy`, `createdAt`, `updatedAt` from `dashboards`\nparams: "
+    },
+    "dataSources": {
+      "error": "Failed query: select `id`, `sourceName`, `sourceType`, `isAuthoritative`, `priority`, `createdAt` from `data_sources`\nparams: "
+    },
+    "deals": {
+      "error": "Failed query: select `id`, `title`, `contactId`, `companyId`, `value`, `stage`, `probability`, `expectedCloseDate`, `closedDate`, `status`, `createdAt`, `updatedAt` from `deals`\nparams: "
+    },
+    "deliveryGuarantees": {
+      "error": "Failed query: select `id`, `shipmentId`, `service`, `guaranteedDate`, `actualDeliveryDate`, `isMissed`, `refundAmount`, `claimFiled`, `claimStatus`, `createdAt` from `delivery_guarantees`\nparams: "
+    },
+    "deliveryProofs": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "caseId": 1,
+          "trackingNumber": "394733401787",
+          "carrier": "FEDEX",
+          "screenshotUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/evidence/fedex/1/394733401787-1763841278015.png",
+          "thumbnailUrl": null,
+          "capturedAt": "2025-11-22T19:54:38.000Z",
+          "deliveryDate": null,
+          "deliveryTime": null,
+          "deliveryLocation": null,
+          "recipientName": null,
+          "signatureRequired": null,
+          "signatureObtained": null,
+          "hasDeliveryPhoto": false,
+          "deliveryPhotoUrl": null,
+          "photoAnalysis": null,
+          "sourceUrl": "https://www.fedex.com/fedextrack/?trknbr=394733401787",
+          "capturedBy": 1,
+          "evidenceItemId": null
+        }
+      ]
+    },
+    "discrepancies": {
+      "error": "Failed query: select `id`, `shipmentId`, `discrepancyType`, `description`, `expectedValue`, `actualValue`, `impactAmount`, `status`, `resolvedAt`, `createdAt` from `discrepancies`\nparams: "
+    },
+    "disputeLetterTemplates": {
+      "error": "Failed query: select `id`, `name`, `description`, `caseType`, `carrier`, `templateContent`, `variables`, `isActive`, `createdBy`, `createdAt`, `updatedAt` from `dispute_letter_templates`\nparams: "
+    },
+    "disputeLetters": {
+      "error": "Failed query: select `id`, `caseId`, `templateId`, `version`, `content`, `status`, `sentAt`, `generatedBy`, `createdBy`, `createdAt` from `dispute_letters`\nparams: "
+    },
+    "documentTemplates": {
+      "error": "Failed query: select `id`, `name`, `templateType`, `content`, `hasLetterhead`, `letterheadUrl`, `variables`, `isActive`, `createdBy`, `createdAt`, `updatedAt` from `document_templates`\nparams: "
+    },
+    "documentVersions": {
+      "error": "Failed query: select `id`, `templateId`, `version`, `content`, `changes`, `createdBy`, `createdAt` from `document_versions`\nparams: "
+    },
+    "emailAccounts": {
+      "error": "Failed query: select `id`, `email`, `displayName`, `provider`, `isPrimary`, `isActive`, `mcpServerName`, `lastSyncedAt`, `createdAt`, `updatedAt` from `email_accounts`\nparams: "
+    },
+    "emailLogs": {
+      "error": "Failed query: select `id`, `userId`, `entityType`, `entityId`, `subject`, `body`, `direction`, `visibility`, `sharedWithUserIds`, `createdAt`, `updatedAt` from `email_logs`\nparams: "
+    },
+    "emailMonitoring": {
+      "error": "Failed query: select `id`, `emailId`, `fromAddress`, `subject`, `receivedAt`, `caseId`, `trackingNumber`, `isProcessed`, `processedAt`, `createdAt` from `email_monitoring`\nparams: "
+    },
+    "emailTemplates": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "name": "Follow-up After Quote",
+          "description": "Use this template to follow up with customers after sending a quote",
+          "category": "general",
+          "subject": "Following up on your quote for {company_name}",
+          "body": "Hi {customer_name},\n\nI wanted to follow up on the quote we sent you on {quote_date} for {company_name}.\n\nDo you have any questions about our proposal? I'd be happy to schedule a call to discuss the details.\n\nBest regards,\nSales Team",
+          "variables": [],
+          "isActive": true,
+          "usageCount": 0,
+          "createdBy": 1,
+          "lastUsedAt": null,
+          "createdAt": "2025-11-19T02:57:03.000Z",
+          "updatedAt": "2025-11-19T02:57:03.000Z"
+        }
+      ]
+    },
+    "evidenceItems": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "caseId": 1,
+          "evidenceType": "screenshot",
+          "category": "proof_of_delivery",
+          "title": "FedEx Delivery Proof - 394733401787",
+          "description": "Automatically captured delivery proof screenshot",
+          "fileUrl": "https://d2xsxph8kpxj0f.cloudfront.net/310419663031934298/bQwuvX7ycRD88MLXJHLZXd/evidence/fedex/1/394733401787-1763841278015.png",
+          "fileName": "fedex-proof-394733401787.png",
+          "fileType": "image/png",
+          "fileSize": null,
+          "thumbnailUrl": null,
+          "ocrText": null,
+          "ocrConfidence": null,
+          "aiSummary": null,
+          "aiTags": null,
+          "capturedAt": "2025-11-22T19:54:38.000Z",
+          "uploadedBy": 1,
+          "uploadedAt": "2025-11-22T19:54:38.000Z",
+          "verifiedBy": null,
+          "verifiedAt": null,
+          "isVerified": false,
+          "chainOfCustody": null,
+          "legalHold": false
+        }
+      ]
+    },
+    "extractionHistory": {
+      "error": "Failed query: select `id`, `userId`, `fileName`, `fileType`, `extractedData`, `finalData`, `wasModified`, `confidenceScores`, `caseId`, `createdAt` from `extraction_history`\nparams: "
+    },
+    "facilityLocations": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "generatedDocuments": {
+      "error": "Failed query: select `id`, `templateId`, `caseId`, `documentType`, `fileName`, `fileUrl`, `generatedBy`, `createdAt` from `generated_documents`\nparams: "
+    },
+    "integrationConfigs": {
+      "error": "Failed query: select `id`, `service`, `isEnabled`, `credentialId`, `config`, `lastSyncAt`, `createdAt`, `updatedAt` from `integration_configs`\nparams: "
+    },
+    "intelligenceProducts": {
+      "rowCount": 3,
+      "sampleData": [
+        {
+          "id": 1,
+          "productId": 30001,
+          "lifecycleState": "concept",
+          "readinessScore": 22,
+          "intelligenceMetadata": {
+            "assets": [
+              {
+                "id": "asset-1",
+                "status": "missing",
+                "type": "product_image"
+              }
+            ],
+            "blockers": [
+              {
+                "description": "Supplier negotiations pending",
+                "id": "block-1",
+                "severity": "high"
+              }
+            ],
+            "requirements": [
+              {
+                "id": "req-1",
+                "status": "pending",
+                "title": "Product specifications finalized"
+              }
+            ]
+          },
+          "variantSummary": {
+            "readyVariants": 0,
+            "totalVariants": 0
+          },
+          "lastIntelligenceUpdate": "2025-11-17T14:14:19.000Z",
+          "createdAt": "2025-11-17T14:14:19.000Z",
+          "updatedAt": "2025-11-17T14:14:19.000Z"
+        },
+        {
+          "id": 2,
+          "productId": 1,
+          "lifecycleState": "development",
+          "readinessScore": 65,
+          "intelligenceMetadata": {
+            "assets": [
+              {
+                "id": "asset-1",
+                "status": "ready",
+                "type": "product_image"
+              }
+            ],
+            "blockers": [],
+            "requirements": [
+              {
+                "id": "req-1",
+                "status": "complete",
+                "title": "Product specs"
+              },
+              {
+                "id": "req-2",
+                "status": "complete",
+                "title": "Supplier confirmed"
+              }
+            ]
+          },
+          "variantSummary": {
+            "readyVariants": 2,
+            "totalVariants": 3
+          },
+          "lastIntelligenceUpdate": "2025-11-17T14:14:31.000Z",
+          "createdAt": "2025-11-17T14:14:31.000Z",
+          "updatedAt": "2025-11-17T14:14:31.000Z"
+        },
+        {
+          "id": 3,
+          "productId": 2,
+          "lifecycleState": "pre_launch",
+          "readinessScore": 88,
+          "intelligenceMetadata": {
+            "assets": [
+              {
+                "id": "asset-1",
+                "status": "ready",
+                "type": "product_image"
+              },
+              {
+                "id": "asset-2",
+                "status": "ready",
+                "type": "marketing_copy"
+              }
+            ],
+            "blockers": [],
+            "requirements": [
+              {
+                "id": "req-1",
+                "status": "complete",
+                "title": "All specs complete"
+              }
+            ]
+          },
+          "variantSummary": {
+            "readyVariants": 1,
+            "totalVariants": 1
+          },
+          "lastIntelligenceUpdate": "2025-11-17T14:14:31.000Z",
+          "createdAt": "2025-11-17T14:14:31.000Z",
+          "updatedAt": "2025-11-17T14:14:31.000Z"
+        }
+      ]
+    },
+    "intelligenceSettings": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "version": 1,
+          "timingRules": {
+            "assetDeadlineDays": 14,
+            "copyDeadlineDays": 7,
+            "escalationDelayHours": 24,
+            "freezeWindowDays": 3,
+            "goNoGoTimingDays": 1,
+            "reviewTimingDays": 2,
+            "syncFrequencyMinutes": 15
+          },
+          "thresholds": {
+            "inventoryThresholds": {
+              "default": 50,
+              "high_demand": 100,
+              "seasonal": 200
+            },
+            "minimumApprovalQuorum": 2,
+            "safetyStockMultiplier": 1.5,
+            "variantReadinessMinScore": 75
+          },
+          "templates": {
+            "assetRequirements": [
+              {
+                "minResolution": "2000x2000",
+                "required": true,
+                "type": "hero_image"
+              },
+              {
+                "minCount": 3,
+                "required": true,
+                "type": "gallery_images"
+              },
+              {
+                "minWords": 100,
+                "required": true,
+                "type": "product_description"
+              },
+              {
+                "required": false,
+                "type": "seo_title"
+              },
+              {
+                "required": false,
+                "type": "seo_description"
+              }
+            ],
+            "defaultChecklists": [
+              {
+                "item": "All product images uploaded",
+                "required": true
+              },
+              {
+                "item": "Product description complete",
+                "required": true
+              },
+              {
+                "item": "Pricing configured",
+                "required": true
+              },
+              {
+                "item": "Inventory levels verified",
+                "required": true
+              },
+              {
+                "item": "SEO metadata added",
+                "required": false
+              }
+            ],
+            "defaultTasks": {
+              "simple_product": [
+                {
+                  "daysBeforeLaunch": 14,
+                  "name": "Create product listing"
+                },
+                {
+                  "daysBeforeLaunch": 10,
+                  "name": "Upload product images"
+                },
+                {
+                  "daysBeforeLaunch": 7,
+                  "name": "Write product description"
+                },
+                {
+                  "daysBeforeLaunch": 5,
+                  "name": "Set pricing"
+                },
+                {
+                  "daysBeforeLaunch": 1,
+                  "name": "Final review"
+                }
+              ],
+              "variable_product": [
+                {
+                  "daysBeforeLaunch": 21,
+                  "name": "Create product listing"
+                },
+                {
+                  "daysBeforeLaunch": 18,
+                  "name": "Define all variants"
+                },
+                {
+                  "daysBeforeLaunch": 14,
+                  "name": "Upload variant images"
+                },
+                {
+                  "daysBeforeLaunch": 10,
+                  "name": "Write descriptions"
+                },
+                {
+                  "daysBeforeLaunch": 7,
+                  "name": "Set variant pricing"
+                },
+                {
+                  "daysBeforeLaunch": 3,
+                  "name": "Inventory check"
+                },
+                {
+                  "daysBeforeLaunch": 1,
+                  "name": "Final review"
+                }
+              ]
+            },
+            "fallbackOwners": [
+              {
+                "fallback": "operations_manager",
+                "role": "product_manager"
+              },
+              {
+                "fallback": "product_manager",
+                "role": "designer"
+              }
+            ],
+            "notificationRules": [
+              {
+                "channel": "slack",
+                "escalate": true,
+                "trigger": "task_overdue"
+              },
+              {
+                "channel": "slack",
+                "escalate": false,
+                "trigger": "asset_missing"
+              },
+              {
+                "channel": "slack",
+                "escalate": true,
+                "trigger": "inventory_low"
+              },
+              {
+                "channel": "slack",
+                "escalate": true,
+                "trigger": "go_no_go_required"
+              }
+            ],
+            "phaseRequirements": [
+              {
+                "phase": "pre_launch",
+                "requiredAssets": [
+                  "hero_image",
+                  "product_description"
+                ]
+              },
+              {
+                "inventoryMin": 50,
+                "phase": "launch_execution",
+                "requiredAssets": [
+                  "all"
+                ]
+              }
+            ]
+          },
+          "activeFrom": "2025-11-17T05:16:12.000Z",
+          "createdBy": 1,
+          "createdAt": "2025-11-17T05:16:12.000Z"
+        }
+      ]
+    },
+    "intelligenceVariants": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "inventoryLevels": {
+      "error": "Failed query: select `id`, `productId`, `location`, `quantity`, `reservedQuantity`, `lastCountDate`, `safetyStockThreshold`, `projectedDepletionDate`, `intelligenceFlags`, `createdAt`, `updatedAt` from `inventory_levels`\nparams: "
+    },
+    "inventoryLocations": {
+      "error": "Failed query: select `id`, `name`, `code`, `type`, `address`, `isActive`, `createdAt`, `updatedAt` from `inventory_locations`\nparams: "
+    },
+    "inventoryStock": {
+      "error": "Failed query: select `id`, `productId`, `locationId`, `quantity`, `reservedQuantity`, `availableQuantity`, `reorderPoint`, `reorderQuantity`, `lastCountDate`, `createdAt`, `updatedAt` from `inventory_stock`\nparams: "
+    },
+    "invoiceLineItems": {
+      "error": "Failed query: select `id`, `invoiceId`, `shipmentId`, `trackingNumber`, `description`, `amount`, `hasDispute`, `createdAt` from `invoice_line_items`\nparams: "
+    },
+    "invoices": {
+      "error": "Failed query: select `id`, `invoiceNumber`, `carrierId`, `accountId`, `poId`, `invoiceDate`, `dueDate`, `totalAmount`, `status`, `paidDate`, `createdAt` from `invoices`\nparams: "
+    },
+    "launchMissions": {
+      "rowCount": 8,
+      "sampleData": [
+        {
+          "id": 1,
+          "productId": 2,
+          "missionName": "Q2 2024 Launch: Elite Tackle Storage System",
+          "launchDatetime": "2025-12-17T05:25:32.000Z",
+          "currentPhase": "initial_briefing",
+          "settingsVersion": 1,
+          "missionConfig": {
+            "phases": [
+              {
+                "checklists": [],
+                "name": "Planning",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Preparation",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Review",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Launch",
+                "tasks": []
+              }
+            ]
+          },
+          "readinessSnapshot": null,
+          "collaborators": {
+            "internal": [
+              {
+                "role": "owner",
+                "userId": 1
+              }
+            ]
+          },
+          "status": "planning",
+          "createdAt": "2025-11-17T05:25:32.000Z",
+          "updatedAt": "2025-11-17T05:25:32.000Z"
+        },
+        {
+          "id": 2,
+          "productId": 1,
+          "missionName": "Rapid Launch: ProCast Fishing Line - 20lb Test",
+          "launchDatetime": "2025-11-24T05:25:32.000Z",
+          "currentPhase": "pre_launch",
+          "settingsVersion": 1,
+          "missionConfig": {
+            "phases": [
+              {
+                "checklists": [],
+                "name": "Preparation",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Launch",
+                "tasks": []
+              }
+            ]
+          },
+          "readinessSnapshot": null,
+          "collaborators": {
+            "internal": [
+              {
+                "role": "owner",
+                "userId": 1
+              }
+            ]
+          },
+          "status": "active",
+          "createdAt": "2025-11-17T05:25:32.000Z",
+          "updatedAt": "2025-11-17T05:25:32.000Z"
+        },
+        {
+          "id": 30001,
+          "productId": 2,
+          "missionName": "Q2 2024 Launch: Elite Tackle Storage System",
+          "launchDatetime": "2025-12-17T14:14:31.000Z",
+          "currentPhase": "initial_briefing",
+          "settingsVersion": 1,
+          "missionConfig": {
+            "phases": [
+              {
+                "checklists": [],
+                "name": "Planning",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Preparation",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Review",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Launch",
+                "tasks": []
+              }
+            ]
+          },
+          "readinessSnapshot": null,
+          "collaborators": {
+            "internal": [
+              {
+                "role": "owner",
+                "userId": 1
+              }
+            ]
+          },
+          "status": "planning",
+          "createdAt": "2025-11-17T14:14:31.000Z",
+          "updatedAt": "2025-11-17T14:14:31.000Z"
+        },
+        {
+          "id": 30002,
+          "productId": 1,
+          "missionName": "Rapid Launch: ProCast Fishing Line - 20lb Test",
+          "launchDatetime": "2025-11-24T14:14:31.000Z",
+          "currentPhase": "pre_launch",
+          "settingsVersion": 1,
+          "missionConfig": {
+            "phases": [
+              {
+                "checklists": [],
+                "name": "Preparation",
+                "tasks": []
+              },
+              {
+                "checklists": [],
+                "name": "Launch",
+                "tasks": []
+              }
+            ]
+          },
+          "readinessSnapshot": null,
+          "collaborators": {
+            "internal": [
+              {
+                "role": "owner",
+                "userId": 1
+              }
+            ]
+          },
+          "status": "active",
+          "createdAt": "2025-11-17T14:14:31.000Z",
+          "updatedAt": "2025-11-17T14:14:31.000Z"
+        },
+        {
+          "id": 30003,
+          "productId": 2,
+          "missionName": "New Year 2026 Tackle Launch",
+          "launchDatetime": "2026-01-15T00:00:00.000Z",
+          "currentPhase": "pre_launch",
+          "settingsVersion": 1,
+          "missionConfig": {},
+          "readinessSnapshot": {},
+          "collaborators": {},
+          "status": "planning",
+          "createdAt": "2025-11-17T14:53:13.000Z",
+          "updatedAt": "2025-11-17T14:53:13.000Z"
+        },
+        {
+          "id": 60001,
+          "productId": 3,
+          "missionName": "test",
+          "launchDatetime": "2026-01-01T00:00:00.000Z",
+          "currentPhase": "pre_launch",
+          "settingsVersion": 1,
+          "missionConfig": {},
+          "readinessSnapshot": {},
+          "collaborators": {},
+          "status": "planning",
+          "createdAt": "2025-11-17T17:13:10.000Z",
+          "updatedAt": "2025-11-17T17:13:10.000Z"
+        },
+        {
+          "id": 60002,
+          "productId": 2,
+          "missionName": "Spring 2026 Elite Tackle Launch",
+          "launchDatetime": "2026-03-15T00:00:00.000Z",
+          "currentPhase": "pre_launch",
+          "settingsVersion": 1,
+          "missionConfig": {},
+          "readinessSnapshot": {},
+          "collaborators": {},
+          "status": "planning",
+          "createdAt": "2025-11-17T17:19:07.000Z",
+          "updatedAt": "2025-11-17T17:19:07.000Z"
+        },
+        {
+          "id": 60003,
+          "productId": 2,
+          "missionName": "Spring 2026 Elite Tackle Launch",
+          "launchDatetime": "2026-03-15T00:00:00.000Z",
+          "currentPhase": "pre_launch",
+          "settingsVersion": 1,
+          "missionConfig": {},
+          "readinessSnapshot": {},
+          "collaborators": {},
+          "status": "planning",
+          "createdAt": "2025-11-17T17:19:31.000Z",
+          "updatedAt": "2025-11-17T17:19:31.000Z"
+        }
+      ]
+    },
+    "launchVotes": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "leadActivities": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "leads": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "legalReferences": {
+      "error": "Failed query: select `id`, `referenceType`, `citation`, `title`, `jurisdiction`, `fullText`, `summary`, `applicableCarriers`, `applicableClaimTypes`, `relevanceScore`, `sourceUrl`, `sourceDocument`, `effectiveDate`, `expiryDate`, `usageCount`, `lastUsedAt`, `tags`, `isActive`, `createdBy`, `createdAt`, `updatedAt` from `legal_references`\nparams: "
+    },
+    "metrics": {
+      "error": "Failed query: select `id`, `metricName`, `metricType`, `value`, `period`, `metadata`, `recordedAt`, `createdAt` from `metrics`\nparams: "
+    },
+    "missionEvents": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "monitoringRules": {
+      "error": "Failed query: select `id`, `ruleName`, `ruleType`, `conditions`, `actions`, `isActive`, `createdBy`, `createdAt` from `monitoring_rules`\nparams: "
+    },
+    "notifications": {
+      "error": "Failed query: select `id`, `userId`, `notificationType`, `title`, `message`, `isRead`, `readAt`, `createdAt` from `notifications`\nparams: "
+    },
+    "orderHistory": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "orders": {
+      "error": "Failed query: select `id`, `orderNumber`, `source`, `channel`, `externalId`, `woocommerceId`, `customerName`, `customerEmail`, `customerPhone`, `billingAddress`, `shippingAddress`, `orderDate`, `shipDate`, `totalAmount`, `shippingCost`, `taxAmount`, `status`, `orderItems`, `trackingNumber`, `carrierCode`, `serviceCode`, `shipmentId`, `orderData`, `tags`, `createdAt`, `updatedAt` from `orders`\nparams: "
+    },
+    "payments": {
+      "error": "Failed query: select `id`, `invoiceId`, `paymentDate`, `amount`, `paymentMethod`, `referenceNumber`, `createdAt` from `payments`\nparams: "
+    },
+    "poLineItems": {
+      "rowCount": 4,
+      "sampleData": [
+        {
+          "id": 1,
+          "poId": 1,
+          "productId": null,
+          "sku": "RT2X9",
+          "description": "2 inch diameter x 9 inch length shipping tube",
+          "quantity": 1000,
+          "receivedQuantity": 1000,
+          "unitCost": "90",
+          "createdAt": "2025-11-17T18:44:38.000Z"
+        },
+        {
+          "id": 2,
+          "poId": 1,
+          "productId": null,
+          "sku": "RT3X9",
+          "description": "3 inch diameter x 9 inch length shipping tube",
+          "quantity": 1000,
+          "receivedQuantity": 1000,
+          "unitCost": "140",
+          "createdAt": "2025-11-17T18:44:38.000Z"
+        },
+        {
+          "id": 3,
+          "poId": 1,
+          "productId": null,
+          "sku": "RT5X9",
+          "description": "5 inch diameter x 9 inch length shipping tube",
+          "quantity": 500,
+          "receivedQuantity": 500,
+          "unitCost": "310",
+          "createdAt": "2025-11-17T18:44:38.000Z"
+        },
+        {
+          "id": 4,
+          "poId": 1,
+          "productId": null,
+          "sku": "RT6X9",
+          "description": "6 inch diameter x 9 inch length shipping tube",
+          "quantity": 500,
+          "receivedQuantity": 500,
+          "unitCost": "452",
+          "createdAt": "2025-11-17T18:44:38.000Z"
+        }
+      ]
+    },
+    "productDimensions": {
+      "error": "Failed query: select `id`, `productId`, `dimensionType`, `length`, `width`, `height`, `unit`, `isStandard`, `referenceDocumentId`, `createdAt` from `product_dimensions`\nparams: "
+    },
+    "productPricing": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "productVariants": {
+      "error": "Failed query: select `id`, `parentProductId`, `woocommerceVariationId`, `variantSku`, `attributes`, `price`, `compareAtPrice`, `cost`, `stock`, `imageUrl`, `parentProductIdentifier`, `shipstationCost`, `manualCost`, `channelCosts`, `isActive`, `createdAt`, `updatedAt` from `product_variants`\nparams: "
+    },
+    "products": {
+      "error": "Failed query: select `id`, `sku`, `name`, `description`, `category`, `weight`, `dimensions`, `standardDimensions`, `barcode`, `cost`, `price`, `margin`, `supplier`, `leadTimeDays`, `imageUrl`, `parentProductIdentifier`, `shipstationCost`, `manualCost`, `channelCosts`, `isActive`, `lifecycleState`, `intelligenceMetadata`, `variantSummary`, `lastIntelligenceUpdate`, `createdAt`, `updatedAt` from `products`\nparams: "
+    },
+    "purchaseOrders": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "poNumber": "546337",
+          "vendorId": 1,
+          "orderDate": "2025-11-12T00:00:00.000Z",
+          "shipDate": "2025-11-14T00:00:00.000Z",
+          "expectedDate": "2025-11-18T00:00:00.000Z",
+          "receivedDate": "2025-11-18T10:30:00.000Z",
+          "status": "delivered",
+          "subtotal": 631000,
+          "shippingCost": 71787,
+          "tax": 22500,
+          "totalAmount": 725287,
+          "paymentMethod": "Credit Card",
+          "paymentStatus": "paid",
+          "paidDate": "2025-11-20T00:00:00.000Z",
+          "shipToName": "Catch The Fever",
+          "shipToAddress": "3 Catch The Fever Lane",
+          "shipToCity": "Byhalia",
+          "shipToState": "MS",
+          "shipToZip": "38611",
+          "shipToCountry": "USA",
+          "notes": "Shipping tubes order - 4 SKUs (2\", 3\", 5\", 6\" diameter). BOL #167533, Invoice #555529",
+          "internalNotes": null,
+          "emailThreadId": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-17T18:44:23.000Z",
+          "updatedAt": "2025-11-17T18:44:23.000Z"
+        }
+      ]
+    },
+    "receivingLogs": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "poId": 1,
+          "lineItemId": null,
+          "receivedDate": "2025-11-18T10:30:00.000Z",
+          "quantityReceived": 3000,
+          "receivedBy": 1,
+          "notes": "All 4 SKUs received in good condition. Verified quantities match invoice.",
+          "createdAt": "2025-11-17T18:45:00.000Z"
+        }
+      ]
+    },
+    "referenceDocuments": {
+      "error": "Failed query: select `id`, `documentName`, `documentType`, `fileUrl`, `description`, `isPermanent`, `tags`, `createdBy`, `createdAt` from `reference_documents`\nparams: "
+    },
+    "refunds": {
+      "error": "Failed query: select `id`, `caseId`, `shipmentId`, `invoiceId`, `refundType`, `requestedAmount`, `approvedAmount`, `status`, `requestDate`, `approvalDate`, `createdAt` from `refunds`\nparams: "
+    },
+    "reportSchedules": {
+      "error": "Failed query: select `id`, `reportId`, `frequency`, `recipients`, `lastRunAt`, `nextRunAt`, `isActive`, `createdAt` from `report_schedules`\nparams: "
+    },
+    "reports": {
+      "error": "Failed query: select `id`, `reportName`, `reportType`, `description`, `config`, `createdBy`, `createdAt` from `reports`\nparams: "
+    },
+    "scheduledFollowups": {
+      "error": "Failed query: select `id`, `caseId`, `scheduledFor`, `followupType`, `emailSubject`, `emailBody`, `recipientEmail`, `status`, `sentAt`, `errorMessage`, `createdBy`, `createdAt`, `updatedAt` from `scheduled_followups`\nparams: "
+    },
+    "shipmentAudits": {
+      "error": "Failed query: select `id`, `shipmentId`, `auditDate`, `auditType`, `findings`, `potentialSavings`, `status`, `createdAt` from `shipment_audits`\nparams: "
+    },
+    "shipmentTrackingEvents": {
+      "error": "Failed query: select `id`, `shipmentId`, `eventDate`, `eventCode`, `eventDescription`, `location`, `createdAt` from `shipment_tracking_events`\nparams: "
+    },
+    "shipments": {
+      "error": "Failed query: select `id`, `trackingNumber`, `carrier`, `service`, `orderId`, `poId`, `shipDate`, `deliveryDate`, `expectedDeliveryDate`, `status`, `weight`, `declaredWeight`, `dimensions`, `declaredDimensions`, `cost`, `billedCost`, `originZip`, `destinationZip`, `currentLocation`, `destinationAddress`, `hasDiscrepancy`, `lastAuditDate`, `createdAt`, `updatedAt` from `shipments`\nparams: "
+    },
+    "skuMappings": {
+      "error": "Failed query: select `id`, `productId`, `externalSku`, `source`, `confidence`, `learnedBy`, `verifiedBy`, `createdAt` from `sku_mappings`\nparams: "
+    },
+    "stockMovements": {
+      "error": "Failed query: select `id`, `productId`, `locationId`, `quantity`, `movementType`, `referenceType`, `referenceId`, `notes`, `performedBy`, `createdAt` from `stock_movements`\nparams: "
+    },
+    "successPredictions": {
+      "error": "Failed query: select `id`, `caseId`, `probability`, `factors`, `recommendation`, `confidence`, `createdAt` from `success_predictions`\nparams: "
+    },
+    "syncLogs": {
+      "error": "Failed query: select `id`, `service`, `syncType`, `status`, `recordsProcessed`, `errors`, `startedAt`, `completedAt`, `createdAt` from `sync_logs`\nparams: "
+    },
+    "tasks": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "trackingEvents": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "trackingScreenshots": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "transcriptions": {
+      "error": "Failed query: select `id`, `recordingId`, `transcriptionText`, `confidence`, `language`, `createdAt` from `transcriptions`\nparams: "
+    },
+    "userPermissions": {
+      "error": "Failed query: select `id`, `userId`, `resource`, `action`, `granted`, `createdAt` from `user_permissions`\nparams: "
+    },
+    "userRoles": {
+      "error": "Failed query: select `id`, `name`, `description`, `permissions`, `createdAt` from `user_roles`\nparams: "
+    },
+    "users": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "openId": "o95MxpMTmmoPjNPV4exTHf",
+          "name": "Herve Drompt",
+          "email": "herve@catchthefever.com",
+          "loginMethod": "google",
+          "role": "admin",
+          "createdAt": "2025-11-06T05:36:38.000Z",
+          "updatedAt": "2025-11-25T19:56:40.000Z",
+          "lastSignedIn": "2025-11-25T19:56:40.000Z"
+        }
+      ]
+    },
+    "vendorActionItems": {
+      "rowCount": 3,
+      "sampleData": [
+        {
+          "id": 1,
+          "vendorId": 1,
+          "title": "Follow up on next quarter pricing",
+          "description": "Schedule call with Mya to discuss 2026 Q1 pricing for shipping tubes. Request volume discount for orders >2000 units.",
+          "assignedTo": 1,
+          "dueDate": "2025-12-01T10:00:00.000Z",
+          "priority": "high",
+          "status": "pending",
+          "completedAt": null,
+          "completedBy": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-17T19:49:23.000Z",
+          "updatedAt": "2025-11-17T19:49:23.000Z"
+        },
+        {
+          "id": 2,
+          "vendorId": 1,
+          "title": "Review contract renewal terms",
+          "description": "Current contract expires 03/31/2026. Review terms and negotiate better payment terms (Net 45 instead of Net 30).",
+          "assignedTo": 1,
+          "dueDate": "2026-01-15T10:00:00.000Z",
+          "priority": "medium",
+          "status": "pending",
+          "completedAt": null,
+          "completedBy": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-17T19:49:23.000Z",
+          "updatedAt": "2025-11-17T19:49:23.000Z"
+        },
+        {
+          "id": 3,
+          "vendorId": 1,
+          "title": "Quality audit for tube shipments",
+          "description": "Inspect next shipment for quality issues. Recent customer feedback mentioned some tubes arrived dented.",
+          "assignedTo": 1,
+          "dueDate": "2025-11-25T10:00:00.000Z",
+          "priority": "urgent",
+          "status": "in_progress",
+          "completedAt": null,
+          "completedBy": null,
+          "createdBy": 1,
+          "createdAt": "2025-11-17T19:49:23.000Z",
+          "updatedAt": "2025-11-17T19:49:23.000Z"
+        }
+      ]
+    },
+    "vendorActivities": {
+      "rowCount": 5,
+      "sampleData": [
+        {
+          "id": 1,
+          "vendorId": 1,
+          "contactId": 1,
+          "activityType": "phone_call",
+          "subject": "Discussed PO #546337 delivery",
+          "description": "Called Mya Scott to confirm delivery schedule for shipping tubes order. She confirmed 11/18 delivery date.",
+          "direction": "outbound",
+          "duration": 15,
+          "outcome": "Confirmed delivery date",
+          "userId": 1,
+          "activityDate": "2025-11-13T10:30:00.000Z",
+          "createdAt": "2025-11-17T19:49:14.000Z"
+        },
+        {
+          "id": 2,
+          "vendorId": 1,
+          "contactId": 1,
+          "activityType": "email",
+          "subject": "PO #546337 Confirmation",
+          "description": "Sent purchase order confirmation with line items and delivery requirements.",
+          "direction": "outbound",
+          "duration": null,
+          "outcome": "PO confirmed",
+          "userId": 1,
+          "activityDate": "2025-11-12T14:00:00.000Z",
+          "createdAt": "2025-11-17T19:49:14.000Z"
+        },
+        {
+          "id": 3,
+          "vendorId": 1,
+          "contactId": 2,
+          "activityType": "email",
+          "subject": "Invoice #555529 Received",
+          "description": "Received invoice from Cheryl Brown for PO #546337. Total $7,252.87.",
+          "direction": "inbound",
+          "duration": null,
+          "outcome": "Invoice processed",
+          "userId": 1,
+          "activityDate": "2025-11-15T09:15:00.000Z",
+          "createdAt": "2025-11-17T19:49:14.000Z"
+        },
+        {
+          "id": 4,
+          "vendorId": 1,
+          "contactId": 1,
+          "activityType": "phone_call",
+          "subject": "Shipment tracking update",
+          "description": "Mya called to provide BOL #167533 and tracking information.",
+          "direction": "inbound",
+          "duration": 8,
+          "outcome": "Tracking received",
+          "userId": 1,
+          "activityDate": "2025-11-14T16:45:00.000Z",
+          "createdAt": "2025-11-17T19:49:14.000Z"
+        },
+        {
+          "id": 5,
+          "vendorId": 1,
+          "contactId": null,
+          "activityType": "note",
+          "subject": "Payment processed",
+          "description": "Credit card payment processed for invoice #555529. Payment confirmed.",
+          "direction": null,
+          "duration": null,
+          "outcome": "Payment complete",
+          "userId": 1,
+          "activityDate": "2025-11-20T11:00:00.000Z",
+          "createdAt": "2025-11-17T19:49:14.000Z"
+        }
+      ]
+    },
+    "vendorAttachments": {
+      "rowCount": 0,
+      "sampleData": []
+    },
+    "vendorContacts": {
+      "rowCount": 2,
+      "sampleData": [
+        {
+          "id": 1,
+          "vendorId": 1,
+          "firstName": "Mya",
+          "lastName": "Scott",
+          "email": "mscott@yazoomills.com",
+          "phone": null,
+          "title": "Customer Service",
+          "department": null,
+          "isPrimary": true,
+          "createdAt": "2025-11-17T18:44:02.000Z"
+        },
+        {
+          "id": 2,
+          "vendorId": 1,
+          "firstName": "Cheryl",
+          "lastName": "Brown",
+          "email": "CBrown@yazoomills.com",
+          "phone": null,
+          "title": "Orders",
+          "department": null,
+          "isPrimary": false,
+          "createdAt": "2025-11-17T18:44:02.000Z"
+        }
+      ]
+    },
+    "vendors": {
+      "rowCount": 1,
+      "sampleData": [
+        {
+          "id": 1,
+          "vendorNumber": "YAZOO001",
+          "companyName": "Yazoo Mills Inc",
+          "contactName": "Mya Scott",
+          "email": "mscott@yazoomills.com",
+          "phone": "717-624-8993",
+          "website": "https://yazoomills.com",
+          "address": null,
+          "paymentTerms": "Net 30",
+          "taxId": null,
+          "customerNumber": "Q3854",
+          "notes": "Shipping tubes manufacturer - 305 Commerce St, New Oxford, PA 17350",
+          "active": true,
+          "createdAt": "2025-11-17T18:43:50.000Z",
+          "updatedAt": "2025-11-17T18:43:50.000Z"
+        }
+      ]
+    },
+    "voiceActions": {
+      "error": "Failed query: select `id`, `commandId`, `userId`, `executedAt`, `result`, `status`, `createdAt` from `voice_actions`\nparams: "
+    },
+    "voiceCommands": {
+      "error": "Failed query: select `id`, `commandName`, `commandPhrase`, `category`, `action`, `parameters`, `isActive`, `createdAt` from `voice_commands`\nparams: "
+    },
+    "voiceRecordings": {
+      "error": "Failed query: select `id`, `caseId`, `recordingUrl`, `duration`, `transcriptionId`, `recordedBy`, `createdAt` from `voice_recordings`\nparams: "
+    },
+    "webhookEvents": {
+      "error": "Failed query: select `id`, `source`, `eventType`, `payload`, `processed`, `processedAt`, `createdAt` from `webhook_events`\nparams: "
+    }
+  },
+  "schema": {
+    "tables": [
+      "activitiesAttachments",
+      "aiActions",
+      "aiAgentCommunications",
+      "aiAgentConversations",
+      "aiAgentTasks",
+      "aiAgentTeams",
+      "aiAgents",
+      "aiConversations",
+      "aiFineTunedModels",
+      "aiKnowledgeBase",
+      "aiLearningData",
+      "aiRecommendations",
+      "aiSharedKnowledge",
+      "alerts",
+      "apiRequests",
+      "auditLogs",
+      "calendarMeetings",
+      "carrierAccounts",
+      "carrierRateCards",
+      "carrierServices",
+      "carrierTerms",
+      "carriers",
+      "caseActivities",
+      "caseDocuments",
+      "caseLegalReferences",
+      "caseNotes",
+      "casePrecedents",
+      "caseTemplates",
+      "cases",
+      "channelInventory",
+      "companies",
+      "complaintEmails",
+      "contacts",
+      "costAnalysis",
+      "credentialsVault",
+      "crmActivities",
+      "crmCompanies",
+      "crmNotes",
+      "customerActivities",
+      "customerContacts",
+      "customerShipments",
+      "customers",
+      "dashboards",
+      "dataSources",
+      "deals",
+      "deliveryGuarantees",
+      "deliveryProofs",
+      "discrepancies",
+      "disputeLetterTemplates",
+      "disputeLetters",
+      "documentTemplates",
+      "documentVersions",
+      "emailAccounts",
+      "emailLogs",
+      "emailMonitoring",
+      "emailTemplates",
+      "evidenceItems",
+      "extractionHistory",
+      "facilityLocations",
+      "generatedDocuments",
+      "integrationConfigs",
+      "intelligenceProducts",
+      "intelligenceSettings",
+      "intelligenceVariants",
+      "inventoryLevels",
+      "inventoryLocations",
+      "inventoryStock",
+      "invoiceLineItems",
+      "invoices",
+      "launchMissions",
+      "launchVotes",
+      "leadActivities",
+      "leads",
+      "legalReferences",
+      "metrics",
+      "missionEvents",
+      "monitoringRules",
+      "notifications",
+      "orderHistory",
+      "orders",
+      "payments",
+      "poLineItems",
+      "productDimensions",
+      "productPricing",
+      "productVariants",
+      "products",
+      "purchaseOrders",
+      "receivingLogs",
+      "referenceDocuments",
+      "refunds",
+      "reportSchedules",
+      "reports",
+      "scheduledFollowups",
+      "shipmentAudits",
+      "shipmentTrackingEvents",
+      "shipments",
+      "skuMappings",
+      "stockMovements",
+      "successPredictions",
+      "syncLogs",
+      "tasks",
+      "trackingEvents",
+      "trackingScreenshots",
+      "transcriptions",
+      "userPermissions",
+      "userRoles",
+      "users",
+      "vendorActionItems",
+      "vendorActivities",
+      "vendorAttachments",
+      "vendorContacts",
+      "vendors",
+      "voiceActions",
+      "voiceCommands",
+      "voiceRecordings",
+      "webhookEvents"
+    ],
+    "totalTables": 116
+  }
+}
